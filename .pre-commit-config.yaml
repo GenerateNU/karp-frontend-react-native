@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier
+        entry: bash -c "cd frontend && bun run format"
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx|json|css|md)$
+        pass_filenames: false
+        always_run: true
+
+      - id: eslint-fix
+        name: ESLint Fix
+        entry: bash -c "cd frontend && bun run lint:fix"
+        language: system
+        files: ^frontend/.*\.(js|jsx|ts|tsx)$
+        pass_filenames: false
+        always_run: true
