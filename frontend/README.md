@@ -49,16 +49,19 @@ This project includes Docker support for containerized development.
 ### Using Docker
 
 1. **Build the Docker image:**
+
    ```bash
    docker build -t karp-frontend .
    ```
 
 2. **Run the container:**
+
    ```bash
    docker run -p 8081:8081 -p 19000:19000 -p 19002:19002 karp-frontend
    ```
 
 3. **Run with environment variables:**
+
    ```bash
    docker run -p 8081:8081 -p 19000:19000 -p 19002:19002 \
      -e EXPO_PUBLIC_API_URL=http://your-api-url:3000/api \
@@ -78,16 +81,19 @@ This project includes Docker support for containerized development.
 The Docker setup supports the following environment variables:
 
 #### Expo Public Variables (accessible in client code)
+
 - `EXPO_PUBLIC_API_URL`: API endpoint URL
 - `EXPO_PUBLIC_APP_ENV`: Application environment (development, staging, production)
 - `EXPO_PUBLIC_DEBUG_MODE`: Enable debug mode (true/false)
 
 #### Development Variables
+
 - `EXPO_TUNNEL_SUBDOMAIN`: Custom subdomain for Expo tunnel
 - `EXPO_DEVTOOLS_LISTEN_ADDRESS`: DevTools listening address (default: 0.0.0.0)
 - `EXPO_USE_METRO`: Use Metro bundler (default: true)
 
 #### Example .env file:
+
 ```env
 EXPO_PUBLIC_API_URL=http://localhost:3000/api
 EXPO_PUBLIC_APP_ENV=development
@@ -107,6 +113,7 @@ EXPO_TUNNEL_SUBDOMAIN=karp-dev
 ### Accessing the App
 
 After running the Docker container, you can access:
+
 - **Metro bundler**: http://localhost:8081
 - **Expo DevTools**: http://localhost:19002
 - **Development server**: http://localhost:19000
