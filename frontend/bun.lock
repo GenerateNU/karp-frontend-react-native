@@ -5,6 +5,7 @@
       "name": "karp",
       "dependencies": {
         "@dev-plugins/react-navigation": "^0.3.1",
+        "@expo/metro-runtime": "~6.1.2",
         "@expo/vector-icons": "^15.0.2",
         "@react-navigation/bottom-tabs": "^7.3.10",
         "@react-navigation/elements": "^2.3.8",
@@ -32,6 +33,7 @@
         "react-native-screens": "~4.16.0",
         "react-native-web": "^0.21.0",
         "react-native-webview": "13.15.0",
+        "react-native-worklets": "0.5.1",
       },
       "devDependencies": {
         "@babel/core": "^7.25.2",
@@ -293,7 +295,7 @@
 
     "@expo/metro-config": ["@expo/metro-config@54.0.3", "", { "dependencies": { "@babel/code-frame": "^7.20.0", "@babel/core": "^7.20.0", "@babel/generator": "^7.20.5", "@expo/config": "~12.0.9", "@expo/env": "~2.0.7", "@expo/json-file": "~10.0.7", "@expo/metro": "~0.1.1", "@expo/spawn-async": "^1.7.2", "browserslist": "^4.25.0", "chalk": "^4.1.0", "debug": "^4.3.2", "dotenv": "~16.4.5", "dotenv-expand": "~11.0.6", "getenv": "^2.0.0", "glob": "^10.4.2", "hermes-parser": "^0.29.1", "jsc-safe-url": "^0.2.4", "lightningcss": "^1.30.1", "minimatch": "^9.0.0", "postcss": "~8.4.32", "resolve-from": "^5.0.0" }, "peerDependencies": { "expo": "*" }, "optionalPeers": ["expo"] }, "sha512-TQ5MKSGFB6zJxi+Yr8VYXQFHzRXgvSJzNsHX1otTqnxjXbptwYiXhljAqGSjr3pByq4+sHX/GifMk6fGgAANmA=="],
 
-    "@expo/metro-runtime": ["@expo/metro-runtime@5.0.4", "", { "peerDependencies": { "react-native": "*" } }, "sha512-r694MeO+7Vi8IwOsDIDzH/Q5RPMt1kUDYbiTJwnO15nIqiDwlE8HU55UlRhffKZy6s5FmxQsZ8HA+T8DqUW8cQ=="],
+    "@expo/metro-runtime": ["@expo/metro-runtime@6.1.2", "", { "dependencies": { "anser": "^1.4.9", "pretty-format": "^29.7.0", "stacktrace-parser": "^0.1.10", "whatwg-fetch": "^3.0.0" }, "peerDependencies": { "expo": "*", "react": "*", "react-dom": "*", "react-native": "*" }, "optionalPeers": ["react-dom"] }, "sha512-nvM+Qv45QH7pmYvP8JB1G8JpScrWND3KrMA6ZKe62cwwNiX/BjHU28Ear0v/4bQWXlOY0mv6B8CDIm8JxXde9g=="],
 
     "@expo/osascript": ["@expo/osascript@2.3.7", "", { "dependencies": { "@expo/spawn-async": "^1.7.2", "exec-async": "^2.2.0" } }, "sha512-IClSOXxR0YUFxIriUJVqyYki7lLMIHrrzOaP01yxAL1G8pj2DWV5eW1y5jSzIcIfSCNhtGsshGd1tU/AYup5iQ=="],
 
