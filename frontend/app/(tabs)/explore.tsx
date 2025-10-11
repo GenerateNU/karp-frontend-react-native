@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -7,8 +8,29 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Button } from '@/components/common/Button';
 
 export default function TabTwoScreen() {
+  const router = useRouter();
+
+  const handleTestSignUp = () => {
+    // MOCK EVENT ID FOR NOW
+    router.push('/events/signup/68dad229bbf3c6ee9ed3622b');
+    //router.push('/events/success');
+  };
+
+  const handleTestSignUpSuccess = () => {
+    // pass in mock selected date, time, and duration
+    router.push({
+      pathname: '/events/success',
+      params: {
+        selectedDate: '2025-10-01',
+        selectedTime: '10:00:00',
+        duration: 2,
+      },
+    });
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -27,6 +49,22 @@ export default function TabTwoScreen() {
       <ThemedText>
         This app includes example code to help you get started.
       </ThemedText>
+
+      <ThemedView style={styles.testSection}>
+        <ThemedText type="subtitle" style={styles.testTitle}>
+          Test Event Sign-Up
+        </ThemedText>
+        <Button
+          text="Test Sign-Up Page"
+          onPress={handleTestSignUp}
+          buttonsStyle={styles.testButton}
+        />
+        <Button
+          text="Test Sign-Up Success Page"
+          onPress={handleTestSignUpSuccess}
+          buttonsStyle={styles.testButton}
+        />
+      </ThemedView>
       <Collapsible title="File-based routing">
         <ThemedText>
           This app has two screens:{' '}
@@ -126,5 +164,18 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  testSection: {
+    borderRadius: 12,
+    padding: 20,
+    marginVertical: 16,
+    borderWidth: 1,
+    gap: 10,
+  },
+  testTitle: {
+    marginBottom: 8,
+  },
+  testButton: {
+    alignSelf: 'flex-start',
   },
 });
