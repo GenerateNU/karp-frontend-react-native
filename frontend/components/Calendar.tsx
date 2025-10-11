@@ -3,13 +3,14 @@ import {
   DateData,
 } from 'react-native-calendars';
 import { StyleSheet } from 'react-native';
+import { MarkedDates } from 'react-native-calendars/src/types';
 
 export function Calendar({
   onDayPress,
   markedDates,
 }: {
   onDayPress: (day: DateData) => void;
-  markedDates?: any;
+  markedDates?: MarkedDates;
 }) {
   return (
     <ReactNativeCalendar

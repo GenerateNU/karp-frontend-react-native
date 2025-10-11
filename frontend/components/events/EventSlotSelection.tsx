@@ -16,7 +16,6 @@ interface EventSlotSelectionProps {
 }
 
 export function EventSlotSelection({
-  // events should have available dates and times
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   event,
   selectedDate,
@@ -24,6 +23,7 @@ export function EventSlotSelection({
   onDateSelect,
   onTimeSelect,
 }: EventSlotSelectionProps) {
+  // TODO: Get available dates and times from the event when api is ready
   const availableDates = ['2025-10-09', '2025-10-10', '2025-10-11'];
   const availableTimes = [
     '09:00:00',
