@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Item } from '@/types/api/item';
 
-interface ItemProps {
+export interface ItemProps {
   name?: string;
   price?: string;
   status?: string;

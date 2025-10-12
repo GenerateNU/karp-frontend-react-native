@@ -5,7 +5,6 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-// import ItemInfo from '@/components/ui/ItemInfoFull';
 
 export default function HomeScreen() {
   return (
@@ -22,13 +21,6 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome To Karp!</ThemedText>
         <HelloWave />
       </ThemedView>
-      {/* <ItemInfo
-        name="1 Cookie"
-        vendor="Crumbl"
-        address="123 Cookie Lane, Sweet Tooth City, CA 90210"
-        description="Enjoy a Crumbl Cookie on us! Thanks for helping out in your community!"
-        cost="20 coins"
-      /> */}
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
