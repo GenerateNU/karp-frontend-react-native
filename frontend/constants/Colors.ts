@@ -10,6 +10,8 @@ export const Colors = {
   light: {
     text: '#000000',
     background: '#D9D9D9',
+    primary: '#90D0CD',
+    primaryPressed: '#628fa4ff',
     formInputBackground: '#F3F2F2',
     buttonBackground: '#C5C3C3',
     selectedSlotBackground: '#000000',
@@ -18,6 +20,7 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    errorText: '#E00808',
   },
   dark: {
     text: '#ECEDEE',

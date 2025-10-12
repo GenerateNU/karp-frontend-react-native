@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { Image } from 'expo-image';
+import {
+  ScrollView,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  Pressable,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
@@ -16,11 +23,17 @@ export default function EventSignUpPage() {
   const [item, setItem] = useState<ItemInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // button status: unpressed | redeemed | insufficient
+  const [status, setStatus] = useState<
+    'unpressed' | 'redeemed' | 'insufficient'
+  >('unpressed');
+  const [message, setMessage] = useState<string>('');
+
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace('/login');
-      return;
-    }
+    // if (!isAuthenticated) {
+    //   router.replace('/login');
+    //   return;
+    // }
     const fetchEventDetails = async () => {
       // MOCK EVENT DATA FOR NOW
       setItem({
@@ -41,29 +54,64 @@ export default function EventSignUpPage() {
     fetchEventDetails();
   }, [itemId, isAuthenticated, router]);
 
+  const handleRedeemPress = () => {
+    // mock user's coin balance
+    const userCoins = 15;
+    const priceNumber = parseInt(item?.price || '0', 10) || 0;
+
+    if (status === 'redeemed') {
+      // allow unpress to reset
+      setStatus('unpressed');
+      setMessage('');
+      return;
+    }
+
+    if (userCoins >= priceNumber) {
+      setStatus('redeemed');
+      setMessage('Success! Item redeemed.');
+    } else {
+      setStatus('insufficient');
+      setMessage('Insufficient coins to redeem this item.');
+    }
+  };
+
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.container}>
         <ActivityIndicator size="large" />
-        <ThemedText style={styles.loadingText}>
+        <ThemedText style={styles.messageText}>
           Loading event details...
         </ThemedText>
       </View>
     );
   }
 
+  // determine button color based on status
+  const buttonStyle =
+    status === 'redeemed'
+      ? styles.buttonRedeemed
+      : status === 'insufficient'
+        ? styles.buttonInsufficient
+        : styles.buttonDefault;
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <ScrollView>
+          <View style={styles.headerRow}>
+            <Pressable
+              onPress={() => router.back()}
+              style={styles.backButtonContainer}
+            >
+              <Image
+                source={require('@/assets/images/backArrow.svg')}
+                style={styles.backButtonIcon}
+                contentFit="contain"
+              />
+            </Pressable>
+          </View>
           <ThemedView style={styles.content}>
-            <ThemedText type="title" style={styles.title}>
-              Sign Up
-            </ThemedText>
-            <ThemedText type="title" style={styles.infoConfirmationTitle}>
-              Info Confirmation:
-            </ThemedText>
             <ItemInfoTable
               id={item?.id || ''}
               name={item?.name || ''}
@@ -75,6 +123,32 @@ export default function EventSignUpPage() {
               timePosted={item?.timePosted || ''}
               expirationTimestamp={item?.expirationTimestamp || ''}
             />
+
+            <View style={styles.redeemSection}>
+              <Pressable
+                style={[styles.button, buttonStyle]}
+                onPress={handleRedeemPress}
+              >
+                <ThemedText style={styles.buttonText}>
+                  {status === 'redeemed' ? 'Redeemed' : item?.price || 'Redeem'}
+                </ThemedText>
+              </Pressable>
+
+              {message ? (
+                <View style={styles.messageBox}>
+                  <ThemedText
+                    style={[
+                      styles.messageText,
+                      status === 'redeemed'
+                        ? styles.messageText
+                        : styles.errorText,
+                    ]}
+                  >
+                    {message}
+                  </ThemedText>
+                </View>
+              ) : null}
+            </View>
           </ThemedView>
         </ScrollView>
       </SafeAreaView>
@@ -87,35 +161,66 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingTop: 6,
+    paddingLeft: 12,
+  },
+  backButtonContainer: {
+    padding: 8,
+    paddingRight: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButtonIcon: {
+    width: 24,
+    height: 24,
+  },
+
   content: {
     paddingLeft: 34,
     paddingRight: 46,
-  },
-  title: {
-    fontFamily: 'JosefinSans_400Regular',
-    fontSize: 44,
-    fontStyle: 'normal',
-    fontWeight: 400,
-    lineHeight: 44,
-    paddingBottom: 21,
-  },
-  infoConfirmationTitle: {
-    color: Colors.light.text,
-    fontFamily: 'JosefinSans_300Light',
-    fontSize: 20,
-    fontStyle: 'normal',
-    fontWeight: 300,
-    paddingBottom: 5,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    gap: 16,
     backgroundColor: Colors.light.background,
   },
-  loadingText: {
-    marginTop: 16,
+
+  redeemSection: {
+    marginTop: 24,
+    alignItems: 'center',
+    gap: 12,
+  },
+  button: {
+    width: 200,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonDefault: {
+    backgroundColor: Colors.light.primary,
+  },
+  buttonRedeemed: {
+    backgroundColor: Colors.light.icon,
+  },
+  buttonInsufficient: {
+    backgroundColor: Colors.light.primary,
+  },
+  buttonText: {
+    color: Colors.light.tint,
+    fontWeight: '600',
     fontSize: 16,
-    color: Colors.light.text,
+  },
+
+  messageBox: {
+    width: '100%',
+    paddingHorizontal: 8,
+  },
+  messageText: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  errorText: {
+    color: Colors.light.errorText,
   },
 });
