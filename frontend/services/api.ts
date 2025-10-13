@@ -1,7 +1,7 @@
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 
 export interface ApiResponse<T> {
-  data: T;
+  data: T | null;
   success: boolean;
   message?: string;
 }
@@ -87,7 +87,7 @@ class ApiService {
     } catch (error) {
       console.error('API request failed:', error);
       return {
-        data: null as T,
+        data: null,
         success: false,
         message: error instanceof Error ? error.message : 'Unknown error',
       };
