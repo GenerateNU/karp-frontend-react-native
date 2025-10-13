@@ -107,7 +107,14 @@ export function FilterModal({
   const [selectedGoodFor, setSelectedGoodFor] = useState<string[]>([]);
 
   const handleApply = () => {
-    onApplyFilters(filters);
+    const mergedFilters: EventFilters = {
+      ...filters,
+      sort: selectedSort,
+      causeAreas: selectedCauseAreas,
+      skills: selectedSkills,
+      goodFor: selectedGoodFor,
+    };
+    onApplyFilters(mergedFilters);
     onClose();
   };
 
