@@ -39,7 +39,7 @@ export function useItemDetail(itemId: string) {
         );
         setHasOrdered(alreadyOrdered);
       } catch (error) {
-        Alert.alert('Error', 'Failed to load item details');
+        Alert.alert('Error', `Failed to load item details: ${error}`);
       } finally {
         setLoading(false);
       }
@@ -67,7 +67,7 @@ export function useItemDetail(itemId: string) {
       setUserCoins(userCoins - item.price);
       Alert.alert('Success!', 'Your order has been placed');
     } catch (error) {
-      Alert.alert('Error', 'Failed to place order');
+      Alert.alert('Error', `Failed to place an order: ${error}`);
     } finally {
       setOrderLoading(false);
     }

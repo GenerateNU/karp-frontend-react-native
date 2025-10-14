@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 
@@ -32,8 +41,12 @@ export default function LoginScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
       >
-        <View style={{ flex: 1, padding: 24, justifyContent: 'center', gap: 16 }}>
-          <Text style={{ fontSize: 24, fontWeight: '600', marginBottom: 8 }}>Sign in</Text>
+        <View
+          style={{ flex: 1, padding: 24, justifyContent: 'center', gap: 16 }}
+        >
+          <Text style={{ fontSize: 24, fontWeight: '600', marginBottom: 8 }}>
+            Sign in
+          </Text>
 
           <View style={{ gap: 8 }}>
             <Text style={{ fontSize: 14, color: '#444' }}>Username</Text>
@@ -42,7 +55,12 @@ export default function LoginScreen() {
               placeholder="your-username"
               value={username}
               onChangeText={setUsername}
-              style={{ borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 8, padding: 12 }}
+              style={{
+                borderWidth: 1,
+                borderColor: '#e5e7eb',
+                borderRadius: 8,
+                padding: 12,
+              }}
             />
           </View>
 
@@ -53,7 +71,12 @@ export default function LoginScreen() {
               secureTextEntry
               value={password}
               onChangeText={setPassword}
-              style={{ borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 8, padding: 12 }}
+              style={{
+                borderWidth: 1,
+                borderColor: '#e5e7eb',
+                borderRadius: 8,
+                padding: 12,
+              }}
             />
           </View>
 
@@ -68,12 +91,12 @@ export default function LoginScreen() {
               marginTop: 8,
             }}
           >
-            <Text style={{ color: 'white', fontWeight: '600' }}>{isLoading ? 'Signing in…' : 'Sign in'}</Text>
+            <Text style={{ color: 'white', fontWeight: '600' }}>
+              {isLoading ? 'Signing in…' : 'Sign in'}
+            </Text>
           </Pressable>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
-
-

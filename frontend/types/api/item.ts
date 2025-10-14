@@ -11,8 +11,9 @@ export interface Item {
   id: string;
   name: string;
   status: ItemStatus;
-  vendor_id: string;
+  vendor_name: string;
   time_posted: string;
   expiration: string;
   price: number;
+  description: string;
 }

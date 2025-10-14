@@ -2,7 +2,7 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export async function getVolunteerOrders(volunteerId: string, token: string) {
   const response = await fetch(
-    `${API_BASE_URL}/orders/volunteer/${volunteerId}`,
+    `${API_BASE_URL}/order/volunteer/${volunteerId}`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }
@@ -16,7 +16,7 @@ export async function getVolunteerOrders(volunteerId: string, token: string) {
 }
 
 export async function createOrder(itemId: string, token: string) {
-  const response = await fetch(`${API_BASE_URL}/orders/new`, {
+  const response = await fetch(`${API_BASE_URL}/order/new`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
