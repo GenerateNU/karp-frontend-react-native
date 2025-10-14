@@ -11,6 +11,7 @@ export type EventInfo = Event & {
   organization: string;
   address: string;
   description: string;
+  timeSlots: [string];
 };
 
 export enum EventStatus {

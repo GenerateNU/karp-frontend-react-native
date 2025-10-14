@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Pressable,
 } from 'react-native';
+import { Button } from '@/components/common/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
@@ -23,11 +24,6 @@ export default function EventSignUpPage() {
   const { isAuthenticated } = useAuth();
   const [event, setEvent] = useState<EventInfo | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // button status: unpressed | redeemed | insufficient
-  const [status, setStatus] = useState<
-    'unpressed' | 'redeemed' | 'insufficient'
-  >('unpressed');
   const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
@@ -35,22 +31,7 @@ export default function EventSignUpPage() {
     //   router.replace('/login');
     //   return;
     // }
-    // const fetchEventDetails = async () => {
-    // MOCK EVENT DATA FOR NOW
-    //   setItem({
-    //     id: itemId as string,
-    //     name: '1 Cookie',
-    //     price: '20 coins',
-    //     status: ItemStatus.ACTIVE,
-    //     timePosted: new Date().toLocaleString() as string,
-    //     expirationTimestamp: new Date().toLocaleString() as string,
-    //     address: '123 Cookie Lane, Sweet Tooth City, CA 90210',
-    //     description:
-    //       'Enjoy a Crumbl Cookie on us! Thanks for helping out in your community!',
-    //     vendor: 'Crumbl',
-    //   });
-    //   setLoading(false);
-    // };
+
     const fetchEventDetails = async () => {
       try {
         console.log('Event id:', eventId);
@@ -66,6 +47,7 @@ export default function EventSignUpPage() {
           startTime: eventData.startTime,
           endTime: eventData.endTime,
           organization: eventData.organization || 'Boston Public Library',
+          timeSlots: eventData.timeSlots || ['12:00', '1:00', '2:30', '3:30'],
         });
       } catch (error) {
         console.log('Error fetching event:', error);
@@ -79,25 +61,16 @@ export default function EventSignUpPage() {
     fetchEventDetails();
   }, [eventId, isAuthenticated, router]);
 
-  // TODO: remove logic related to items
-  const handleRedeemPress = () => {
-    // mock user's coin balance
-    const userCoins = 15;
-    const priceNumber = parseInt(event?.value || 0, 10) || 0;
-
-    if (status === 'redeemed') {
-      // allow unpress to reset
-      setStatus('unpressed');
-      setMessage('');
+  const handleSignUp = async () => {
+    if ((event?.spotsRemaining ?? 0) < 1) {
+      setMessage('Sorry, this event has no spots left.');
       return;
     }
-
-    if (userCoins >= priceNumber) {
-      setStatus('redeemed');
-      setMessage('Success! Item redeemed.');
-    } else {
-      setStatus('insufficient');
-      setMessage('Insufficient coins to redeem this item.');
+    if (event?.id) {
+      router.push({
+        pathname: '/event/signup/[eventId]',
+        params: { eventId: event.id },
+      });
     }
   };
 
@@ -111,14 +84,6 @@ export default function EventSignUpPage() {
       </View>
     );
   }
-
-  // determine button color based on status
-  const buttonStyle =
-    status === 'redeemed'
-      ? styles.buttonRedeemed
-      : status === 'insufficient'
-        ? styles.buttonInsufficient
-        : styles.buttonDefault;
 
   return (
     <>
@@ -148,32 +113,20 @@ export default function EventSignUpPage() {
               startTime={event?.startTime || '2025-09-05T14:00:00Z'}
               endTime={event?.endTime || '2025-09-05T17:00:00Z'}
               spotsRemaining={event?.spotsRemaining || 5}
+              timeSlots={event?.timeSlots || ['']}
             />
 
-            <View style={styles.redeemSection}>
-              <Pressable
-                style={[styles.button, buttonStyle]}
-                onPress={handleRedeemPress}
-              >
-                <ThemedText style={styles.buttonText}>
-                  {status === 'redeemed'
-                    ? 'Redeemed'
-                    : event?.value || 'Redeem'}
-                </ThemedText>
-              </Pressable>
+            <View style={styles.signUpSection}>
+              <Button
+                text="SIGN UP"
+                onPress={handleSignUp}
+                loading={false}
+                disabled={(event?.spotsRemaining ?? 0) < 1}
+              />
 
               {message ? (
                 <View style={styles.messageBox}>
-                  <ThemedText
-                    style={[
-                      styles.messageText,
-                      status === 'redeemed'
-                        ? styles.messageText
-                        : styles.errorText,
-                    ]}
-                  >
-                    {message}
-                  </ThemedText>
+                  <ThemedText style={styles.errorText}>{message}</ThemedText>
                 </View>
               ) : null}
             </View>
@@ -213,33 +166,11 @@ const styles = StyleSheet.create({
     gap: 16,
     backgroundColor: Colors.light.background,
   },
-
-  redeemSection: {
-    marginTop: 24,
+  signUpSection: {
+    marginBottom: 24,
     alignItems: 'center',
     gap: 12,
   },
-  button: {
-    width: 200,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  buttonDefault: {
-    backgroundColor: Colors.light.primary,
-  },
-  buttonRedeemed: {
-    backgroundColor: Colors.light.icon,
-  },
-  buttonInsufficient: {
-    backgroundColor: Colors.light.primary,
-  },
-  buttonText: {
-    color: Colors.light.tint,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-
   messageBox: {
     width: '100%',
     paddingHorizontal: 8,

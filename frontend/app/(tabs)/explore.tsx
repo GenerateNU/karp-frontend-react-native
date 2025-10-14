@@ -40,7 +40,7 @@ export default function TabTwoScreen() {
 
       <ThemedView style={styles.testSection}>
         <ThemedText type="subtitle" style={styles.testTitle}>
-          Test Item Info
+          Test Event Info
         </ThemedText>
         <Button
           text="Event Info Page"
