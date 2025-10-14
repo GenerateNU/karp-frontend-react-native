@@ -15,7 +15,7 @@ export default function TabTwoScreen() {
 
   const handleTestItemInfo = () => {
     // MOCK ITEM ID FOR NOW
-    router.push('/items/68e1d1c8c320a33ba155f270');
+    router.push('/items/68e1d1c6c320a33ba155f264');
     //router.push('/events/success');
   };
 

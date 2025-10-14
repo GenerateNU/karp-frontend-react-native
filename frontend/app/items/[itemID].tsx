@@ -15,6 +15,7 @@ import ItemInfoTable from '@/components/ui/ItemInfoFull';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
 import { ItemInfo, ItemStatus } from '@/types/api/item';
+import { getItemById } from '@/services/itemService';
 
 export default function EventSignUpPage() {
   const { itemId } = useLocalSearchParams();
@@ -34,24 +35,49 @@ export default function EventSignUpPage() {
     //   router.replace('/login');
     //   return;
     // }
-    const fetchEventDetails = async () => {
-      // MOCK EVENT DATA FOR NOW
-      setItem({
-        id: itemId as string,
-        name: '1 Cookie',
-        price: '20 coins',
-        status: ItemStatus.ACTIVE,
-        timePosted: new Date().toLocaleString() as string,
-        expirationTimestamp: new Date().toLocaleString() as string,
-        address: '123 Cookie Lane, Sweet Tooth City, CA 90210',
-        description:
-          'Enjoy a Crumbl Cookie on us! Thanks for helping out in your community!',
-        vendor: 'Crumbl',
-      });
-      setLoading(false);
+    // const fetchEventDetails = async () => {
+    // MOCK EVENT DATA FOR NOW
+    //   setItem({
+    //     id: itemId as string,
+    //     name: '1 Cookie',
+    //     price: '20 coins',
+    //     status: ItemStatus.ACTIVE,
+    //     timePosted: new Date().toLocaleString() as string,
+    //     expirationTimestamp: new Date().toLocaleString() as string,
+    //     address: '123 Cookie Lane, Sweet Tooth City, CA 90210',
+    //     description:
+    //       'Enjoy a Crumbl Cookie on us! Thanks for helping out in your community!',
+    //     vendor: 'Crumbl',
+    //   });
+    //   setLoading(false);
+    // };
+    const fetchItemDetails = async () => {
+      try {
+        console.log('Item id:', itemId);
+        const itemData = await getItemById(itemId as string);
+        console.log('Fetched item data:', itemData);
+        setItem({
+          id: itemData.id,
+          name: itemData.name,
+          price: `${itemData.price} coins`,
+          status: itemData.status,
+          timePosted: itemData.timePosted,
+          expirationTimestamp: itemData.expirationTimestamp,
+          address: '123 Cookie Lane, Sweet Tooth City, CA 90210',
+          description:
+            'Crumbl Cookie on us! Thanks for helping out in your community!',
+          vendor: itemData.vendor || 'Crumbl',
+        });
+      } catch (error) {
+        console.log('Error fetching item:', error);
+        // handle error, e.g. set error message
+        setItem(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchEventDetails();
+    fetchItemDetails();
   }, [itemId, isAuthenticated, router]);
 
   const handleRedeemPress = () => {
