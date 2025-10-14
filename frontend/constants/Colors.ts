@@ -8,8 +8,12 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#000000',
+    background: '#D9D9D9',
+    formInputBackground: '#F3F2F2',
+    buttonBackground: '#C5C3C3',
+    selectedSlotBackground: '#000000',
+    selectedSlotText: '#F3F2F2',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
