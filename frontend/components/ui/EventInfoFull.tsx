@@ -4,27 +4,29 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
-import { ItemInfo } from '@/types/api/item';
+import { EventInfo } from '@/types/api/event';
 
-export default function ItemInfoTable({
+// TODO: fix formatting and style to match Event View + Details Figma
+export default function EventInfoTable({
   name,
-  vendor,
+  organization,
   address,
   description,
-}: ItemInfo) {
+}: EventInfo) {
   return (
     <ThemedView style={styles.container}>
       <View style={styles.imagePlaceholder} />
       <View style={styles.topRow}>
         <View style={styles.infoColumn}>
           <ThemedText style={styles.title}>{name}</ThemedText>
-          <Text style={styles.vendor}>{vendor}</Text>
+          <View style={styles.detail}>
+            <Text>More information: </Text>
+            <Text style={styles.detailText}>{description}</Text>
+          </View>
+          <Text>Organizer:</Text>
+          <Text style={styles.organization}>{organization}</Text>
           <Text style={styles.subtitle}>{address}</Text>
         </View>
-      </View>
-
-      <View style={styles.detail}>
-        <Text style={styles.detailText}>{description}</Text>
       </View>
     </ThemedView>
   );
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
     paddingBottom: 21,
     color: '#000000',
   },
-  vendor: {
+  organization: {
     color: Colors.light.text,
     fontFamily: Fonts.regular_400,
     fontSize: 14,

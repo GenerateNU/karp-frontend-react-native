@@ -13,9 +13,9 @@ import { Button } from '@/components/common/Button';
 export default function TabTwoScreen() {
   const router = useRouter();
 
-  const handleTestItemInfo = () => {
+  const handleTestEventInfo = () => {
     // MOCK ITEM ID FOR NOW
-    router.push('/items/68e1d1c6c320a33ba155f264');
+    router.push('/event/68e4774368a5c39282e7a9b7');
     //router.push('/events/success');
   };
 
@@ -43,8 +43,8 @@ export default function TabTwoScreen() {
           Test Item Info
         </ThemedText>
         <Button
-          text="Item Info Page"
-          onPress={handleTestItemInfo}
+          text="Event Info Page"
+          onPress={handleTestEventInfo}
           buttonsStyle={styles.testButton}
         />
         {/* <Button

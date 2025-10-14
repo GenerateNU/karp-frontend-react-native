@@ -11,17 +11,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import ItemInfoTable from '@/components/ui/ItemInfoFull';
+import EventInfoTable from '@/components/ui/EventInfoFull';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
-import { ItemInfo, ItemStatus } from '@/types/api/item';
-import { getItemById } from '@/services/itemService';
+import { EventInfo } from '@/types/api/event';
+import { getEventById } from '@/services/eventService';
 
 export default function EventSignUpPage() {
-  const { itemId } = useLocalSearchParams();
+  const { eventId } = useLocalSearchParams();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
-  const [item, setItem] = useState<ItemInfo | null>(null);
+  const [event, setEvent] = useState<EventInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
   // button status: unpressed | redeemed | insufficient
@@ -51,39 +51,39 @@ export default function EventSignUpPage() {
     //   });
     //   setLoading(false);
     // };
-    const fetchItemDetails = async () => {
+    const fetchEventDetails = async () => {
       try {
-        console.log('Item id:', itemId);
-        const itemData = await getItemById(itemId as string);
-        console.log('Fetched item data:', itemData);
-        setItem({
-          id: itemData.id,
-          name: itemData.name,
-          price: `${itemData.price} coins`,
-          status: itemData.status,
-          timePosted: itemData.timePosted,
-          expirationTimestamp: itemData.expirationTimestamp,
-          address: '123 Cookie Lane, Sweet Tooth City, CA 90210',
-          description:
-            'Crumbl Cookie on us! Thanks for helping out in your community!',
-          vendor: itemData.vendor || 'Crumbl',
+        console.log('Event id:', eventId);
+        const eventData = await getEventById(eventId as string);
+        console.log('Fetched item data:', eventData);
+        setEvent({
+          id: eventData.id,
+          name: eventData.name,
+          value: eventData.value,
+          address: eventData.address,
+          description: eventData.description || 'Need to include description',
+          spotsRemaining: eventData.spotsRemaining || 10,
+          startTime: eventData.startTime,
+          endTime: eventData.endTime,
+          organization: eventData.organization || 'Boston Public Library',
         });
       } catch (error) {
-        console.log('Error fetching item:', error);
+        console.log('Error fetching event:', error);
         // handle error, e.g. set error message
-        setItem(null);
+        setEvent(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchItemDetails();
-  }, [itemId, isAuthenticated, router]);
+    fetchEventDetails();
+  }, [eventId, isAuthenticated, router]);
 
+  // TODO: remove logic related to items
   const handleRedeemPress = () => {
     // mock user's coin balance
     const userCoins = 15;
-    const priceNumber = parseInt(item?.price || '0', 10) || 0;
+    const priceNumber = parseInt(event?.value || 0, 10) || 0;
 
     if (status === 'redeemed') {
       // allow unpress to reset
@@ -138,16 +138,16 @@ export default function EventSignUpPage() {
             </Pressable>
           </View>
           <ThemedView style={styles.content}>
-            <ItemInfoTable
-              id={item?.id || ''}
-              name={item?.name || ''}
-              vendor={item?.vendor || ''}
-              address={item?.address || ''}
-              description={item?.description || ''}
-              price={item?.price || ''}
-              status={item?.status || ItemStatus.DELETED}
-              timePosted={item?.timePosted || ''}
-              expirationTimestamp={item?.expirationTimestamp || ''}
+            <EventInfoTable
+              id={event?.id || ''}
+              name={event?.name || ''}
+              organization={event?.organization || ''}
+              address={event?.address || ''}
+              description={event?.description || ''}
+              value={event?.value || 30}
+              startTime={event?.startTime || '2025-09-05T14:00:00Z'}
+              endTime={event?.endTime || '2025-09-05T17:00:00Z'}
+              spotsRemaining={event?.spotsRemaining || 5}
             />
 
             <View style={styles.redeemSection}>
@@ -156,7 +156,9 @@ export default function EventSignUpPage() {
                 onPress={handleRedeemPress}
               >
                 <ThemedText style={styles.buttonText}>
-                  {status === 'redeemed' ? 'Redeemed' : item?.price || 'Redeem'}
+                  {status === 'redeemed'
+                    ? 'Redeemed'
+                    : event?.value || 'Redeem'}
                 </ThemedText>
               </Pressable>
 
