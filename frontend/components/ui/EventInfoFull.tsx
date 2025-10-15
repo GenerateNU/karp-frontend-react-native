@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
-import { EventInfo } from '@/types/api/event';
+import { Event } from '@/types/api/event';
 import { Image } from 'expo-image';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-interface Props extends EventInfo {
+interface Props extends Event {
   onSelectTime?: (time: string) => void;
   selectedTime?: string;
 }
@@ -17,12 +18,12 @@ export default function EventInfoTable({
   organization,
   address,
   description,
-  startTime,
-  endTime,
-  timeSlots = [''],
+  start_date_time,
+  end_date_time,
+  timeSlots = [],
 }: Props) {
-  const start = startTime ? new Date(startTime) : null;
-  const end = endTime ? new Date(endTime) : null;
+  const start = start_date_time ? new Date(start_date_time) : null;
+  const end = end_date_time ? new Date(end_date_time) : null;
 
   const dateFormatted = start
     ? start.toLocaleString(undefined, {
@@ -50,68 +51,78 @@ export default function EventInfoTable({
   const duration = start && end ? formatDuration(start, end) : '';
 
   return (
-    <ThemedView style={styles.container}>
-      <View style={styles.imagePlaceholder} />
-      <View style={styles.topRow}>
-        <View style={styles.infoColumn}>
-          <View style={styles.nameRow}>
-            <ThemedText style={styles.title}>{name}</ThemedText>
-            <Image
-              source={require('../../assets/images/share.png')}
-              style={styles.shareIcon}
-              contentFit="contain"
-            />
-          </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
+      <ScrollView style={styles.scrollContainer}>
+        <ThemedView style={styles.container}>
+          <View style={styles.imagePlaceholder} />
+          <View style={styles.topRow}>
+            <View style={styles.infoColumn}>
+              <View style={styles.nameRow}>
+                <ThemedText style={styles.title}>{name}</ThemedText>
+                <Image
+                  source={require('../../assets/images/share.png')}
+                  style={styles.shareIcon}
+                  contentFit="contain"
+                />
+              </View>
 
-          <View style={styles.detail}>
-            <Text style={styles.detailText}>More information: </Text>
-            <Text style={[styles.detailText, styles.spacing]}>
-              {description}
-            </Text>
-            <Text style={styles.detailText}>Address: </Text>
-            <Text style={[styles.detailText, styles.spacing]}>{address}</Text>
+              <View style={styles.detail}>
+                <Text style={styles.detailText}>More information: </Text>
+                <Text style={[styles.detailText, styles.spacing]}>
+                  {description}
+                </Text>
+                <Text style={styles.detailText}>Address: </Text>
+                <Text style={[styles.detailText, styles.spacing]}>
+                  {address}
+                </Text>
+              </View>
+              <Text style={styles.organizationText}>Organizer:</Text>
+              <Text style={[styles.organizationText, styles.spacing]}>
+                {organization}
+              </Text>
+              <Text style={styles.dateText}>Date: {dateFormatted}</Text>
+              <Text style={[styles.organizationText, styles.spacing]}>
+                Duration: {duration}
+              </Text>
+              <Text style={styles.detailText}>Available Times: </Text>
+              <View style={styles.timesTable}>
+                {timeSlots.map((slot, idx) => {
+                  // const isSelected = selectedTime === slot;
+                  return (
+                    <Pressable key={`${slot}-${idx}`} style={styles.timeItem}>
+                      <ThemedText style={styles.timeText}>{slot}</ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
           </View>
-          <Text style={styles.organizationText}>Organizer:</Text>
-          <Text style={[styles.organizationText, styles.spacing]}>
-            {organization}
-          </Text>
-          <Text style={styles.dateText}>Date: {dateFormatted}</Text>
-          <Text style={[styles.organizationText, styles.spacing]}>
-            Duration: {duration}
-          </Text>
-          <Text style={styles.detailText}>Available Times: </Text>
-          <View style={styles.timesTable}>
-            {timeSlots.map((slot, idx) => {
-              // const isSelected = selectedTime === slot;
-              return (
-                <Pressable key={`${slot}-${idx}`} style={styles.timeItem}>
-                  <ThemedText style={styles.timeText}>{slot}</ThemedText>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
-      </View>
-    </ThemedView>
+        </ThemedView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flex: 1,
+  },
   container: {
     backgroundColor: Colors.light.background,
     width: '100%',
     padding: 16,
     gap: 12,
+    alignItems: 'center',
   },
   shareIcon: {
     width: 50,
     height: 50,
+    flexShrink: 0,
     alignSelf: 'flex-start',
   },
   nameRow: {
     flexDirection: 'row',
     width: '100%',
-    height: '100%',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -119,6 +130,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     alignItems: 'flex-start',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   imagePlaceholder: {
     width: '100%',
@@ -140,8 +153,9 @@ const styles = StyleSheet.create({
     fontSize: 44,
     fontStyle: 'normal',
     fontWeight: '400',
-    lineHeight: 44,
-    paddingBottom: 21,
+    lineHeight: 46,
+    flexShrink: 1,
+    paddingBottom: 22,
     color: '#000000',
   },
   organizationText: {
@@ -153,7 +167,6 @@ const styles = StyleSheet.create({
   spacing: {
     marginBottom: 8,
   },
-
   detail: {
     width: '100%',
   },

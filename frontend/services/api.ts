@@ -1,3 +1,4 @@
+import { Event, EventFilters } from '@/types/api/event';
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 
 export interface ApiResponse<T> {
@@ -6,27 +7,27 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-export interface Event {
-  _id: string;
-  name: string;
-  address: string;
-  location: string | null;
-  start_date_time: string;
-  end_date_time: string;
-  organization_id: string;
-  status: string;
-  max_volunteers: number;
-  coins: number;
-  created_at: string;
-  created_by: string;
-}
+// export interface Event {
+//   _id: string;
+//   name: string;
+//   address: string;
+//   location: string | null;
+//   start_date_time: string;
+//   end_date_time: string;
+//   organization_id: string;
+//   status: string;
+//   max_volunteers: number;
+//   coins: number;
+//   created_at: string;
+//   created_by: string;
+// }
 
-export interface EventFilters {
-  category?: string;
-  date?: string;
-  location?: string;
-  isFree?: boolean;
-}
+// export interface EventFilters {
+//   category?: string;
+//   date?: string;
+//   location?: string;
+//   isFree?: boolean;
+// }
 
 class ApiService {
   private baseUrl: string;

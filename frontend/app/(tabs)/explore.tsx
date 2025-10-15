@@ -70,8 +70,8 @@ export default function TabTwoScreen() {
           onPress={handleTestSignUpSuccess}
           buttonsStyle={styles.testButton}
         />
-      </ThemedView>
-
+        {/* </ThemedView> */}
+        <ThemedText type="subtitle" style={styles.testTitle}>
           Test Event Sign-Up
         </ThemedText>
         <Button

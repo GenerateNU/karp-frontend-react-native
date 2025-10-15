@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import { Event, EventFilters } from '@/services/api';
+import { Event, EventFilters } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { EventCard } from '@/components/EventCard';
 import { FilterModal } from '@/components/FilterModal';
@@ -175,7 +175,7 @@ export default function EventsScreen() {
               <FlatList
                 data={events}
                 renderItem={renderEvent}
-                keyExtractor={item => item._id}
+                keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 refreshControl={
                   <RefreshControl

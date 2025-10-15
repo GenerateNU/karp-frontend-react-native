@@ -15,14 +15,14 @@ import { ThemedText } from '@/components/ThemedText';
 import EventInfoTable from '@/components/ui/EventInfoFull';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
-import { EventInfo } from '@/types/api/event';
-import { getEventById } from '@/services/eventService';
+import { Event, EventStatus } from '@/types/api/event';
+import { eventService } from '@/services/eventService';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
   const router = useRouter();
   const { isAuthenticated } = useAuth();
-  const [event, setEvent] = useState<EventInfo | null>(null);
+  const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
 
@@ -34,24 +34,31 @@ export default function EventSignUpPage() {
 
     const fetchEventDetails = async () => {
       try {
-        console.log('Event id:', eventId);
-        const eventData = await getEventById(eventId as string);
-        console.log('Fetched item data:', eventData);
+        const eventData = await eventService.getEventById(eventId as string);
         setEvent({
-          id: eventData.id,
-          name: eventData.name,
-          value: eventData.value,
-          address: eventData.address,
-          description: eventData.description || 'Need to include description',
-          spotsRemaining: eventData.spotsRemaining || 10,
-          startTime: eventData.startTime,
-          endTime: eventData.endTime,
-          organization: eventData.organization || 'Boston Public Library',
-          timeSlots: eventData.timeSlots || ['12:00', '1:00', '2:30', '3:30'],
+          id: eventId as string,
+          name: eventData?.name || 'Default Event Name',
+          address: eventData?.address || '',
+          location: eventData?.location || null,
+          start_date_time: eventData?.start_date_time || '',
+          end_date_time: eventData?.end_date_time || '',
+          organization_id: eventData?.organization_id || '',
+          organization: eventData?.organization || 'Chicos',
+          description:
+            eventData?.description || 'This is a sample event description.',
+          spots_remaining: eventData?.spots_remaining ?? 5,
+          status: eventData?.status || EventStatus.PUBLISHED,
+          max_volunteers: eventData?.max_volunteers ?? 0,
+          coins: eventData?.coins ?? 0,
+          created_at: eventData?.created_at || '',
+          created_by: eventData?.created_by || '',
+          timeSlots: eventData?.timeSlots || [
+            '9:00 AM - 11:00 AM',
+            '1:00 PM - 3:00 PM',
+          ],
         });
       } catch (error) {
-        console.log('Error fetching event:', error);
-        // handle error, e.g. set error message
+        console.log('Error fetching event details:', error);
         setEvent(null);
       } finally {
         setLoading(false);
@@ -62,13 +69,13 @@ export default function EventSignUpPage() {
   }, [eventId, isAuthenticated, router]);
 
   const handleSignUp = async () => {
-    if ((event?.spotsRemaining ?? 0) < 1) {
+    if ((event?.spots_remaining ?? 0) < 1) {
       setMessage('Sorry, this event has no spots left.');
       return;
     }
     if (event?.id) {
       router.push({
-        pathname: '/event/signup/[eventId]',
+        pathname: '/events/signup/[eventId]',
         params: { eventId: event.id },
       });
     }
@@ -84,7 +91,6 @@ export default function EventSignUpPage() {
       </View>
     );
   }
-
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -92,7 +98,9 @@ export default function EventSignUpPage() {
         <ScrollView>
           <View style={styles.headerRow}>
             <Pressable
-              onPress={() => router.back()}
+              onPress={() => {
+                router.back();
+              }}
               style={styles.backButtonContainer}
             >
               <Image
@@ -103,25 +111,14 @@ export default function EventSignUpPage() {
             </Pressable>
           </View>
           <ThemedView style={styles.content}>
-            <EventInfoTable
-              id={event?.id || ''}
-              name={event?.name || ''}
-              organization={event?.organization || ''}
-              address={event?.address || ''}
-              description={event?.description || ''}
-              value={event?.value || 30}
-              startTime={event?.startTime || '2025-09-05T14:00:00Z'}
-              endTime={event?.endTime || '2025-09-05T17:00:00Z'}
-              spotsRemaining={event?.spotsRemaining || 5}
-              timeSlots={event?.timeSlots || ['']}
-            />
+            <EventInfoTable {...event!} />
 
             <View style={styles.signUpSection}>
               <Button
                 text="SIGN UP"
                 onPress={handleSignUp}
                 loading={false}
-                disabled={(event?.spotsRemaining ?? 0) < 1}
+                disabled={(event?.spots_remaining ?? 0) < 1}
               />
 
               {message ? (
