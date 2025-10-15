@@ -30,7 +30,7 @@ export default function StoreScreen() {
   const renderItem = ({ item }: { item: (typeof STORE_ITEMS)[0] }) => (
     <TouchableOpacity
       key={item.id}
-      className="mx-2"
+      className="mx-4"
       onPress={() => handlePress(item.id)}
       activeOpacity={0.8}
     >
@@ -52,8 +52,8 @@ export default function StoreScreen() {
           style={{
             textAlign: 'left',
             color: 'black',
-            fontSize: '20',
-            paddingLeft: '5',
+            fontSize: 20,
+            paddingLeft: 5,
             fontFamily: Fonts.regular_400,
           }}
         >
@@ -70,19 +70,19 @@ export default function StoreScreen() {
             style={{
               color: 'black',
               textAlign: 'left',
-              fontSize: '12',
-              paddingLeft: '5',
+              fontSize: 12,
+              paddingLeft: 5,
               fontFamily: Fonts.regular_400,
             }}
           >
             {item.store}
           </ThemedText>
           <ThemedText
-            type="body"
+            type="default"
             style={{
               color: 'black',
               textAlign: 'right',
-              paddingRight: '5',
+              paddingRight: 5,
               fontFamily: Fonts.regular_400,
             }}
           >
@@ -186,7 +186,7 @@ export default function StoreScreen() {
             textAlign: 'left',
             marginTop: 4,
             fontFamily: Fonts.regular_400,
-            fontSize: '20',
+            fontSize: 20,
           }}
         >
           Popular in Boston
@@ -197,7 +197,7 @@ export default function StoreScreen() {
           keyExtractor={item => item.id}
           renderItem={renderItem}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 8, marginBottom: 20 }}
+          contentContainerStyle={{ paddingHorizontal: 16, marginBottom: 20 }}
         />
 
         <ThemedText
@@ -207,7 +207,7 @@ export default function StoreScreen() {
             textAlign: 'left',
             marginTop: 4,
             fontFamily: Fonts.regular_400,
-            fontSize: '20',
+            fontSize: 20,
           }}
         >
           Sweet Treats
@@ -218,7 +218,7 @@ export default function StoreScreen() {
           keyExtractor={item => item.id}
           renderItem={renderItem}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 8, marginBottom: 20 }}
+          contentContainerStyle={{ paddingHorizontal: 16, marginBottom: 20 }}
         />
 
         {/* Rewards */}
@@ -229,7 +229,7 @@ export default function StoreScreen() {
             textAlign: 'left',
             marginTop: 4,
             fontFamily: Fonts.regular_400,
-            fontSize: '20',
+            fontSize: 20,
           }}
         >
           Shopping Spree
@@ -240,7 +240,7 @@ export default function StoreScreen() {
           keyExtractor={item => item.id}
           renderItem={renderItem}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 8, marginBottom: 20 }}
+          contentContainerStyle={{ paddingHorizontal: 16, marginBottom: 20 }}
         />
       </ThemedView>
     </ParallaxScrollView>
