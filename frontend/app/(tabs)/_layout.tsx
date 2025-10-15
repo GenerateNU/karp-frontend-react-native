@@ -1,4 +1,4 @@
-import { Redirect, Tabs /*, useSegments */ } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 

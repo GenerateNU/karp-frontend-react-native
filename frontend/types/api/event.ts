@@ -21,6 +21,7 @@ export enum EventStatus {
   CANCELLED = 'CANCELLED',
   DELETED = 'DELETED',
   UPCOMING = 'UPCOMING',
+};
 
 export interface Event {
   id: string;

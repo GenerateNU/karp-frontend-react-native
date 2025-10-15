@@ -28,14 +28,18 @@ export default function EventSignUpPage() {
         name: 'Sample Event',
         address: '123 Main St, Anytown, USA',
         location: null,
-        start_date_time: new Date().toLocaleString(),
-        end_date_time: new Date().toLocaleString(),
+        start_date_time: new Date().toISOString(),
+        end_date_time: new Date(Date.now() + 3600000).toISOString(),
         organization_id: '123',
         status: EventStatus.PUBLISHED,
         max_volunteers: 100,
         coins: 100,
-        created_at: new Date().toLocaleString(),
+        created_at: new Date().toISOString(),
         created_by: '123',
+        value: 0,
+        spotsRemaining: 100,
+        startTime: new Date().toISOString(),
+        endTime: new Date(Date.now() + 3600000).toISOString(),
       });
       setLoading(false);
     };
