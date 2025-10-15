@@ -7,6 +7,7 @@
 // }
 import { apiService } from './api';
 import { Event, EventFilters } from '@/types/api/event';
+import { toEvent } from '@/utils/event';
 
 export class EventService {
   async getAllEvents(filters?: EventFilters): Promise<Event[]> {
@@ -17,7 +18,7 @@ export class EventService {
       throw new Error(response.message || 'Failed to fetch events');
     }
 
-    return response.data || [];
+    return (response.data || []).map(toEvent);
   }
 
   async getEventById(id: string): Promise<Event | null> {
@@ -28,7 +29,7 @@ export class EventService {
       throw new Error(response.message || 'Failed to fetch event');
     }
 
-    return response.data;
+    return toEvent(response.data!);
   }
 
   async searchEvents(query: string, filters?: EventFilters): Promise<Event[]> {
@@ -39,7 +40,7 @@ export class EventService {
       throw new Error(response.message || 'Failed to search events');
     }
 
-    return response.data || [];
+    return (response.data || []).map(toEvent);
   }
 
   async getNearEvents(filters?: EventFilters): Promise<Event[]> {
@@ -50,7 +51,7 @@ export class EventService {
       throw new Error(response.message || 'Failed to fetch near events');
     }
 
-    return response.data || [];
+    return (response.data || []).map(toEvent);
   }
 }
 

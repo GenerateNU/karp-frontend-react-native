@@ -1,4 +1,4 @@
-import { View, StyleSheet, Share, Alert } from 'react-native';
+import { View, StyleSheet, Share, Alert, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '@/components/common/Button';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,12 +8,41 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { Fonts } from '@/constants/Fonts';
 import { Calendar } from '@/components/Calendar';
 import * as CalendarExpo from 'expo-calendar';
+import React, { useState, useEffect } from 'react';
+import { eventService } from '@/services/eventService';
+import { Event } from '@/types/api/event';
+import { BackHeader } from '@/components/common/BackHeader';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function EventSuccessPage() {
-  const { selectedDate, selectedTime, duration } = useLocalSearchParams();
+  const { selectedDate, selectedTime, duration, eventId } =
+    useLocalSearchParams();
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const eventDate = selectedDate as string;
   const eventTime = selectedTime as string;
+
+  useEffect(() => {
+    // if (!isAuthenticated) {
+    //   router.replace('/login');
+    //   return;
+    // }
+    console.log('Event ID:', eventId);
+    const fetchEventDetails = async () => {
+      try {
+        const eventData = await eventService.getEventById(eventId as string);
+        setEvent(eventData);
+      } catch (error) {
+        console.log('Error fetching event details:', error);
+        setEvent(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventDetails();
+  }, [eventId]);
 
   const addToCalendar = async () => {
     try {
@@ -39,12 +68,12 @@ export default function EventSuccessPage() {
       }
       const eventDateObj = new Date(eventDate + ' ' + eventTime);
       const eventDetails = {
-        title: 'KARP Event',
+        title: event?.name || 'KARP Event',
         startDate: eventDateObj,
         endDate: new Date(
           eventDateObj.getTime() + Number(duration) * 60 * 60 * 1000
         ),
-        notes: 'Event from KARP app',
+        notes: event?.description || 'Event from KARP app',
         location: 'Event Location',
         calendarId: defaultCalendar.id,
       };
@@ -60,48 +89,55 @@ export default function EventSuccessPage() {
     }
   };
 
+  if (loading) {
+    return <LoadingScreen text="Loading confirmation details..." />;
+  }
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
-        <ThemedView style={styles.content}>
-          <View>
-            <ThemedText style={styles.successMessage}>
-              You&apos;re on the list!
-            </ThemedText>
-          </View>
+        <ScrollView>
+          <BackHeader />
+          <ThemedView style={styles.content}>
+            <View>
+              <ThemedText style={styles.successMessage}>
+                You&apos;re on the list!
+              </ThemedText>
+            </View>
 
-          <Button
-            buttonsStyle={styles.shareButton}
-            textStyle={styles.shareButtonText}
-            text="Share Event"
-            onPress={() => {
-              Share.share({
-                message: 'Share the event with your friends',
-                url: 'https://mock-url.com',
-              });
-            }}
-          />
-
-          <Button
-            buttonsStyle={styles.addToCalendarButton}
-            textStyle={styles.addToCalendarTextStyle}
-            text="Add to Calendar"
-            onPress={addToCalendar}
-          />
-
-          <View style={styles.calendarSection}>
-            <Calendar
-              onDayPress={() => {}}
-              markedDates={{
-                [eventDate]: {
-                  selected: true,
-                  selectedColor: Colors.light.tint,
-                },
+            <Button
+              buttonsStyle={styles.shareButton}
+              textStyle={styles.shareButtonText}
+              text="Share Event"
+              onPress={() => {
+                Share.share({
+                  message: 'Share the event with your friends',
+                  url: 'https://mock-url.com',
+                });
               }}
             />
-          </View>
-        </ThemedView>
+
+            <Button
+              buttonsStyle={styles.addToCalendarButton}
+              textStyle={styles.addToCalendarTextStyle}
+              text="Add to Calendar"
+              onPress={addToCalendar}
+            />
+
+            <View style={styles.calendarSection}>
+              <Calendar
+                onDayPress={() => {}}
+                markedDates={{
+                  [eventDate]: {
+                    selected: true,
+                    selectedColor: Colors.light.tint,
+                  },
+                }}
+              />
+            </View>
+          </ThemedView>
+        </ScrollView>
       </SafeAreaView>
     </>
   );

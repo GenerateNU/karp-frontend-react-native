@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image } from 'expo-image';
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  Pressable,
-} from 'react-native';
+import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Button } from '@/components/common/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
@@ -15,8 +8,9 @@ import { ThemedText } from '@/components/ThemedText';
 import EventInfoTable from '@/components/ui/EventInfoFull';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
-import { Event, EventStatus } from '@/types/api/event';
+import { Event } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
+import { BackHeader } from '@/components/common/BackHeader';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
@@ -33,30 +27,10 @@ export default function EventSignUpPage() {
     // }
 
     const fetchEventDetails = async () => {
+      console.log('Event ID for Info:', eventId);
       try {
         const eventData = await eventService.getEventById(eventId as string);
-        setEvent({
-          id: eventId as string,
-          name: eventData?.name || 'Default Event Name',
-          address: eventData?.address || '',
-          location: eventData?.location || null,
-          start_date_time: eventData?.start_date_time || '',
-          end_date_time: eventData?.end_date_time || '',
-          organization_id: eventData?.organization_id || '',
-          organization: eventData?.organization || 'Chicos',
-          description:
-            eventData?.description || 'This is a sample event description.',
-          spots_remaining: eventData?.spots_remaining ?? 5,
-          status: eventData?.status || EventStatus.PUBLISHED,
-          max_volunteers: eventData?.max_volunteers ?? 0,
-          coins: eventData?.coins ?? 0,
-          created_at: eventData?.created_at || '',
-          created_by: eventData?.created_by || '',
-          timeSlots: eventData?.timeSlots || [
-            '9:00 AM - 11:00 AM',
-            '1:00 PM - 3:00 PM',
-          ],
-        });
+        setEvent(eventData);
       } catch (error) {
         console.log('Error fetching event details:', error);
         setEvent(null);
@@ -74,10 +48,7 @@ export default function EventSignUpPage() {
       return;
     }
     if (event?.id) {
-      router.push({
-        pathname: '/events/signup/[eventId]',
-        params: { eventId: event.id },
-      });
+      router.push(`/events/${event.id}/signup`);
     }
   };
 
@@ -96,20 +67,7 @@ export default function EventSignUpPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <ScrollView>
-          <View style={styles.headerRow}>
-            <Pressable
-              onPress={() => {
-                router.back();
-              }}
-              style={styles.backButtonContainer}
-            >
-              <Image
-                source={require('@/assets/images/backArrow.svg')}
-                style={styles.backButtonIcon}
-                contentFit="contain"
-              />
-            </Pressable>
-          </View>
+          <BackHeader />
           <ThemedView style={styles.content}>
             <EventInfoTable {...event!} />
 
@@ -139,24 +97,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingTop: 6,
-    paddingLeft: 12,
-  },
-  backButtonContainer: {
-    padding: 8,
-    paddingRight: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backButtonIcon: {
-    width: 24,
-    height: 24,
-  },
-
   content: {
     paddingLeft: 34,
     paddingRight: 46,

@@ -7,7 +7,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { EventSignUpForm } from '@/components/forms/EventSignUpForm';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
-import { Event, EventStatus } from '@/types/api/event';
+import { Event } from '@/types/api/event';
+import { BackHeader } from '@/components/common/BackHeader';
+import { eventService } from '@/services/eventService';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
@@ -22,22 +24,15 @@ export default function EventSignUpPage() {
       return;
     }
     const fetchEventDetails = async () => {
-      // MOCK EVENT DATA FOR NOW
-      setEvent({
-        id: eventId as string,
-        name: 'Sample Event',
-        address: '123 Main St, Anytown, USA',
-        location: null,
-        start_date_time: new Date().toLocaleString(),
-        end_date_time: new Date().toLocaleString(),
-        organization_id: '123',
-        status: EventStatus.PUBLISHED,
-        max_volunteers: 100,
-        coins: 100,
-        created_at: new Date().toLocaleString(),
-        created_by: '123',
-      });
-      setLoading(false);
+      try {
+        const eventData = await eventService.getEventById(eventId as string);
+        setEvent(eventData);
+      } catch (error) {
+        console.log('Error fetching event details:', error);
+        setEvent(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchEventDetails();
@@ -59,6 +54,7 @@ export default function EventSignUpPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <ScrollView>
+          <BackHeader />
           <ThemedView style={styles.content}>
             <ThemedText type="title" style={styles.title}>
               Sign Up

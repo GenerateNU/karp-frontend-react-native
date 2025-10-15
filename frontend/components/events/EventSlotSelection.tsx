@@ -24,7 +24,7 @@ export function EventSlotSelection({
   onTimeSelect,
 }: EventSlotSelectionProps) {
   // TODO: Get available dates and times from the event when api is ready
-  const availableDates = ['2025-10-09', '2025-10-10', '2025-10-11'];
+  const availableDates = ['2025-10-18', '2025-10-19', '2025-10-20'];
   const availableTimes = [
     '09:00:00',
     '10:00:00',

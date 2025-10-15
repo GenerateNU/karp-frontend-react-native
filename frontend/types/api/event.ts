@@ -48,3 +48,22 @@ export interface EventFilters {
   location?: string;
   isFree?: boolean;
 }
+
+export interface EventResponse {
+  _id: string;
+  name: string;
+  address: string;
+  location?: Location | null;
+  start_date_time: string;
+  end_date_time: string;
+  organization_id: string;
+  status: EventStatus;
+  max_volunteers: number;
+  coins: number;
+  description?: string;
+  keywords?: string[];
+  age_min?: number;
+  age_max?: number;
+  created_at: string;
+  created_by: string;
+}

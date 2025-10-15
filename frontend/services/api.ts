@@ -1,4 +1,4 @@
-import { Event, EventFilters } from '@/types/api/event';
+import { EventFilters, EventResponse } from '@/types/api/event';
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 
 export interface ApiResponse<T> {
@@ -95,7 +95,9 @@ class ApiService {
     }
   }
 
-  async getAllEvents(filters?: EventFilters): Promise<ApiResponse<Event[]>> {
+  async getAllEvents(
+    filters?: EventFilters
+  ): Promise<ApiResponse<EventResponse[]>> {
     let endpoint = '/event/all';
 
     if (filters) {
@@ -111,17 +113,17 @@ class ApiService {
       }
     }
 
-    return this.request<Event[]>(endpoint);
+    return this.request<EventResponse[]>(endpoint);
   }
 
-  async getEventById(id: string): Promise<ApiResponse<Event>> {
-    return this.request<Event>(`/event/${id}`);
+  async getEventById(id: string): Promise<ApiResponse<EventResponse>> {
+    return this.request<EventResponse>(`/event/${id}`);
   }
 
   async searchEvents(
     query: string,
     filters?: EventFilters
-  ): Promise<ApiResponse<Event[]>> {
+  ): Promise<ApiResponse<EventResponse[]>> {
     let endpoint = `/event/search?q=${encodeURIComponent(query)}`;
 
     if (filters) {
@@ -137,10 +139,12 @@ class ApiService {
       }
     }
 
-    return this.request<Event[]>(endpoint);
+    return this.request<EventResponse[]>(endpoint);
   }
 
-  async getNearEvents(filters?: EventFilters): Promise<ApiResponse<Event[]>> {
+  async getNearEvents(
+    filters?: EventFilters
+  ): Promise<ApiResponse<EventResponse[]>> {
     let endpoint = '/event/near';
 
     if (filters) {
@@ -156,7 +160,7 @@ class ApiService {
       }
     }
 
-    return this.request<Event[]>(endpoint);
+    return this.request<EventResponse[]>(endpoint);
   }
 }
 

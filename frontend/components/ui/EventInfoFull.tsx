@@ -51,7 +51,10 @@ export default function EventInfoTable({
   const duration = start && end ? formatDuration(start, end) : '';
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.background }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: Colors.light.background }}
+      edges={['left', 'right', 'bottom']}
+    >
       <ScrollView style={styles.scrollContainer}>
         <ThemedView style={styles.container}>
           <View style={styles.imagePlaceholder} />
@@ -110,7 +113,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.light.background,
     width: '100%',
-    padding: 16,
     gap: 12,
     alignItems: 'center',
   },
