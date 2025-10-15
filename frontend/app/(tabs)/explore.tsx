@@ -13,6 +13,12 @@ import { Button } from '@/components/common/Button';
 export default function TabTwoScreen() {
   const router = useRouter();
 
+  const handleTestEventInfo = () => {
+    // MOCK ITEM ID FOR NOW
+    router.push('/event/68e4774368a5c39282e7a9b7');
+    //router.push('/events/success');
+  };
+
   const handleTestSignUp = () => {
     // MOCK EVENT ID FOR NOW
     router.push('/events/signup/68dad229bbf3c6ee9ed3622b');
@@ -52,6 +58,20 @@ export default function TabTwoScreen() {
 
       <ThemedView style={styles.testSection}>
         <ThemedText type="subtitle" style={styles.testTitle}>
+          Test Event Info
+        </ThemedText>
+        <Button
+          text="Event Info Page"
+          onPress={handleTestEventInfo}
+          buttonsStyle={styles.testButton}
+        />
+        <Button
+          text="Test Sign-Up Success Page"
+          onPress={handleTestSignUpSuccess}
+          buttonsStyle={styles.testButton}
+        />
+      </ThemedView>
+
           Test Event Sign-Up
         </ThemedText>
         <Button

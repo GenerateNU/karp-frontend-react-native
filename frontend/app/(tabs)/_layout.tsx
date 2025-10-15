@@ -1,4 +1,4 @@
-import { Redirect, Tabs, useSegments } from 'expo-router';
+import { Redirect, Tabs /*, useSegments */ } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 
@@ -12,7 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { isAuthenticated } = useAuth();
-  const segments = useSegments();
+  // const segments = useSegments();
 
   if (!isAuthenticated) {
     // When not authenticated, redirect away from tabs to login

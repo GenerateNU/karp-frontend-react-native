@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Event } from '@/types/api/event';
 
-interface ItemProps {
+export interface ItemProps {
   name?: string;
   price?: string;
   status?: string;
@@ -10,7 +11,7 @@ interface ItemProps {
   id?: string;
 }
 
-function Item({
+function Event({
   name = 'Item',
   price = '$0.00',
   status = 'available',
@@ -73,4 +74,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Item;
+export default Event;
