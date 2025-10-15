@@ -25,18 +25,19 @@ export default function TabTwoScreen() {
     //router.push('/events/success');
   };
 
-  // const handleTestSignUpSuccess = () => {
-  //   // pass in mock selected date, time, and duration
-  //   // wont be using this much longer so doesnt matter
-  //   router.push({
-  //     pathname: '/events/success',
-  //     params: {
-  //       selectedDate: '2025-10-01',
-  //       selectedTime: '10:00:00',
-  //       duration: 2,
-  //     },
-  //   });
-  // };
+  const handleTestSignUpSuccess = () => {
+    // pass in mock selected date, time, and duration
+    // wont be using this much longer so doesnt matter
+    router.push({
+      pathname: '/events/[eventId]/success',
+      params: {
+        eventId: '68dad229bbf3c6ee9ed3622b',
+        selectedDate: '2025-10-01',
+        selectedTime: '10:00:00',
+        duration: 2,
+      },
+    });
+  };
 
   return (
     <ParallaxScrollView
