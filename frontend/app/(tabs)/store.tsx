@@ -7,12 +7,12 @@ import { Fonts } from '@/constants/Fonts';
 import { useRouter } from 'expo-router';
 
 const STORE_ITEMS = [
-  { id: '1', name: 'Cookie', store: 'Crumbl', coins: 150 },
-  { id: '2', name: 'Hot Dog', store: 'Costco', coins: 120 },
-  { id: '3', name: '$5 Gift Card', store: 'Pavement', coins: 100 },
-  { id: '4', name: 'Free Plant', store: 'Plant Store', coins: 200 },
-  { id: '5', name: 'Free Drink', store: 'Coffee Shop', coins: 50 },
-  { id: '6', name: 'Free Shirt', store: 'Shirt Store', coins: 180 },
+  { id: '68e1d1c6c320a33ba155f264', name: 'Cookie', store: 'Crumbl', coins: 150 },
+  { id: '68e1d1c6c320a33ba155f264', name: 'Hot Dog', store: 'Costco', coins: 120 },
+  { id: '68e1d1c6c320a33ba155f264', name: '$5 Gift Card', store: 'Pavement', coins: 100 },
+  { id: '68e1d1c6c320a33ba155f264', name: 'Free Plant', store: 'Plant Store', coins: 200 },
+  { id: '68e1d1c6c320a33ba155f264', name: 'Free Drink', store: 'Coffee Shop', coins: 50 },
+  { id: '68e1d1c6c320a33ba155f264', name: 'Free Shirt', store: 'Shirt Store', coins: 180 },
 ];
 
 export default function StoreScreen() {
