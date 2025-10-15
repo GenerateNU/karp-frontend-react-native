@@ -28,7 +28,7 @@ export default function ParallaxScrollView({ children, headerImage }: Props) {
           translateY: interpolate(
             scrollOffset.value,
             [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
-            [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75]
+            [-HEADER_HEIGHT / 2, 0, 0]
           ),
         },
         {
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginLeft: 15,
-    marginRight: 15,
+    marginLeft: 0,
+    marginRight: 0,
     gap: 16,
   },
 });
