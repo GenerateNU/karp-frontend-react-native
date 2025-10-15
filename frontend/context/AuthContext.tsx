@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { setAuthToken } from '@/api';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 type AuthUser = {
   id: string;
@@ -77,6 +77,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           entityId: u.entity_id ?? null,
         });
         setToken(data.access_token);
+        // Persist on web to survive page refresh
+        if (Platform.OS === 'web' && typeof window !== 'undefined') {
+          try {
+            window.localStorage.setItem('auth_token', data.access_token);
+            window.localStorage.setItem(
+              'auth_user',
+              JSON.stringify({
+                id: u.id,
+                username: u.username,
+                email: u.email,
+                firstName: u.first_name,
+                lastName: u.last_name,
+                userType: u.user_type,
+                entityId: u.entity_id ?? null,
+              })
+            );
+          } catch {}
+        }
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Unknown error';
         Alert.alert('Sign in failed', message);
@@ -91,6 +109,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = useCallback(() => {
     setUser(null);
     setToken(null);
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      try {
+        window.localStorage.removeItem('auth_token');
+        window.localStorage.removeItem('auth_user');
+      } catch {}
+    }
   }, []);
 
   const value = useMemo<AuthContextValue>(
@@ -108,6 +132,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setAuthToken(token ?? null);
   }, [token]);
+
+  // Hydrate auth state on mount (web)
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return;
+    try {
+      const storedToken = window.localStorage.getItem('auth_token');
+      const storedUser = window.localStorage.getItem('auth_user');
+      if (storedToken) setToken(storedToken);
+      if (storedUser) setUser(JSON.parse(storedUser) as AuthUser);
+    } catch {}
+  }, []);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

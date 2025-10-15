@@ -39,9 +39,9 @@ export function EventCard({ event, onPress }: EventCardProps) {
           {event.name}
         </Text>
 
-        <Text className="mb-3 text-sm text-gray-600" numberOfLines={1}>
+        {/* <Text className="mb-3 text-sm text-gray-600" numberOfLines={1}>
           Organization ID: {event.organization_id}
-        </Text>
+        </Text> */}
 
         <View className="mb-3">
           <Text className="mb-1 text-sm text-gray-700">
