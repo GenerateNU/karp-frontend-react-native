@@ -6,7 +6,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Fonts } from '@/constants/Fonts';
 import { useRouter } from 'expo-router';
 
-const STORE_ITEMS = [
+const SHOP_ITEMS = [
   { id: '68e1d1c6c320a33ba155f264', name: 'Cookie', store: 'Crumbl', coins: 150 },
   { id: '68e1d1c6c320a33ba155f264', name: 'Hot Dog', store: 'Costco', coins: 120 },
   { id: '68e1d1c6c320a33ba155f264', name: '$5 Gift Card', store: 'Pavement', coins: 100 },
@@ -19,7 +19,7 @@ export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
   const router = useRouter();
 
-  const filteredItems = STORE_ITEMS.filter(item =>
+  const filteredItems = SHOP_ITEMS.filter(item =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -27,7 +27,7 @@ export default function StoreScreen() {
     router.push(`/shop/${itemId}`);
   };
 
-  const renderItem = ({ item }: { item: (typeof STORE_ITEMS)[0] }) => (
+  const renderItem = ({ item }: { item: (typeof SHOP_ITEMS)[0] }) => (
     <TouchableOpacity
       key={item.id}
       className="mx-4"

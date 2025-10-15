@@ -76,9 +76,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="store"
+        name="shop"
         options={{
-          title: 'Store',
+          title: 'Shop',
           tabBarIcon: ({ color, focused }) => (
             <View
               style={{
