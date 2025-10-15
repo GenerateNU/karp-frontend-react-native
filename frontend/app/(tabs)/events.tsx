@@ -7,7 +7,6 @@ import {
   FlatList,
   SafeAreaView,
   Alert,
-  ActivityIndicator,
   RefreshControl,
 } from 'react-native';
 import { Event, EventFilters } from '@/types/api/event';
@@ -15,6 +14,7 @@ import { eventService } from '@/services/eventService';
 import { EventCard } from '@/components/EventCard';
 import { FilterModal } from '@/components/FilterModal';
 import { useRouter } from 'expo-router';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function EventsScreen() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -171,12 +171,7 @@ export default function EventsScreen() {
               Recommended Events:
             </Text>
             {loading ? (
-              <View className="flex-1 items-center justify-center py-10">
-                <ActivityIndicator size="large" color="#3B82F6" />
-                <Text className="mt-3 text-base text-gray-600">
-                  Loading events...
-                </Text>
-              </View>
+              <LoadingScreen text="Loading events..." />
             ) : (
               <FlatList
                 data={events}

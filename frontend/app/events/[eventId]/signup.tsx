@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
@@ -10,6 +10,7 @@ import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { BackHeader } from '@/components/common/BackHeader';
 import { eventService } from '@/services/eventService';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
@@ -39,14 +40,7 @@ export default function EventSignUpPage() {
   }, [eventId, isAuthenticated, router]);
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-        <ThemedText style={styles.loadingText}>
-          Loading event details...
-        </ThemedText>
-      </View>
-    );
+    return <LoadingScreen text="Loading event sign-up details..." />;
   }
 
   return (
@@ -94,16 +88,5 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: 300,
     paddingBottom: 5,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.light.background,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: Colors.light.text,
   },
 });

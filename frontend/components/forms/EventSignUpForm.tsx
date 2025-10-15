@@ -88,12 +88,9 @@ export function EventSignUpForm({ event }: EventSignUpFormProps) {
       <ThemedView style={styles.formContainer}>
         <FormSection title="Name:">
           <FormField
-            // why is first and last name in the first name field?
-            value={`${formData.firstName} ${formData.lastName}`}
+            value={formData.firstName}
             onChangeText={value => {
-              const [first, ...last] = value.split(' ');
-              handleInputChange('firstName', first || '');
-              handleInputChange('lastName', last.join(' ') || '');
+              handleInputChange('firstName', value);
             }}
             placeholder="First Name"
             style={styles.nameField}

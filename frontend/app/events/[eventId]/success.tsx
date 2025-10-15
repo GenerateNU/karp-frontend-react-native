@@ -90,7 +90,9 @@ export default function EventSuccessPage() {
   };
 
   if (loading) {
-    return <LoadingScreen text="Loading confirmation details..." />;
+    return (
+      <LoadingScreen text="Loading event sign-up confirmation details..." />
+    );
   }
 
   return (

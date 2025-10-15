@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { ScrollView, View, StyleSheet } from 'react-native';
 import { Button } from '@/components/common/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
@@ -11,6 +11,7 @@ import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { BackHeader } from '@/components/common/BackHeader';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
@@ -53,14 +54,7 @@ export default function EventSignUpPage() {
   };
 
   if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" />
-        <ThemedText style={styles.messageText}>
-          Loading event details...
-        </ThemedText>
-      </View>
-    );
+    return <LoadingScreen text="Loading event info details..." />;
   }
   return (
     <>
@@ -111,10 +105,6 @@ const styles = StyleSheet.create({
   messageBox: {
     width: '100%',
     paddingHorizontal: 8,
-  },
-  messageText: {
-    fontSize: 14,
-    textAlign: 'center',
   },
   errorText: {
     color: Colors.light.errorText,
