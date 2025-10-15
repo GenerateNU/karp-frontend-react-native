@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  Pressable,
-  ScrollView,
-  TextInput,
-} from 'react-native';
-import { EventFilters } from '@/services/api';
+import { View, Text, Modal, Pressable, ScrollView } from 'react-native';
+import { EventFilters } from '@/types/api/event';
 
 interface FilterModalProps {
   visible: boolean;

@@ -16,6 +16,7 @@ interface EventSignUpFormProps {
 }
 
 export function EventSignUpForm({ event }: EventSignUpFormProps) {
+  console.log('Event in form:', event);
   const { user } = useAuth();
   const createRegistration = useCreateRegistration();
   const [formData, setFormData] = useState({
@@ -64,9 +65,11 @@ export function EventSignUpForm({ event }: EventSignUpFormProps) {
 
     try {
       await createRegistration.mutateAsync({ eventId: event.id });
+      console.log('Event id', event.id);
       router.push({
-        pathname: '/events/success',
+        pathname: '/events/[eventId]/success',
         params: {
+          eventId: event.id,
           selectedDate: formData.selectedDate,
           selectedTime: formData.selectedTime,
           duration: 2, // change to event.duration when api is ready
@@ -85,11 +88,9 @@ export function EventSignUpForm({ event }: EventSignUpFormProps) {
       <ThemedView style={styles.formContainer}>
         <FormSection title="Name:">
           <FormField
-            value={`${formData.firstName} ${formData.lastName}`}
+            value={formData.firstName}
             onChangeText={value => {
-              const [first, ...last] = value.split(' ');
-              handleInputChange('firstName', first || '');
-              handleInputChange('lastName', last.join(' ') || '');
+              handleInputChange('firstName', value);
             }}
             placeholder="First Name"
             style={styles.nameField}

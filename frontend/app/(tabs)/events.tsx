@@ -7,13 +7,14 @@ import {
   FlatList,
   SafeAreaView,
   Alert,
-  ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import { Event, EventFilters } from '@/services/api';
+import { Event, EventFilters } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { EventCard } from '@/components/EventCard';
 import { FilterModal } from '@/components/FilterModal';
+import { useRouter } from 'expo-router';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function EventsScreen() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -23,6 +24,7 @@ export default function EventsScreen() {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<EventFilters>({});
   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
+  const router = useRouter();
 
   const loadEvents = useCallback(
     async (searchQuery?: string, filters?: EventFilters) => {
@@ -73,11 +75,14 @@ export default function EventsScreen() {
   );
 
   const handleEventPress = useCallback((event: Event) => {
-    Alert.alert(
-      event.name,
-      `Status: ${event.status}\n\nStart: ${new Date(event.start_date_time).toLocaleString()}\nEnd: ${new Date(event.end_date_time).toLocaleString()}\nLocation: ${event.location || event.address}\nMax Volunteers: ${event.max_volunteers}\nCoins: ${event.coins}`,
-      [{ text: 'OK' }]
-    );
+    console.log('Event pressed:', event);
+    console.log('Navigating to event details for ID:', event.id);
+    router.push(`/events/${event.id}/info`);
+    // Alert.alert(
+    //   event.name,
+    //   `Status: ${event.status}\n\nStart: ${new Date(event.start_date_time).toLocaleString()}\nEnd: ${new Date(event.end_date_time).toLocaleString()}\nLocation: ${event.location || event.address}\nMax Volunteers: ${event.max_volunteers}\nCoins: ${event.coins}`,
+    //   [{ text: 'OK' }]
+    // );
   }, []);
 
   useEffect(() => {
@@ -85,7 +90,8 @@ export default function EventsScreen() {
   }, [loadEvents]);
 
   const renderEvent = ({ item }: { item: Event }) => (
-    <EventCard event={item} onPress={handleEventPress} />
+    console.log('Rendering event:', item),
+    (<EventCard event={item} onPress={handleEventPress} />)
   );
 
   const renderEmptyState = () => (
@@ -165,17 +171,12 @@ export default function EventsScreen() {
               Recommended Events:
             </Text>
             {loading ? (
-              <View className="flex-1 items-center justify-center py-10">
-                <ActivityIndicator size="large" color="#3B82F6" />
-                <Text className="mt-3 text-base text-gray-600">
-                  Loading events...
-                </Text>
-              </View>
+              <LoadingScreen text="Loading events..." />
             ) : (
               <FlatList
                 data={events}
                 renderItem={renderEvent}
-                keyExtractor={item => item._id}
+                keyExtractor={item => item.id}
                 showsVerticalScrollIndicator={false}
                 refreshControl={
                   <RefreshControl
