@@ -4,6 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Fonts } from '@/constants/Fonts';
+import { useRouter } from 'expo-router';
 
 const STORE_ITEMS = [
   { id: '1', name: 'Cookie', store: 'Crumbl', coins: 150 },
@@ -16,13 +17,14 @@ const STORE_ITEMS = [
 
 export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
+  const router = useRouter();
 
   const filteredItems = STORE_ITEMS.filter(item =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const handlePress = (itemId: string) => {
-    throw new Error(`handlePress not implemented for item: ${itemId}`);
+    router.push(`/shop/${itemId}`);
   };
 
   const renderItem = ({ item }: { item: (typeof STORE_ITEMS)[0] }) => (
