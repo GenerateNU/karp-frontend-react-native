@@ -10,8 +10,11 @@ export const Colors = {
   light: {
     text: '#000000',
     background: '#D9D9D9',
+    primary: '#90D0CD',
+    primaryPressed: '#628fa4ff',
     formInputBackground: '#F3F2F2',
     buttonBackground: '#C5C3C3',
+    imagePlaceholder: '#FFF',
     selectedSlotBackground: '#000000',
     selectedSlotText: '#F3F2F2',
     tint: tintColorLight,

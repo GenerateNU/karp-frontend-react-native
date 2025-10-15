@@ -2,9 +2,11 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
+import { setAuthToken } from '@/api';
 import { Alert } from 'react-native';
 
 type AuthUser = {
@@ -102,6 +104,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }),
     [user, token, isLoading, signIn, signOut]
   );
+
+  useEffect(() => {
+    setAuthToken(token ?? null);
+  }, [token]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
