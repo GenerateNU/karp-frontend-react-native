@@ -108,10 +108,6 @@ export default function EventsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="px-4 pb-2 pt-4">
-        <Text className="mb-4 text-2xl font-semibold text-gray-900">
-          Welcome User!
-        </Text>
-
         <View className="mb-4 flex-row rounded-lg bg-gray-100 p-1">
           <Pressable
             className={`flex-1 items-center rounded-md px-4 py-2 ${

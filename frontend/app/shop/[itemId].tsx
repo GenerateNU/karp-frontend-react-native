@@ -11,7 +11,6 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { useItemDetail } from '@/hooks/useItemDetail';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
@@ -113,18 +112,6 @@ export default function ItemDetailScreen() {
           </>
         )}
       </ScrollView>
-
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navIcon}>
-          <Ionicons name="notifications-outline" size={40} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navIcon}>
-          <Ionicons name="fish-outline" size={40} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navIcon}>
-          <Ionicons name="person-outline" size={40} color="#000" />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -247,30 +234,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 20,
     color: Colors.light.text,
-  },
-  bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 83,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: Colors.light.bottomNav,
-    borderTopWidth: 1,
-    paddingBottom: 20,
-    paddingTop: 20,
-  },
-  navIcon: {
-    width: 60,
-    height: 60,
-    backgroundColor: Colors.light.navIconBackground,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Colors.light.navIconBorder,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   errorText: {
     fontSize: 16,
