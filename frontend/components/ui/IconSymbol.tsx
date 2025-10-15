@@ -20,7 +20,7 @@ const MAPPING = {
   'house.fill': 'home',
   'paperplane.fill': 'send',
   'cart.fill': 'shopping-cart',
-  'calendar': 'event',
+  calendar: 'event',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
 } as IconMapping;

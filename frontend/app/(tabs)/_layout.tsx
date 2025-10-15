@@ -4,7 +4,6 @@ import { Platform, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -56,7 +55,7 @@ export default function TabLayout() {
         name="events"
         options={{
           title: 'Events',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ focused }) => (
             <View
               style={{
                 width: 56,
@@ -79,7 +78,7 @@ export default function TabLayout() {
         name="shop"
         options={{
           title: 'Shop',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ focused }) => (
             <View
               style={{
                 width: 56,
@@ -102,7 +101,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ focused }) => (
             <View
               style={{
                 width: 56,
