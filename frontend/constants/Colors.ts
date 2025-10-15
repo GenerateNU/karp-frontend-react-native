@@ -15,6 +15,8 @@ export const Colors = {
     formInputBackground: '#F3F2F2',
     buttonBackground: '#C5C3C3',
     imagePlaceholder: '#FFF',
+    selectedSlotBackground: '#000000',
+    selectedSlotText: '#F3F2F2',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',

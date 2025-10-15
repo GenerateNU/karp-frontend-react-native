@@ -19,6 +19,24 @@ export default function TabTwoScreen() {
     //router.push('/events/success');
   };
 
+  const handleTestSignUp = () => {
+    // MOCK EVENT ID FOR NOW
+    router.push('/events/signup/68dad229bbf3c6ee9ed3622b');
+    //router.push('/events/success');
+  };
+
+  const handleTestSignUpSuccess = () => {
+    // pass in mock selected date, time, and duration
+    router.push({
+      pathname: '/events/success',
+      params: {
+        selectedDate: '2025-10-01',
+        selectedTime: '10:00:00',
+        duration: 2,
+      },
+    });
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -47,13 +65,26 @@ export default function TabTwoScreen() {
           onPress={handleTestEventInfo}
           buttonsStyle={styles.testButton}
         />
-        {/* <Button
+        <Button
           text="Test Sign-Up Success Page"
           onPress={handleTestSignUpSuccess}
           buttonsStyle={styles.testButton}
-        /> */}
+        />
       </ThemedView>
 
+          Test Event Sign-Up
+        </ThemedText>
+        <Button
+          text="Test Sign-Up Page"
+          onPress={handleTestSignUp}
+          buttonsStyle={styles.testButton}
+        />
+        <Button
+          text="Test Sign-Up Success Page"
+          onPress={handleTestSignUpSuccess}
+          buttonsStyle={styles.testButton}
+        />
+      </ThemedView>
       <Collapsible title="File-based routing">
         <ThemedText>
           This app has two screens:{' '}
