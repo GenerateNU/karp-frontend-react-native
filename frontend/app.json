@@ -6,10 +6,12 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "karp",
+    "owner": "generate-fall-2025-karp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.generate.karp"
     },
     "android": {
       "adaptiveIcon": {
@@ -45,6 +47,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0a39fb43-fab3-4e1b-b8b6-41f87f2127c6"
+      }
     }
   }
 }
