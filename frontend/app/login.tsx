@@ -52,7 +52,7 @@ export default function LoginScreen() {
             <Text style={{ fontSize: 14, color: '#444' }}>Username</Text>
             <TextInput
               autoCapitalize="none"
-              placeholder="your-username"
+              placeholder="karp-volunteer"
               value={username}
               onChangeText={setUsername}
               style={{
