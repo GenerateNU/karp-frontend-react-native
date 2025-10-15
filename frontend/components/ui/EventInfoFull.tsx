@@ -1,0 +1,203 @@
+import React from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
+import { EventInfo } from '@/types/api/event';
+import { Image } from 'expo-image';
+
+interface Props extends EventInfo {
+  onSelectTime?: (time: string) => void;
+  selectedTime?: string;
+}
+
+export default function EventInfoTable({
+  name,
+  organization,
+  address,
+  description,
+  startTime,
+  endTime,
+  timeSlots = [''],
+}: Props) {
+  const start = startTime ? new Date(startTime) : null;
+  const end = endTime ? new Date(endTime) : null;
+
+  const dateFormatted = start
+    ? start.toLocaleString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '';
+
+  const formatDuration = (s: Date, e: Date) => {
+    const diffMs = Math.max(0, e.getTime() - s.getTime());
+    const totalMinutes = Math.round(diffMs / 60000);
+    if (totalMinutes < 60) {
+      return `${totalMinutes} min${totalMinutes !== 1 ? 's' : ''}`;
+    }
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return minutes === 0
+      ? `${hours} hr${hours !== 1 ? 's' : ''}`
+      : `${hours} hr ${minutes} min`;
+  };
+
+  const duration = start && end ? formatDuration(start, end) : '';
+
+  return (
+    <ThemedView style={styles.container}>
+      <View style={styles.imagePlaceholder} />
+      <View style={styles.topRow}>
+        <View style={styles.infoColumn}>
+          <View style={styles.nameRow}>
+            <ThemedText style={styles.title}>{name}</ThemedText>
+            <Image
+              source={require('../../assets/images/share.png')}
+              style={styles.shareIcon}
+              contentFit="contain"
+            />
+          </View>
+
+          <View style={styles.detail}>
+            <Text style={styles.detailText}>More information: </Text>
+            <Text style={[styles.detailText, styles.spacing]}>
+              {description}
+            </Text>
+            <Text style={styles.detailText}>Address: </Text>
+            <Text style={[styles.detailText, styles.spacing]}>{address}</Text>
+          </View>
+          <Text style={styles.organizationText}>Organizer:</Text>
+          <Text style={[styles.organizationText, styles.spacing]}>
+            {organization}
+          </Text>
+          <Text style={styles.dateText}>Date: {dateFormatted}</Text>
+          <Text style={[styles.organizationText, styles.spacing]}>
+            Duration: {duration}
+          </Text>
+          <Text style={styles.detailText}>Available Times: </Text>
+          <View style={styles.timesTable}>
+            {timeSlots.map((slot, idx) => {
+              // const isSelected = selectedTime === slot;
+              return (
+                <Pressable key={`${slot}-${idx}`} style={styles.timeItem}>
+                  <ThemedText style={styles.timeText}>{slot}</ThemedText>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+      </View>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Colors.light.background,
+    width: '100%',
+    padding: 16,
+    gap: 12,
+  },
+  shareIcon: {
+    width: 50,
+    height: 50,
+    alignSelf: 'flex-start',
+  },
+  nameRow: {
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  topRow: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  imagePlaceholder: {
+    width: '100%',
+    height: 240,
+    backgroundColor: Colors.light.imagePlaceholder,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  infoColumn: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+  title: {
+    fontFamily: 'JosefinSans_400Regular',
+    fontSize: 44,
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: 44,
+    paddingBottom: 21,
+    color: '#000000',
+  },
+  organizationText: {
+    color: Colors.light.text,
+    fontFamily: Fonts.light_300,
+    fontSize: 22,
+    marginBottom: 4,
+  },
+  spacing: {
+    marginBottom: 8,
+  },
+
+  detail: {
+    width: '100%',
+  },
+  detailText: {
+    color: Colors.light.text,
+    fontFamily: Fonts.light_300,
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 4,
+  },
+  dateText: {
+    color: Colors.light.text,
+    fontFamily: Fonts.regular_400,
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 8,
+  },
+  timesTable: {
+    width: '100%',
+    marginTop: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  timeItem: {
+    minWidth: 75,
+    paddingHorizontal: 20,
+    paddingVertical: 1.25,
+    backgroundColor: Colors.light.background,
+    borderRadius: 13,
+    borderWidth: 0.7,
+    borderColor: Colors.light.text,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginRight: 8,
+    marginBottom: 12,
+  },
+  timeText: {
+    color: Colors.light.text,
+    fontSize: 15.16,
+    fontFamily: 'JosefinSans_300Light',
+    fontWeight: '300',
+    flexWrap: 'wrap',
+    textAlign: 'center',
+  },
+});
