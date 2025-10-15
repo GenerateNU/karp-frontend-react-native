@@ -1,63 +1,60 @@
-import React, { useState } from 'react';
-import { FlatList, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Fonts } from '@/constants/Fonts';
 import { useRouter } from 'expo-router';
+import { useAuth } from '@/context/AuthContext';
+import { getAllItems } from '@/services/itemService';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
-const SHOP_ITEMS = [
-  {
-    id: '68e1d1c6c320a33ba155f264',
-    name: 'Cookie',
-    store: 'Crumbl',
-    coins: 150,
-  },
-  {
-    id: '68e1d1c6c320a33ba155f264',
-    name: 'Hot Dog',
-    store: 'Costco',
-    coins: 120,
-  },
-  {
-    id: '68e1d1c6c320a33ba155f264',
-    name: '$5 Gift Card',
-    store: 'Pavement',
-    coins: 100,
-  },
-  {
-    id: '68e1d1c6c320a33ba155f264',
-    name: 'Free Plant',
-    store: 'Plant Store',
-    coins: 200,
-  },
-  {
-    id: '68e1d1c6c320a33ba155f264',
-    name: 'Free Drink',
-    store: 'Coffee Shop',
-    coins: 50,
-  },
-  {
-    id: '68e1d1c6c320a33ba155f264',
-    name: 'Free Shirt',
-    store: 'Shirt Store',
-    coins: 180,
-  },
-];
+type ShopItem = { id: string; name: string; store: string; coins: number };
 
 export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
+  const [items, setItems] = useState<ShopItem[]>([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { token } = useAuth();
 
-  const filteredItems = SHOP_ITEMS.filter(item =>
-    item.name.toLowerCase().includes(searchText.toLowerCase())
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        setLoading(true);
+        if (!token) return;
+        const response = await getAllItems(token);
+        const mapped: ShopItem[] = (
+          Array.isArray(response) ? response : []
+        ).map((raw: any) => ({
+          id: raw.id || raw._id || raw.item_id,
+          name: raw.name ?? 'Unnamed',
+          store: raw.vendor_name ?? raw.vendor_id ?? 'Unknown',
+          coins: raw.price ?? raw.coins ?? 0,
+        }));
+        setItems(mapped);
+      } catch (e) {
+        Alert.alert('Error', `Failed to load items. Please try again ${e}.`);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadItems();
+  }, [token]);
+
+  const filteredItems = useMemo(
+    () =>
+      items.filter(item =>
+        item.name.toLowerCase().includes(searchText.toLowerCase())
+      ),
+    [items, searchText]
   );
 
   const handlePress = (itemId: string) => {
     router.push(`/shop/${itemId}`);
   };
 
-  const renderItem = ({ item }: { item: (typeof SHOP_ITEMS)[0] }) => (
+  const renderItem = ({ item }: { item: ShopItem }) => (
     <TouchableOpacity
       key={item.id}
       className="mx-4"
@@ -86,6 +83,8 @@ export default function StoreScreen() {
             paddingLeft: 5,
             fontFamily: Fonts.regular_400,
           }}
+          numberOfLines={1}
+          ellipsizeMode="tail"
         >
           {item.name}
         </ThemedText>
@@ -105,7 +104,7 @@ export default function StoreScreen() {
               fontFamily: Fonts.regular_400,
             }}
           >
-            {item.store}
+            Store
           </ThemedText>
           <ThemedText
             type="default"
@@ -122,6 +121,10 @@ export default function StoreScreen() {
       </ThemedView>
     </TouchableOpacity>
   );
+
+  if (loading) {
+    return <LoadingScreen text="Loading events..." />;
+  }
 
   return (
     <ParallaxScrollView

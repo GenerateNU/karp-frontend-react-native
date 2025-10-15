@@ -11,3 +11,14 @@ export async function getItem(itemId: string, token: string) {
 
   return response.json();
 }
+
+export async function getAllItems(token: string) {
+  const response = await fetch(`${API_BASE_URL}/item/all`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch items');
+  }
+  return response.json();
+}

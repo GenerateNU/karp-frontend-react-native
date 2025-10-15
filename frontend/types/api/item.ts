@@ -17,3 +17,13 @@ export interface Item {
   price: number;
   description: string;
 }
+
+export interface ItemResponse {
+  id: string;
+  name: string;
+  status: ItemStatus;
+  vendor_id: string;
+  time_posted: string;
+  expiration: string;
+  price: number;
+}
