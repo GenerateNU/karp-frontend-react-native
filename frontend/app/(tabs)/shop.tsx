@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { FlatList, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import CarouselItem from '@/components/items/CarouselItem';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Fonts } from '@/constants/Fonts';
 import { useRouter } from 'expo-router';
@@ -53,74 +54,6 @@ export default function StoreScreen() {
   const handlePress = (itemId: string) => {
     router.push(`/shop/${itemId}`);
   };
-
-  const renderItem = ({ item }: { item: ShopItem }) => (
-    <TouchableOpacity
-      key={item.id}
-      className="mx-4"
-      onPress={() => handlePress(item.id)}
-      activeOpacity={0.8}
-    >
-      <ThemedView
-        lightColor="#E5E5E5"
-        darkColor="#E5E5E5"
-        className="p2 rounded-xl shadow-md"
-        style={{ width: 180, height: 160 }}
-      >
-        {/* Photo place holder*/}
-        <ThemedView
-          className="mb-2 w-full rounded-md bg-gray-400"
-          style={{ width: 180, height: 100 }}
-          lightColor="#D3D3D3"
-          darkColor="#D3D3D3"
-        />
-        <ThemedText
-          type="title"
-          style={{
-            textAlign: 'left',
-            color: 'black',
-            fontSize: 20,
-            paddingLeft: 5,
-            fontFamily: Fonts.regular_400,
-          }}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {item.name}
-        </ThemedText>
-        <ThemedView
-          lightColor="#E5E5E5"
-          darkColor="#E5E5E5"
-          className="flex-row items-center justify-between"
-          style={{ width: '100%' }}
-        >
-          <ThemedText
-            type="subtitle"
-            style={{
-              color: 'black',
-              textAlign: 'left',
-              fontSize: 12,
-              paddingLeft: 5,
-              fontFamily: Fonts.regular_400,
-            }}
-          >
-            Store
-          </ThemedText>
-          <ThemedText
-            type="default"
-            style={{
-              color: 'black',
-              textAlign: 'right',
-              paddingRight: 5,
-              fontFamily: Fonts.regular_400,
-            }}
-          >
-            {item.coins} coins
-          </ThemedText>
-        </ThemedView>
-      </ThemedView>
-    </TouchableOpacity>
-  );
 
   if (loading) {
     return <LoadingScreen text="Loading items..." />;
@@ -224,14 +157,32 @@ export default function StoreScreen() {
         >
           Popular in Boston
         </ThemedText>
-        <FlatList
-          horizontal
-          data={filteredItems.slice(0, 3)}
-          keyExtractor={item => item.id}
-          renderItem={renderItem}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, marginBottom: 20 }}
-        />
+        {(() => {
+          const popularItems = filteredItems.slice(0, 3);
+          return (
+            <FlatList
+              horizontal
+              data={popularItems}
+              keyExtractor={item => item.id}
+              renderItem={({ item, index }) => (
+                <CarouselItem
+                  id={item.id}
+                  name={item.name}
+                  coins={item.coins}
+                  index={index}
+                  count={popularItems.length}
+                  onPress={handlePress}
+                />
+              )}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingLeft: 0,
+                paddingRight: 0,
+                marginBottom: 20,
+              }}
+            />
+          );
+        })()}
 
         <ThemedText
           className="mb-2 text-lg font-bold text-black"
@@ -245,14 +196,32 @@ export default function StoreScreen() {
         >
           Sweet Treats
         </ThemedText>
-        <FlatList
-          horizontal
-          data={filteredItems.slice(2, 5)}
-          keyExtractor={item => item.id}
-          renderItem={renderItem}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, marginBottom: 20 }}
-        />
+        {(() => {
+          const sweetItems = filteredItems.slice(2, 5);
+          return (
+            <FlatList
+              horizontal
+              data={sweetItems}
+              keyExtractor={item => item.id}
+              renderItem={({ item, index }) => (
+                <CarouselItem
+                  id={item.id}
+                  name={item.name}
+                  coins={item.coins}
+                  index={index}
+                  count={sweetItems.length}
+                  onPress={handlePress}
+                />
+              )}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingLeft: 0,
+                paddingRight: 0,
+                marginBottom: 20,
+              }}
+            />
+          );
+        })()}
 
         {/* Rewards */}
         <ThemedText
@@ -267,14 +236,32 @@ export default function StoreScreen() {
         >
           Shopping Spree
         </ThemedText>
-        <FlatList
-          horizontal
-          data={filteredItems.slice(3, 6)}
-          keyExtractor={item => item.id}
-          renderItem={renderItem}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, marginBottom: 20 }}
-        />
+        {(() => {
+          const spreeItems = filteredItems.slice(3, 6);
+          return (
+            <FlatList
+              horizontal
+              data={spreeItems}
+              keyExtractor={item => item.id}
+              renderItem={({ item, index }) => (
+                <CarouselItem
+                  id={item.id}
+                  name={item.name}
+                  coins={item.coins}
+                  index={index}
+                  count={spreeItems.length}
+                  onPress={handlePress}
+                />
+              )}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingLeft: 0,
+                paddingRight: 0,
+                marginBottom: 20,
+              }}
+            />
+          );
+        })()}
       </ThemedView>
     </ParallaxScrollView>
   );
