@@ -57,7 +57,13 @@ export default function EventInfoTable({
     >
       <ScrollView style={styles.scrollContainer}>
         <ThemedView style={styles.container}>
-          <View style={styles.imagePlaceholder} />
+          <Image
+            source={{
+              uri: 'https://www.pointsoflight.org/wp-content/uploads/2021/03/AdobeStock_289737123-scaled.jpeg',
+            }}
+            style={styles.imagePlaceholder}
+            contentFit="cover"
+          />
           <View style={styles.topRow}>
             <View style={styles.infoColumn}>
               <View style={styles.nameRow}>

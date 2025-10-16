@@ -74,7 +74,7 @@ export default function EventSuccessPage() {
           eventDateObj.getTime() + Number(duration) * 60 * 60 * 1000
         ),
         notes: event?.description || 'Event from KARP app',
-        location: 'Event Location',
+        location: event?.address || 'Event Location',
         calendarId: defaultCalendar.id,
       };
 

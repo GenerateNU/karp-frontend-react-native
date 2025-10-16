@@ -24,7 +24,6 @@ export default function EventsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<EventFilters>({});
-  const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
   const router = useRouter();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -116,7 +115,7 @@ export default function EventsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="px-4 pb-2 pt-4">
-        <View className="mb-4 flex-row rounded-lg bg-gray-100 p-1">
+        {/* <View className="mb-4 flex-row rounded-lg bg-gray-100 p-1">
           <Pressable
             className={`flex-1 items-center rounded-md px-4 py-2 ${
               activeTab === 'events' ? 'bg-white shadow-sm' : ''
@@ -149,7 +148,7 @@ export default function EventsScreen() {
               Orgs
             </Text>
           </Pressable>
-        </View>
+        </View> */}
 
         <View className="mb-2">
           <View className="flex-row items-center rounded-lg bg-gray-50 px-3 py-2">
@@ -174,38 +173,30 @@ export default function EventsScreen() {
       </View>
 
       <View className="flex-1">
-        {activeTab === 'events' ? (
-          <>
-            <Text className="mx-4 mb-2 text-lg font-semibold text-gray-900">
-              Recommended Events:
-            </Text>
-            {loading ? (
-              <LoadingScreen text="Loading events..." />
-            ) : (
-              <FlatList
-                data={events}
-                renderItem={renderEvent}
-                keyExtractor={item => item.id}
-                showsVerticalScrollIndicator={false}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={handleRefresh}
-                    tintColor="#3B82F6"
-                  />
-                }
-                ListEmptyComponent={renderEmptyState}
-                contentContainerStyle={{ paddingBottom: 16 }}
-              />
-            )}
-          </>
-        ) : (
-          <View className="flex-1 items-center justify-center">
-            <Text className="text-lg text-gray-600">
-              Organizations coming soon!
-            </Text>
-          </View>
-        )}
+        <>
+          <Text className="mx-4 mb-2 text-lg font-semibold text-gray-900">
+            Recommended Events:
+          </Text>
+          {loading ? (
+            <LoadingScreen text="Loading events..." />
+          ) : (
+            <FlatList
+              data={events}
+              renderItem={renderEvent}
+              keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh}
+                  tintColor="#3B82F6"
+                />
+              }
+              ListEmptyComponent={renderEmptyState}
+              contentContainerStyle={{ paddingBottom: 16 }}
+            />
+          )}
+        </>
       </View>
 
       <FilterModal
