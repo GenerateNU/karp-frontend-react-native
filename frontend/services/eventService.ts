@@ -1,20 +1,10 @@
 import api from '@/api';
-import { Event, EventFilters } from '@/types/api/event';
+import { Event, EventFilters, EventStatus } from '@/types/api/event';
 
 async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
-  let endpoint = 'event/all';
-  if (filters) {
-    const queryParams = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryParams.append(key, value.toString());
-      }
-    });
-    if (queryParams.toString()) {
-      endpoint += `?${queryParams.toString()}`;
-    }
-  }
-  const { data: events } = await api.get(endpoint);
+  const { data: events } = await api.get('event/all', {
+    params: filters,
+  });
   return events;
 }
 
@@ -28,36 +18,20 @@ async function searchEvents(
   query: string,
   filters?: EventFilters
 ): Promise<Event[]> {
-  let endpoint = `event/search?q=${encodeURIComponent(query)}`;
-  if (filters) {
-    const queryParams = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryParams.append(key, value.toString());
-      }
-    });
-    if (queryParams.toString()) {
-      endpoint += `&${queryParams.toString()}`;
-    }
-  }
-  const { data: events } = await api.get(endpoint);
+  const params: Record<string, unknown> = {
+    q: query,
+    statuses: EventStatus.PUBLISHED,
+  };
+  if (filters) Object.assign(params, filters);
+
+  const { data: events } = await api.get('event/search', { params });
   return events;
 }
 
 async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
-  let endpoint = 'event/near';
-  if (filters) {
-    const queryParams = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        queryParams.append(key, value.toString());
-      }
-    });
-    if (queryParams.toString()) {
-      endpoint += `?${queryParams.toString()}`;
-    }
-  }
-  const { data: events } = await api.get(endpoint);
+  const { data: events } = await api.get('event/near', {
+    params: filters,
+  });
   return events;
 }
 
