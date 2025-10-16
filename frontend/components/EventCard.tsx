@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
 import { Event } from '@/types/api/event';
 
 interface EventCardProps {
@@ -26,9 +26,12 @@ export function EventCard({ event, onPress }: EventCardProps) {
       android_ripple={{ color: '#f0f0f0' }}
     >
       <View className="h-40 bg-gray-100">
-        <View className="h-full w-full items-center justify-center bg-gray-200">
-          <Text className="text-3xl">📅</Text>
-        </View>
+        <Image
+          source={{
+            uri: 'https://www.pointsoflight.org/wp-content/uploads/2021/03/AdobeStock_289737123-scaled.jpeg',
+          }}
+          className="h-full w-full"
+        />
       </View>
 
       <View className="p-4">
@@ -57,11 +60,11 @@ export function EventCard({ event, onPress }: EventCardProps) {
         </View>
 
         <View className="mb-2 flex-row items-center justify-between">
-          <View className="rounded-xl bg-gray-100 px-2 py-1">
+          {/* <View className="rounded-xl bg-gray-100 px-2 py-1">
             <Text className="text-xs font-medium text-gray-600">
               {event.status}
             </Text>
-          </View>
+          </View> */}
 
           <View className="rounded-xl bg-green-100 px-2 py-1">
             <Text className="text-xs font-semibold text-green-800">

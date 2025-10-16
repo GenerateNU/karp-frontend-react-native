@@ -41,7 +41,7 @@ export default function EventsScreen() {
         } else {
           fetchedEvents = await eventService.getAllEvents(filters);
         }
-
+        console.log('Fetched events:', fetchedEvents);
         setEvents(fetchedEvents);
       } catch (error) {
         console.error('Error loading events:', error);

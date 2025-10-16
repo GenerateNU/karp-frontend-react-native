@@ -39,6 +39,7 @@ export interface Event {
   createdAt: string;
   createdBy: string;
   timeSlots?: string[];
+  imageUrl?: string;
 }
 
 export interface EventFilters {
