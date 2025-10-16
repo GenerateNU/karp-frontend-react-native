@@ -15,6 +15,7 @@ import { EventCard } from '@/components/EventCard';
 import { FilterModal } from '@/components/FilterModal';
 import { useRouter } from 'expo-router';
 import { LoadingScreen } from '@/components/LoadingScreen';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function EventsScreen() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -145,7 +146,12 @@ export default function EventsScreen() {
 
         <View className="mb-2">
           <View className="flex-row items-center rounded-lg bg-gray-50 px-3 py-2">
-            <Text className="mr-2 text-base">🔍</Text>
+            <Ionicons
+              name="search-outline"
+              size={18}
+              color="#4B5563"
+              style={{ marginRight: 8 }}
+            />
             <TextInput
               className="flex-1 text-base text-gray-900"
               placeholder="Search for events..."
@@ -154,7 +160,7 @@ export default function EventsScreen() {
               returnKeyType="search"
             />
             <Pressable className="p-1" onPress={() => setShowFilters(true)}>
-              <Text className="text-base">⚙️</Text>
+              <Ionicons name="filter-outline" size={20} color="#4B5563" />
             </Pressable>
           </View>
         </View>
