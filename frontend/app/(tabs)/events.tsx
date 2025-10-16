@@ -31,17 +31,10 @@ export default function EventsScreen() {
     async (searchQuery?: string, filters?: EventFilters) => {
       try {
         setLoading(true);
-        let fetchedEvents: Event[];
-
-        if (searchQuery && searchQuery.trim()) {
-          fetchedEvents = await eventService.searchEvents(
-            searchQuery.trim(),
-            filters
-          );
-        } else {
-          fetchedEvents = await eventService.getAllEvents(filters);
-        }
-
+        const fetchedEvents = await eventService.searchEvents(
+          searchQuery?.trim() || '',
+          filters
+        );
         setEvents(fetchedEvents);
       } catch (error) {
         console.error('Error loading events:', error);
