@@ -16,7 +16,7 @@ export default function StoreScreen() {
   const [items, setItems] = useState<ShopItem[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { token } = useAuth();
+  const { volunteer, token } = useAuth();
 
   useEffect(() => {
     const loadItems = async () => {
@@ -167,7 +167,7 @@ export default function StoreScreen() {
                 fontFamily: Fonts.medium_500,
               }}
             >
-              500 coins
+              {volunteer?.coins ?? 0} coins
             </ThemedText>
 
             <TouchableOpacity

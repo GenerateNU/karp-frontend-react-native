@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { camelizeKeys } from '@/utils/case';
 
 const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'https://localhost:8080',
@@ -19,7 +20,12 @@ api.interceptors.request.use(config => {
 });
 
 api.interceptors.response.use(
-  response => response,
+  response => {
+    if (response && response.data !== undefined) {
+      response.data = camelizeKeys(response.data);
+    }
+    return response;
+  },
   error => {
     throw error;
   }

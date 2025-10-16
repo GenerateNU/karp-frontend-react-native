@@ -11,3 +11,15 @@ export async function getVolunteer(volunteerId: string, token: string) {
 
   return response.json();
 }
+
+export async function getSelf(token: string) {
+  const response = await fetch(`${API_BASE_URL}/volunteer/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch self');
+  }
+
+  return response.json();
+}

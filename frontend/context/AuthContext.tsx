@@ -8,6 +8,9 @@ import React, {
 } from 'react';
 import { setAuthToken } from '@/api';
 import { Alert, Platform } from 'react-native';
+import { getSelf } from '@/services/volunteerService';
+import { login } from '@/services/userService';
+import { Volunteer } from '@/types/api/volunteer';
 
 type AuthUser = {
   id: string;
@@ -21,6 +24,7 @@ type AuthUser = {
 
 type AuthContextValue = {
   user: AuthUser | null;
+  volunteer: Volunteer | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -30,10 +34,9 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [volunteer, setVolunteer] = useState<Volunteer | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,56 +44,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async ({ username, password }: { username: string; password: string }) => {
       setIsLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/user/token`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(text || 'Failed to sign in');
-        }
-
-        const data = (await response.json()) as {
-          access_token: string;
-          token_type: string;
-          user: {
-            id: string;
-            email?: string;
-            username: string;
-            first_name?: string;
-            last_name?: string;
-            user_type?: string;
-            entity_id?: string | null;
-          };
-        };
+        const data = await login({ username, password });
 
         const u = data.user;
         setUser({
           id: u.id,
           username: u.username,
           email: u.email,
-          firstName: u.first_name,
-          lastName: u.last_name,
-          userType: u.user_type,
-          entityId: u.entity_id ?? null,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          userType: u.userType,
+          entityId: u.entityId ?? null,
         });
-        setToken(data.access_token);
+        setToken(data.accessToken);
+
+        const volunteerResponse = await getSelf(data.accessToken);
+        setVolunteer(volunteerResponse);
+
         // Persist on web to survive page refresh
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
           try {
-            window.localStorage.setItem('auth_token', data.access_token);
+            window.localStorage.setItem('auth_token', data.accessToken);
             window.localStorage.setItem(
               'auth_user',
               JSON.stringify({
                 id: u.id,
                 username: u.username,
                 email: u.email,
-                firstName: u.first_name,
-                lastName: u.last_name,
-                userType: u.user_type,
-                entityId: u.entity_id ?? null,
+                firstName: u.firstName,
+                lastName: u.lastName,
+                userType: u.userType,
+                entityId: u.entityId ?? null,
+              })
+            );
+            window.localStorage.setItem(
+              'volunteer',
+              JSON.stringify({
+                id: volunteerResponse.id,
+                firstName: volunteerResponse.first_name,
+                lastName: volunteerResponse.last_name,
+                age: volunteerResponse.age,
+                coins: volunteerResponse.coins,
+                preferences: volunteerResponse.preferences,
+                isActive: volunteerResponse.is_active,
+                experience: volunteerResponse.experience,
+                location: volunteerResponse.location,
               })
             );
           } catch {}
@@ -108,11 +106,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(() => {
     setUser(null);
+    setVolunteer(null);
     setToken(null);
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       try {
         window.localStorage.removeItem('auth_token');
         window.localStorage.removeItem('auth_user');
+        window.localStorage.removeItem('volunteer');
       } catch {}
     }
   }, []);
@@ -120,13 +120,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
+      volunteer,
       token,
       isAuthenticated: !!token,
       isLoading,
       signIn,
       signOut,
     }),
-    [user, token, isLoading, signIn, signOut]
+    [user, volunteer, token, isLoading, signIn, signOut]
   );
 
   useEffect(() => {
@@ -139,8 +140,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const storedToken = window.localStorage.getItem('auth_token');
       const storedUser = window.localStorage.getItem('auth_user');
+      const storedVolunteer = window.localStorage.getItem('volunteer');
       if (storedToken) setToken(storedToken);
       if (storedUser) setUser(JSON.parse(storedUser) as AuthUser);
+      if (storedVolunteer)
+        setVolunteer(JSON.parse(storedVolunteer) as Volunteer);
     } catch {}
   }, []);
 
