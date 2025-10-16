@@ -57,7 +57,13 @@ export default function EventInfoTable({
     >
       <ScrollView style={styles.scrollContainer}>
         <ThemedView style={styles.container}>
-          <View style={styles.imagePlaceholder} />
+          <Image
+            source={{
+              uri: 'https://www.pointsoflight.org/wp-content/uploads/2021/03/AdobeStock_289737123-scaled.jpeg',
+            }}
+            style={styles.headerImage}
+            contentFit="cover"
+          />
           <View style={styles.topRow}>
             <View style={styles.infoColumn}>
               <View style={styles.nameRow}>
@@ -107,6 +113,13 @@ export default function EventInfoTable({
 }
 
 const styles = StyleSheet.create({
+  headerImage: {
+    width: '100%',
+    height: 200, // adjust based on design
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    marginTop: 20,
+  },
   scrollContainer: {
     flex: 1,
   },
@@ -135,17 +148,17 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  imagePlaceholder: {
-    width: '100%',
-    height: 240,
-    backgroundColor: Colors.light.imagePlaceholder,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+  // imagePlaceholder: {
+  //   width: '100%',
+  //   height: 240,
+  //   backgroundColor: Colors.light.imagePlaceholder,
+  //   borderRadius: 12,
+  //   shadowColor: '#000',
+  //   shadowOffset: { width: 0, height: 1 },
+  //   shadowOpacity: 0.08,
+  //   shadowRadius: 4,
+  //   elevation: 2,
+  // },
   infoColumn: {
     flex: 1,
     justifyContent: 'flex-start',
