@@ -44,20 +44,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async ({ username, password }: { username: string; password: string }) => {
       setIsLoading(true);
       try {
-        const data = await login({ username, password });
+        const { user: userResponse, accessToken } = await login({
+          username,
+          password,
+        });
 
-        const userResponse = data.user;
-        setUser(userResponse);
-        setToken(data.accessToken);
-        setAuthToken(data.accessToken);
+        setAuthToken(accessToken);
 
         const volunteerResponse = await getSelf();
+
+        setUser(userResponse);
+        setToken(accessToken);
         setVolunteer(volunteerResponse);
 
         // Persist on web to survive page refresh
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
           try {
-            window.localStorage.setItem('auth_token', data.accessToken);
+            window.localStorage.setItem('auth_token', accessToken);
             window.localStorage.setItem(
               'auth_user',
               JSON.stringify(userResponse)
