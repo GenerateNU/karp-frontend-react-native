@@ -21,7 +21,7 @@ export default function OrgsScreen() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  // const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<OrgFilters>({});
   //   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
@@ -45,6 +45,8 @@ export default function OrgsScreen() {
   );
 
   const handleRefresh = useCallback(async () => {
+    console.log(searchQuery, filters);
+    setSearchQuery(searchQuery);
     setRefreshing(true);
     await loadOrganizations(searchQuery, filters);
     setRefreshing(false);
