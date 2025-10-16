@@ -11,16 +11,7 @@ import { Alert, Platform } from 'react-native';
 import { volunteerService } from '@/services/volunteerService';
 import { userService } from '@/services/userService';
 import { Volunteer } from '@/types/api/volunteer';
-
-type AuthUser = {
-  id: string;
-  username: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  userType?: string;
-  entityId?: string | null;
-};
+import { AuthUser } from '@/types/api/user';
 
 type AuthContextValue = {
   user: AuthUser | null;
