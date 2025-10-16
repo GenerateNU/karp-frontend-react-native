@@ -62,7 +62,7 @@ export function useItemDetail(itemId: string) {
     setOrderLoading(true);
 
     try {
-      await createOrder(itemId, token);
+      await createOrder(itemId);
       setHasOrdered(true);
       setUserCoins(userCoins - item.price);
       Alert.alert('Success!', 'Your order has been placed');

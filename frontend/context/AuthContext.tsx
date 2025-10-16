@@ -46,17 +46,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const data = await login({ username, password });
 
-        const u = data.user;
-        setUser({
-          id: u.id,
-          username: u.username,
-          email: u.email,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          userType: u.userType,
-          entityId: u.entityId ?? null,
-        });
+        const userResponse = data.user;
+        setUser(userResponse);
         setToken(data.accessToken);
+        setAuthToken(data.accessToken);
 
         const volunteerResponse = await getSelf();
         setVolunteer(volunteerResponse);
@@ -67,29 +60,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             window.localStorage.setItem('auth_token', data.accessToken);
             window.localStorage.setItem(
               'auth_user',
-              JSON.stringify({
-                id: u.id,
-                username: u.username,
-                email: u.email,
-                firstName: u.firstName,
-                lastName: u.lastName,
-                userType: u.userType,
-                entityId: u.entityId ?? null,
-              })
+              JSON.stringify(userResponse)
             );
             window.localStorage.setItem(
               'volunteer',
-              JSON.stringify({
-                id: volunteerResponse.id,
-                firstName: volunteerResponse.first_name,
-                lastName: volunteerResponse.last_name,
-                age: volunteerResponse.age,
-                coins: volunteerResponse.coins,
-                preferences: volunteerResponse.preferences,
-                isActive: volunteerResponse.is_active,
-                experience: volunteerResponse.experience,
-                location: volunteerResponse.location,
-              })
+              JSON.stringify(volunteerResponse)
             );
           } catch {}
         }
@@ -129,10 +104,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }),
     [user, volunteer, token, isLoading, signIn, signOut]
   );
-
-  useEffect(() => {
-    setAuthToken(token ?? null);
-  }, [token]);
 
   // Hydrate auth state on mount (web)
   useEffect(() => {
