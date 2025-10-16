@@ -2,7 +2,7 @@ import api from '@/api';
 import { Event, EventFilters, EventResponse } from '@/types/api/event';
 import { toEvent } from '@/utils/event';
 
-export async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
+async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
   let endpoint = 'event/all';
   if (filters) {
     const queryParams = new URLSearchParams();
@@ -33,7 +33,7 @@ export async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
   }
 }
 
-export async function getEventById(id: string): Promise<Event | null> {
+async function getEventById(id: string): Promise<Event | null> {
   const endpoint = `event/${id}`;
   try {
     const { data } = await api.get(endpoint);
@@ -47,7 +47,7 @@ export async function getEventById(id: string): Promise<Event | null> {
   }
 }
 
-export async function searchEvents(
+async function searchEvents(
   query: string,
   filters?: EventFilters
 ): Promise<Event[]> {
@@ -81,7 +81,7 @@ export async function searchEvents(
   }
 }
 
-export async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
+async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
   let endpoint = 'event/near';
   if (filters) {
     const queryParams = new URLSearchParams();

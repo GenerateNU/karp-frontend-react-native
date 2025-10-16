@@ -8,8 +8,8 @@ import React, {
 } from 'react';
 import { setAuthToken } from '@/api';
 import { Alert, Platform } from 'react-native';
-import { getSelf } from '@/services/volunteerService';
-import { login } from '@/services/userService';
+import { volunteerService } from '@/services/volunteerService';
+import { userService } from '@/services/userService';
 import { Volunteer } from '@/types/api/volunteer';
 
 type AuthUser = {
@@ -44,14 +44,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async ({ username, password }: { username: string; password: string }) => {
       setIsLoading(true);
       try {
-        const { user: userResponse, accessToken } = await login({
+        const { user: userResponse, accessToken } = await userService.login({
           username,
           password,
         });
 
         setAuthToken(accessToken);
 
-        const volunteerResponse = await getSelf();
+        const volunteerResponse = await volunteerService.getSelf();
 
         setUser(userResponse);
         setToken(accessToken);

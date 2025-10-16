@@ -1,11 +1,16 @@
 import api from '@/api';
 
-export async function getVolunteer(volunteerId: string) {
+async function getVolunteer(volunteerId: string) {
   const response = await api.get(`/volunteer/${volunteerId}`);
   return response.data;
 }
 
-export async function getSelf() {
+async function getSelf() {
   const response = await api.get(`/volunteer/me`);
   return response.data;
 }
+
+export const volunteerService = {
+  getVolunteer,
+  getSelf,
+};

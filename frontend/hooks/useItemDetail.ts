@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
-import { getItem } from '@/services/itemService';
-import { createOrder, getVolunteerOrders } from '@/services/orderService';
-import { getVolunteer } from '@/services/volunteerService';
+import { itemService } from '@/services/itemService';
+import { orderService } from '@/services/orderService';
+import { volunteerService } from '@/services/volunteerService';
 import { Item } from '@/types/api/item';
 import { Order } from '@/types/api/order';
 
@@ -25,9 +25,9 @@ export function useItemDetail(itemId: string) {
 
       try {
         const [itemData, volunteerData, orders] = await Promise.all([
-          getItem(itemId),
-          getVolunteer(user.entityId),
-          getVolunteerOrders(user.entityId),
+          itemService.getItem(itemId),
+          volunteerService.getVolunteer(user.entityId),
+          orderService.getVolunteerOrders(user.entityId),
         ]);
 
         setItem(itemData);
@@ -62,7 +62,7 @@ export function useItemDetail(itemId: string) {
     setOrderLoading(true);
 
     try {
-      await createOrder(itemId);
+      await orderService.createOrder(itemId);
       setHasOrdered(true);
       setUserCoins(userCoins - item.price);
       Alert.alert('Success!', 'Your order has been placed');

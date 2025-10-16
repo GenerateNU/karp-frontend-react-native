@@ -1,11 +1,11 @@
 import api from '@/api';
 
-export async function getVolunteerOrders(volunteerId: string) {
+async function getVolunteerOrders(volunteerId: string) {
   const response = await api.get(`/order/volunteer/${volunteerId}`);
   return response.data;
 }
 
-export async function createOrder(itemId: string) {
+async function createOrder(itemId: string) {
   const response = await api.post(
     `/order/new`,
     { itemId },
@@ -13,3 +13,8 @@ export async function createOrder(itemId: string) {
   );
   return response.data;
 }
+
+export const orderService = {
+  getVolunteerOrders,
+  createOrder,
+};

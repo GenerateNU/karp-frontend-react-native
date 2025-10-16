@@ -1,20 +1,7 @@
 import api from '@/api';
+import { LoginResponse } from '@/types/api/user';
 
-export type LoginResponse = {
-  accessToken: string;
-  tokenType: string;
-  user: {
-    id: string;
-    email?: string;
-    username: string;
-    firstName?: string;
-    lastName?: string;
-    userType?: string;
-    entityId?: string | null;
-  };
-};
-
-export async function login(params: {
+async function login(params: {
   username: string;
   password: string;
 }): Promise<LoginResponse> {
@@ -23,3 +10,7 @@ export async function login(params: {
   });
   return response.data as LoginResponse;
 }
+
+export const userService = {
+  login,
+};

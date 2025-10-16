@@ -7,7 +7,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Fonts } from '@/constants/Fonts';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { getAllItems } from '@/services/itemService';
+import { itemService } from '@/services/itemService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 type ShopItem = { id: string; name: string; store: string; coins: number };
@@ -24,7 +24,7 @@ export default function StoreScreen() {
       try {
         setLoading(true);
         if (!token) return;
-        const response = await getAllItems();
+        const response = await itemService.getAllItems();
         const mapped: ShopItem[] = (
           Array.isArray(response) ? response : []
         ).map((raw: any) => ({
