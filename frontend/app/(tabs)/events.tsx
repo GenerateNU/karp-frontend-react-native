@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -26,6 +26,7 @@ export default function EventsScreen() {
   const [filters, setFilters] = useState<EventFilters>({});
   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
   const router = useRouter();
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadEvents = useCallback(
     async (searchQuery?: string, filters?: EventFilters) => {
@@ -55,10 +56,23 @@ export default function EventsScreen() {
   const handleSearch = useCallback(
     (query: string) => {
       setSearchQuery(query);
-      loadEvents(query, filters);
+      if (searchDebounceRef.current) {
+        clearTimeout(searchDebounceRef.current);
+      }
+      searchDebounceRef.current = setTimeout(() => {
+        loadEvents(query, filters);
+      }, 400);
     },
     [loadEvents, filters]
   );
+
+  useEffect(() => {
+    return () => {
+      if (searchDebounceRef.current) {
+        clearTimeout(searchDebounceRef.current);
+      }
+    };
+  }, []);
 
   const handleApplyFilters = useCallback(
     (newFilters: EventFilters) => {
