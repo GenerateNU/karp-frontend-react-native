@@ -123,7 +123,7 @@ export default function StoreScreen() {
   );
 
   if (loading) {
-    return <LoadingScreen text="Loading events..." />;
+    return <LoadingScreen text="Loading items..." />;
   }
 
   return (
