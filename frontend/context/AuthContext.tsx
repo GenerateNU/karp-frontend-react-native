@@ -99,6 +99,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [user, volunteer, token, isLoading, signIn, signOut]
   );
 
+  useEffect(() => {
+    setAuthToken(token);
+  }, [token]);
+
   // Hydrate auth state on mount (web)
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') return;
