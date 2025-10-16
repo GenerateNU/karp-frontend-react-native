@@ -20,7 +20,7 @@ export default function EventInfoTable({
   description,
   startDateTime,
   endDateTime,
-  timeSlots = [],
+  timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM'],
 }: Props) {
   const start = startDateTime ? new Date(startDateTime) : null;
   const end = endDateTime ? new Date(endDateTime) : null;

@@ -7,10 +7,13 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useItemDetail } from '@/hooks/useItemDetail';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
+import { BackHeader } from '@/components/common/BackHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
@@ -18,14 +21,10 @@ export default function ItemDetailScreen() {
   const { item, userCoins, hasOrdered, loading, orderLoading, placeOrder } =
     useItemDetail(itemId);
 
-  const hasEnoughCoins = userCoins >= (item?.price ?? 0);
+  const hasEnoughCoins = userCoins >= (item?.price ?? 30);
 
   if (loading) {
-    return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={Colors.light.orderButton} />
-      </View>
-    );
+    return <LoadingScreen text="Loading item details..." />;
   }
 
   if (!item) {
@@ -37,17 +36,9 @@ export default function ItemDetailScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-      </View>
-
+    <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        <BackHeader />
         <View style={styles.imagePlaceholder} />
 
         <Text style={styles.title}>{item.name}</Text>
@@ -112,7 +103,7 @@ export default function ItemDetailScreen() {
           </>
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -125,21 +116,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  header: {
-    paddingLeft: 12,
-    paddingVertical: 10,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 28,
-    color: Colors.light.text,
-    fontWeight: '300',
   },
   scrollContent: {
     paddingHorizontal: 24,

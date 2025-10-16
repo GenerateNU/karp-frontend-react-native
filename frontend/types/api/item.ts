@@ -16,6 +16,7 @@ export interface Item {
   expiration: string;
   price: number;
   description: string;
+  imageUrl?: string;
 }
 
 export interface ItemResponse {
