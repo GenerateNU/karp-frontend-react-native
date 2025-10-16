@@ -1,4 +1,5 @@
 import { EventFilters, EventResponse } from '@/types/api/event';
+import api from '@/api';
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL!;
 
 export interface ApiResponse<T> {
@@ -36,28 +37,11 @@ class ApiService {
     this.baseUrl = API_BASE_URL;
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<ApiResponse<T>> {
+  private async request<T>(endpoint: string): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
-
-    const defaultOptions: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const config = { ...defaultOptions, ...options };
-
     try {
-      const response = await fetch(url, config);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const response = await api.get(url);
+      const data = response.data;
 
       // Handle different response formats from backend
       if (Array.isArray(data)) {

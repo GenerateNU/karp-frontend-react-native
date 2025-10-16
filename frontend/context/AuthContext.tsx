@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         setToken(data.accessToken);
 
-        const volunteerResponse = await getSelf(data.accessToken);
+        const volunteerResponse = await getSelf();
         setVolunteer(volunteerResponse);
 
         // Persist on web to survive page refresh
