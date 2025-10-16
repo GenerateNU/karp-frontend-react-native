@@ -18,12 +18,12 @@ export default function EventInfoTable({
   organization,
   address,
   description,
-  start_date_time,
-  end_date_time,
+  startDateTime,
+  endDateTime,
   timeSlots = [],
 }: Props) {
-  const start = start_date_time ? new Date(start_date_time) : null;
-  const end = end_date_time ? new Date(end_date_time) : null;
+  const start = startDateTime ? new Date(startDateTime) : null;
+  const end = endDateTime ? new Date(endDateTime) : null;
 
   const dateFormatted = start
     ? start.toLocaleString(undefined, {

@@ -28,17 +28,16 @@ export interface Event {
   name: string;
   address: string;
   location: Location | null;
-  start_date_time: string;
-  end_date_time: string;
-  organization_id: string;
+  startDateTime: string;
+  endDateTime: string;
+  organizationId: string;
   organization?: string;
   status: EventStatus;
-  max_volunteers: number;
-  spots_remaining?: number;
+  maxVolunteers: number;
   description?: string;
   coins: number;
-  created_at: string;
-  created_by: string;
+  createdAt: string;
+  createdBy: string;
   timeSlots?: string[];
 }
 
@@ -50,20 +49,20 @@ export interface EventFilters {
 }
 
 export interface EventResponse {
-  _id: string;
+  id: string; // camelized from _id
   name: string;
   address: string;
   location?: Location | null;
-  start_date_time: string;
-  end_date_time: string;
-  organization_id: string;
+  startDateTime: string; // camelized from start_date_time
+  endDateTime: string; // camelized from end_date_time
+  organizationId: string; // camelized from organization_id
   status: EventStatus;
-  max_volunteers: number;
+  maxVolunteers: number; // camelized from max_volunteers
   coins: number;
   description?: string;
   keywords?: string[];
-  age_min?: number;
-  age_max?: number;
-  created_at: string;
-  created_by: string;
+  ageMin?: number; // camelized from age_min
+  ageMax?: number; // camelized from age_max
+  createdAt: string; // camelized from created_at
+  createdBy: string; // camelized from created_by
 }

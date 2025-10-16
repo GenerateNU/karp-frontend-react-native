@@ -1,6 +1,5 @@
 import api from '@/api';
-import { Event, EventFilters, EventResponse } from '@/types/api/event';
-import { toEvent } from '@/utils/event';
+import { Event, EventFilters } from '@/types/api/event';
 
 async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
   let endpoint = 'event/all';
@@ -15,36 +14,14 @@ async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
       endpoint += `?${queryParams.toString()}`;
     }
   }
-  try {
-    const { data } = await api.get(endpoint);
-    const list = Array.isArray(data)
-      ? data
-      : Array.isArray(data?.data)
-        ? data.data
-        : Array.isArray(data?.events)
-          ? data.events
-          : data;
-    return ((list as EventResponse[]) || []).map(toEvent);
-  } catch (error: unknown) {
-    console.error('Failed to fetch events:', error);
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch events'
-    );
-  }
+  const { data: events } = await api.get(endpoint);
+  return events;
 }
 
 async function getEventById(id: string): Promise<Event | null> {
   const endpoint = `event/${id}`;
-  try {
-    const { data } = await api.get(endpoint);
-    const item = (data?.data ?? data?.event ?? data) as EventResponse;
-    return toEvent(item);
-  } catch (error: unknown) {
-    console.error('Failed to fetch event:', error);
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch event'
-    );
-  }
+  const { data: event } = await api.get(endpoint);
+  return event;
 }
 
 async function searchEvents(
@@ -63,22 +40,8 @@ async function searchEvents(
       endpoint += `&${queryParams.toString()}`;
     }
   }
-  try {
-    const { data } = await api.get(endpoint);
-    const list = Array.isArray(data)
-      ? data
-      : Array.isArray(data?.data)
-        ? data.data
-        : Array.isArray(data?.events)
-          ? data.events
-          : data;
-    return ((list as EventResponse[]) || []).map(toEvent);
-  } catch (error: unknown) {
-    console.error('Failed to search events:', error);
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to search events'
-    );
-  }
+  const { data: events } = await api.get(endpoint);
+  return events;
 }
 
 async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
@@ -94,22 +57,8 @@ async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
       endpoint += `?${queryParams.toString()}`;
     }
   }
-  try {
-    const { data } = await api.get(endpoint);
-    const list = Array.isArray(data)
-      ? data
-      : Array.isArray(data?.data)
-        ? data.data
-        : Array.isArray(data?.events)
-          ? data.events
-          : data;
-    return ((list as EventResponse[]) || []).map(toEvent);
-  } catch (error: unknown) {
-    console.error('Failed to fetch near events:', error);
-    throw new Error(
-      error instanceof Error ? error.message : 'Failed to fetch near events'
-    );
-  }
+  const { data: events } = await api.get(endpoint);
+  return events;
 }
 
 export const eventService = {

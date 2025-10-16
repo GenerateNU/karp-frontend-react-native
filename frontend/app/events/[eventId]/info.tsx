@@ -44,7 +44,7 @@ export default function EventSignUpPage() {
   }, [eventId, isAuthenticated, router]);
 
   const handleSignUp = async () => {
-    if ((event?.spots_remaining ?? 0) < 1) {
+    if (false) {
       setMessage('Sorry, this event has no spots left.');
       return;
     }
@@ -70,7 +70,7 @@ export default function EventSignUpPage() {
                 text="SIGN UP"
                 onPress={handleSignUp}
                 loading={false}
-                disabled={(event?.spots_remaining ?? 0) < 1}
+                disabled={false}
               />
 
               {message ? (

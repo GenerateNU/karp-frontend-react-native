@@ -45,7 +45,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
 
         <View className="mb-3">
           <Text className="mb-1 text-sm text-gray-700">
-            {formatDateTime(event.start_date_time)}
+            {formatDateTime(event.startDateTime)}
           </Text>
 
           <View className="flex-row items-center">
@@ -72,7 +72,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
 
         <View className="mt-1">
           <Text className="text-xs text-gray-600">
-            Max volunteers: {event.max_volunteers}
+            Max volunteers: {event.maxVolunteers}
           </Text>
         </View>
       </View>

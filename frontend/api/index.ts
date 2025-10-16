@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { camelizeKeys } from '@/utils/case';
+import { camelizeKeys, decamelizeKeys } from '@/utils/case';
 
 const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL || 'https://localhost:8080',
@@ -16,13 +16,29 @@ api.interceptors.request.use(config => {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${authToken}`;
   }
+  if (
+    config.data &&
+    !(typeof FormData !== 'undefined' && config.data instanceof FormData)
+  ) {
+    try {
+      config.data = decamelizeKeys(config.data);
+    } catch {}
+  }
+
+  if (config.params) {
+    try {
+      config.params = decamelizeKeys(config.params);
+    } catch {}
+  }
   return config;
 });
 
 api.interceptors.response.use(
   response => {
     if (response && response.data !== undefined) {
-      response.data = camelizeKeys(response.data);
+      response.data = camelizeKeys(response.data, {
+        preserveLeadingUnderscore: false,
+      });
     }
     return response;
   },
