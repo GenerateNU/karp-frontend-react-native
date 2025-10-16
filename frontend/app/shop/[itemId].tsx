@@ -14,6 +14,7 @@ import { Fonts } from '@/constants/Fonts';
 import { BackHeader } from '@/components/common/BackHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoadingScreen } from '@/components/LoadingScreen';
+import { Image } from 'expo-image';
 
 export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
@@ -39,8 +40,13 @@ export default function ItemDetailScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackHeader />
-        <View style={styles.imagePlaceholder} />
-
+        <Image
+          source={{
+            uri: 'https://tse1.mm.bing.net/th/id/OIP.OwbQJoh6_P_Jr7aaidhehAHaHa?cb=12&pid=Api&ucfimg=1',
+          }}
+          style={styles.imagePlaceholder}
+          contentFit="cover"
+        />
         <Text style={styles.title}>{item.name}</Text>
 
         <Text style={styles.subtitle}>Crumbl</Text>

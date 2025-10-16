@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Fonts } from '@/constants/Fonts';
+import { Image } from 'expo-image';
 
 export interface CarouselItemProps {
   id: string;
@@ -37,11 +38,12 @@ const CarouselItem: React.FC<CarouselItemProps> = ({
       style={{ width: 180, height: 160 }}
     >
       {/* Photo place holder*/}
-      <ThemedView
-        className="mb-2 w-full rounded-md bg-gray-400"
-        style={{ width: 180, height: 100 }}
-        lightColor="#D3D3D3"
-        darkColor="#D3D3D3"
+      <Image
+        source={{
+          uri: 'https://tse1.mm.bing.net/th/id/OIP.OwbQJoh6_P_Jr7aaidhehAHaHa?cb=12&pid=Api&ucfimg=1',
+        }}
+        style={{ width: 180, height: 100, borderRadius: 8 }}
+        contentFit="cover"
       />
       <ThemedText
         type="title"

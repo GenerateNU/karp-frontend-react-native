@@ -52,9 +52,9 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
-        name="events"
+        name="fypTabs"
         options={{
-          title: 'Events',
+          title: 'Events and Orgs',
           tabBarIcon: ({ focused }) => (
             <View
               style={{
