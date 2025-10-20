@@ -82,21 +82,12 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
     );
   }, [orgEvents, selectedDate]);
 
-  const openWebsite = () => {
-    if (organization?.location && (organization as any).website) {
-      const url = (organization as any).website as string;
-      if (url) Linking.openURL(url.startsWith('http') ? url : `https://${url}`);
-    }
-  };
-
   const handleShare = async () => {
     try {
       const shareContent = {
         message: `Check out ${organization.name}! ${organization.description || ''}`,
         title: organization.name,
-        url:
-          (organization as any).website ||
-          'https://www.google.com/search?q=' + organization.name,
+        url: 'https://www.google.com/search?q=' + organization.name,
       };
 
       await Share.share(shareContent);
