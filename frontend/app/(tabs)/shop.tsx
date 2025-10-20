@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, TextInput, Alert, TouchableOpacity } from 'react-native';
+import { FlatList, Alert, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import CarouselItem from '@/components/items/CarouselItem';
@@ -9,6 +9,8 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { itemService } from '@/services/itemService';
 import { LoadingScreen } from '@/components/LoadingScreen';
+import SearchInputWithFilter from '@/components/SearchInputWithFilter';
+import ItemFilterDrawer from '../../components/ItemFilterDrawer';
 
 type ShopItem = { id: string; name: string; store: string; coins: number };
 
@@ -16,6 +18,7 @@ export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
   const [items, setItems] = useState<ShopItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
   const { volunteer, token } = useAuth();
 
@@ -136,12 +139,10 @@ export default function StoreScreen() {
         darkColor="#FFFFF"
         className="flex-1 px-4"
       >
-        <TextInput
-          className="my-4 h-10 rounded-lg border border-gray-400 bg-gray-100 px-3 text-black"
-          placeholder="Search"
-          placeholderTextColor="#999"
+        <SearchInputWithFilter
           value={searchText}
           onChangeText={setSearchText}
+          onFilterPress={() => setDrawerOpen(true)}
         />
 
         {/* Popular in Boston */}
@@ -263,6 +264,8 @@ export default function StoreScreen() {
           );
         })()}
       </ThemedView>
+      {/* render drawer only when requested */}
+      {drawerOpen && <ItemFilterDrawer onClose={() => setDrawerOpen(false)} />}
     </ParallaxScrollView>
   );
 }
