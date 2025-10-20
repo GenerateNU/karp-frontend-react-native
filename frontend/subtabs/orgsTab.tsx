@@ -16,6 +16,7 @@ import { FilterModal } from '@/components/FilterModal';
 // import { useRouter } from 'expo-router';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Ionicons } from '@expo/vector-icons';
+import { OrgSelect } from '@/components/OrgSelect';
 
 export default function OrgsScreen() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -24,6 +25,8 @@ export default function OrgsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<OrgFilters>({});
+  const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
+  const [showOrgModal, setShowOrgModal] = useState(false);
   //   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
   // const router = useRouter();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -52,27 +55,6 @@ export default function OrgsScreen() {
     setRefreshing(false);
   }, [loadOrganizations, searchQuery, filters]);
 
-  //   const handleSearch = useCallback(
-  //     (query: string) => {
-  //       setSearchQuery(query);
-  //       if (searchDebounceRef.current) {
-  //         clearTimeout(searchDebounceRef.current);
-  //       }
-  //       searchDebounceRef.current = setTimeout(() => {
-  //         loadEvents(query, filters);
-  //       }, 400);
-  //     },
-  //     [loadEvents, filters]
-  //   );
-
-  useEffect(() => {
-    return () => {
-      if (searchDebounceRef.current) {
-        clearTimeout(searchDebounceRef.current);
-      }
-    };
-  }, []);
-
   const handleApplyFilters = useCallback(
     (newFilters: OrgFilters) => {
       setFilters(newFilters);
@@ -81,25 +63,18 @@ export default function OrgsScreen() {
     [loadOrganizations, searchQuery]
   );
 
-  //   const handleOrgPress = useCallback((organization: Organization) => {
-  //     console.log('Event pressed:', event);
-  //     console.log('Navigating to event details for ID:', organization.id);
-  //     router.push(`/orgs/${organization.id}/info`);
-  //     // Alert.alert(
-  //     //   event.name,
-  //     //   `Status: ${event.status}\n\nStart: ${new Date(event.start_date_time).toLocaleString()}\nEnd: ${new Date(event.end_date_time).toLocaleString()}\nLocation: ${event.location || event.address}\nMax Volunteers: ${event.max_volunteers}\nCoins: ${event.coins}`,
-  //     //   [{ text: 'OK' }]
-  //     // );
-  //   }, []);
+  const handleOrgPress = useCallback((organization: Organization) => {
+    setSelectedOrg(organization);
+    setShowOrgModal(true);
+  }, []);
 
   useEffect(() => {
     loadOrganizations();
   }, [loadOrganizations]);
 
   const renderOrganization = ({ item }: { item: Organization }) => (
-    console.log('Rendering organization:', item),
-    (<OrgCard organization={item} />)
-  ); // onPress={handleOrgPress}
+    <OrgCard organization={item} onPress={handleOrgPress} />
+  );
 
   const renderEmptyState = () => (
     <View className="flex-1 items-center justify-center py-10">
@@ -167,6 +142,12 @@ export default function OrgsScreen() {
         onClose={() => setShowFilters(false)}
         onApplyFilters={handleApplyFilters}
         currentFilters={filters}
+      />
+
+      <OrgSelect
+        visible={showOrgModal}
+        organization={selectedOrg}
+        onClose={() => setShowOrgModal(false)}
       />
     </SafeAreaView>
   );

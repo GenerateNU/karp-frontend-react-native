@@ -4,25 +4,14 @@ import { Organization } from '@/types/api/organization';
 
 interface OrgCardProps {
   organization: Organization;
-  //   onPress: (organization: Organization) => void;
+  onPress?: (organization: Organization) => void;
 }
 
-export function OrgCard({ organization }: OrgCardProps) {
-  // onPress
-  //   const formatDateTime = (dateTimeString: string) => {
-  //     const date = new Date(dateTimeString);
-  //     return date.toLocaleDateString('en-US', {
-  //       weekday: 'short',
-  //       month: 'short',
-  //       day: 'numeric',
-  //       hour: 'numeric',
-  //       minute: '2-digit',
-  //     });
-
+export function OrgCard({ organization, onPress }: OrgCardProps) {
   return (
     <Pressable
       className="mx-4 my-2 overflow-hidden rounded-xl bg-white shadow-sm"
-      //   onPress={() => onPress(organization)}
+      onPress={() => onPress?.(organization)}
       android_ripple={{ color: '#f0f0f0' }}
     >
       <View className="h-40 bg-gray-100">
