@@ -23,7 +23,7 @@ export interface Event {
   createdAt: string;
   createdBy: string;
   timeSlots?: string[];
-  imageUrl?: string;
+  imageS3Key: string;
 }
 
 export interface EventFilters {

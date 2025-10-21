@@ -16,18 +16,17 @@ export function EventCard({ event, onPress }: EventCardProps) {
   useEffect(() => {
     async function fetchImageUrl() {
       try {
-        const res = await eventService.getEventImageUrl(event.id);
-        const data = await res?.json();
-        setImagePreSignedUrl(data.url);
+        const url = await eventService.getEventImageUrl(event.id);
+        setImagePreSignedUrl(url);
       } catch (err) {
         console.error('Failed to fetch image:', err);
       }
     }
 
-    if (event.imageUrl) {
+    if (event.imageS3Key) {
       fetchImageUrl();
     }
-  }, [event.id, event.imageUrl]);
+  }, [event.id, event.imageS3Key]);
 
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);

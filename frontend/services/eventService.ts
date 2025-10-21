@@ -37,7 +37,7 @@ async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
 
 async function getEventImageUrl(eventId: string): Promise<string | null> {
   try {
-    const res = await api.get(`events/${eventId}/image`);
+    const res = await api.get(`event/${eventId}/image`);
     const data = res.data;
     return data.url; // data.url is the pre-signed GET URL
   } catch (err) {
