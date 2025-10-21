@@ -1,38 +1,45 @@
-import React, {
-  useCallback,
-  useRef,
-  useMemo,
-  useEffect,
-  useState,
-} from 'react';
-import { StyleSheet, View, Text, Button, Platform } from 'react-native';
+import React, { useCallback, useRef, useMemo, useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  Platform,
+  Pressable,
+} from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { Colors } from '@/constants/Colors';
 
 interface Props {
   onClose?: () => void;
 }
 
+const FILTER_OPTIONS = ['LOCAL', 'FOOD', 'GIFT CARDS'];
+
 export default function ItemFilterDrawer({ onClose }: Props) {
   const isWeb = Platform.OS === 'web';
 
-  const [BottomSheetComp, setBottomSheetComp] = useState<any>(null);
-  const [BottomSheetViewComp, setBottomSheetViewComp] = useState<any>(null);
+  const [selectedFilter, setSelectedFilter] = useState<string>('');
+  const [filtersBy, setFiltersBy] = useState<'Category' | 'Location'>(
+    'Category'
+  );
 
-  useEffect(() => {
-    if (!isWeb) {
-      try {
-        // avoid static analysis by Metro/webpack by using eval('require')
+  // useEffect(() => {
+  //   if (!isWeb) {
+  //     try {
+  //       // avoid static analysis by Metro/webpack by using eval('require')
 
-        const req: any = eval('require');
-        const mod = req('@gorhom/bottom-sheet');
-        setBottomSheetComp(mod.default || mod);
-        setBottomSheetViewComp(mod.BottomSheetView || mod.BottomSheetView);
-      } catch (err) {
-        // package not available on this platform — fallback UI will be used
-        console.log(err);
-      }
-    }
-  }, [isWeb]);
+  //       const req: any = eval('require');
+  //       const mod = req('@gorhom/bottom-sheet');
+  //       setBottomSheetComp(mod.default || mod);
+  //       setBottomSheetViewComp(mod.BottomSheetView || mod.BottomSheetView);
+  //     } catch (err) {
+  //       // package not available on this platform — fallback UI will be used
+  //       console.log(err);
+  //     }
+  //   }
+  // }, [isWeb]);
 
   const sheetRef = useRef<any>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
@@ -51,13 +58,45 @@ export default function ItemFilterDrawer({ onClose }: Props) {
     sheetRef.current?.close?.();
     if (onClose) onClose();
   }, [onClose]);
-
-  const Container: any = isWeb ? View : GestureHandlerRootView;
-  const BottomSheet = BottomSheetComp;
-  const BottomSheetView = BottomSheetViewComp;
+  const FilterToggle = () => (
+    <View style={styles.toggleContainer}>
+      <Pressable
+        style={[
+          styles.toggleOption,
+          filtersBy === 'Category' && styles.toggleOptionActive,
+        ]}
+        onPress={() => setFiltersBy('Category')}
+      >
+        <Text
+          style={[
+            styles.toggleText,
+            filtersBy === 'Category' && styles.toggleTextActive,
+          ]}
+        >
+          Category
+        </Text>
+      </Pressable>
+      <Pressable
+        style={[
+          styles.toggleOption,
+          filtersBy === 'Location' && styles.toggleOptionActive,
+        ]}
+        onPress={() => setFiltersBy('Location')}
+      >
+        <Text
+          style={[
+            styles.toggleText,
+            filtersBy === 'Location' && styles.toggleTextActive,
+          ]}
+        >
+          Location
+        </Text>
+      </Pressable>
+    </View>
+  );
 
   return (
-    <Container style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <Button title="Snap To 90%" onPress={() => handleSnapPress(2)} />
       <Button title="Snap To 50%" onPress={() => handleSnapPress(1)} />
       <Button title="Snap To 25%" onPress={() => handleSnapPress(0)} />
@@ -71,49 +110,136 @@ export default function ItemFilterDrawer({ onClose }: Props) {
           </Text>
           <Button title="Dismiss" onPress={() => onClose && onClose()} />
         </View>
-      ) : BottomSheet && BottomSheetView ? (
+      ) : (
         <BottomSheet
+          style={{ setStatusBarBackgroundColor: Colors.light.background }}
           ref={sheetRef}
           snapPoints={snapPoints}
           enableDynamicSizing={false}
           onChange={handleSheetChange}
         >
           <BottomSheetView style={styles.contentContainer}>
-            <Text>Filter options go here</Text>
-            <Button title="Close" onPress={() => handleClosePress()} />
+            <Text style={styles.title}>Sort Filters By:</Text>
+            <FilterToggle />
+
+            {filtersBy === 'Category' ? (
+              <>
+                <Text style={styles.sectionTitle}>Filters:</Text>
+                <View style={styles.filterContainer}>
+                  {FILTER_OPTIONS.map(option => (
+                    <Pressable
+                      key={option}
+                      className={`w-100 rounded-lg border px-3 py-2 ${
+                        selectedFilter === option
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 bg-gray-100'
+                      }`}
+                      onPress={() =>
+                        setSelectedFilter(
+                          selectedFilter === option ? '' : option
+                        )
+                      }
+                    >
+                      <Text
+                        className={`text-sm ${
+                          selectedFilter === option
+                            ? 'text-blue-500'
+                            : 'text-gray-600'
+                        }`}
+                      >
+                        {option}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+                <Text style={styles.sectionTitle}>Filter by Cost:</Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.sectionTitle}>Location Filters:</Text>
+                <View style={styles.filterContainer}>
+                  <Text>this is where the location filters will go</Text>
+                </View>
+              </>
+            )}
           </BottomSheetView>
         </BottomSheet>
-      ) : (
-        <View style={styles.loadingContainer}>
-          <Text>Loading drawer...</Text>
-        </View>
       )}
-    </Container>
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        <Button title="Close" onPress={() => handleClosePress()} />
+        <Button title="Apply" onPress={() => handleClosePress()} />
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    top: 0,
-    left: 0,
-    zIndex: 9999,
+    flex: 1,
+    paddingTop: 200,
   },
   contentContainer: {
     flex: 1,
+    flexDirection: 'column',
+    gap: 11,
     padding: 36,
     alignItems: 'center',
+    backgroundColor: Colors.light.background,
+    paddingBottom: 50,
+    marginBottom: 15,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginTop: 16,
+    marginBottom: 12,
+  },
+  filterContainer: {
+    gap: 15,
+    marginBottom: 16,
   },
   webFallback: {
     marginTop: 20,
     padding: 16,
     alignItems: 'center',
   },
-  loadingContainer: {
-    marginTop: 20,
-    padding: 16,
+  toggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#EDECEC',
+    borderRadius: 10,
+    borderWidth: 0.2,
+    borderColor: 'black',
+    padding: 2,
+    marginVertical: 10,
+  },
+  toggleOption: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: 'white',
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  toggleOptionActive: {
+    backgroundColor: '#3B82F6',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  toggleText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  toggleTextActive: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
