@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import { Event } from '@/types/api/event';
+import { eventService } from '@/services/eventService';
 
 interface EventCardProps {
   event: Event;
@@ -8,6 +9,26 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onPress }: EventCardProps) {
+  const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    async function fetchImageUrl() {
+      try {
+        const res = await eventService.getEventImageUrl(event.id);
+        const data = await res?.json();
+        setImagePreSignedUrl(data.url);
+      } catch (err) {
+        console.error('Failed to fetch image:', err);
+      }
+    }
+
+    if (event.imageUrl) {
+      fetchImageUrl();
+    }
+  }, [event.id, event.imageUrl]);
+
   const formatDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
     return date.toLocaleDateString('en-US', {
@@ -26,12 +47,20 @@ export function EventCard({ event, onPress }: EventCardProps) {
       android_ripple={{ color: '#f0f0f0' }}
     >
       <View className="h-40 bg-gray-100">
-        <Image
-          source={{
-            uri: 'https://www.pointsoflight.org/wp-content/uploads/2021/03/AdobeStock_289737123-scaled.jpeg',
-          }}
-          className="h-full w-full"
-        />
+        {imagePreSignedUrl ? (
+          <Image
+            source={{ uri: imagePreSignedUrl }}
+            className="h-full w-full"
+          />
+        ) : (
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#eeeeee6b',
+            }}
+          />
+        )}
       </View>
 
       <View className="p-4">
