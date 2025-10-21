@@ -14,6 +14,14 @@ async function getEventById(id: string): Promise<Event | null> {
   return event;
 }
 
+async function getEventsByOrganization(
+  organizationId: string
+): Promise<Event[]> {
+  const endpoint = `event/organization/${organizationId}`;
+  const { data: events } = await api.get(endpoint);
+  return events;
+}
+
 async function searchEvents(
   query: string,
   filters?: EventFilters
@@ -38,6 +46,7 @@ async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
 export const eventService = {
   getAllEvents,
   getEventById,
+  getEventsByOrganization,
   searchEvents,
   getNearEvents,
 };
