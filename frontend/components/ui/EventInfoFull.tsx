@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -7,6 +7,7 @@ import { Fonts } from '@/constants/Fonts';
 import { Event } from '@/types/api/event';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { eventService } from '@/services/eventService';
 
 interface Props extends Event {
   onSelectTime?: (time: string) => void;
@@ -14,6 +15,7 @@ interface Props extends Event {
 }
 
 export default function EventInfoTable({
+  id,
   name,
   organization,
   address,
@@ -21,9 +23,28 @@ export default function EventInfoTable({
   startDateTime,
   endDateTime,
   timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM'],
+  imageS3Key,
 }: Props) {
   const start = startDateTime ? new Date(startDateTime) : null;
   const end = endDateTime ? new Date(endDateTime) : null;
+  const [imagePreSignedUrl, setImagePreSignedUrl] = React.useState<
+    string | null
+  >(null);
+
+  useEffect(() => {
+    async function fetchImageUrl() {
+      try {
+        const url = await eventService.getEventImageUrl(id);
+        setImagePreSignedUrl(url);
+      } catch (err) {
+        console.error('Failed to fetch image:', err);
+      }
+    }
+
+    if (imageS3Key) {
+      fetchImageUrl();
+    }
+  }, [id, imageS3Key]);
 
   const dateFormatted = start
     ? start.toLocaleString(undefined, {
@@ -57,13 +78,17 @@ export default function EventInfoTable({
     >
       <ScrollView style={styles.scrollContainer}>
         <ThemedView style={styles.container}>
-          <Image
-            source={{
-              uri: 'https://www.pointsoflight.org/wp-content/uploads/2021/03/AdobeStock_289737123-scaled.jpeg',
-            }}
-            style={styles.imagePlaceholder}
-            contentFit="cover"
-          />
+          {imagePreSignedUrl ? (
+            <Image
+              source={{
+                uri: imagePreSignedUrl,
+              }}
+              style={styles.imagePlaceholder}
+              contentFit="cover"
+            />
+          ) : (
+            <View style={styles.imagePlaceholder} />
+          )}
           <View style={styles.topRow}>
             <View style={styles.infoColumn}>
               <View style={styles.nameRow}>

@@ -36,6 +36,7 @@ export default function EventsScreen() {
           filters
         );
         setEvents(fetchedEvents);
+        console.log('Loaded events:', fetchedEvents);
       } catch (error) {
         console.error('Error loading events:', error);
         Alert.alert('Error', 'Failed to load events. Please try again.');
