@@ -22,8 +22,6 @@ interface OrgSelectProps {
 }
 
 function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
-  if (!organization) return null;
-
   const [orgEvents, setOrgEvents] = useState<Event[]>([]);
   const [eventsLoading, setEventsLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -85,9 +83,9 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
   const handleShare = async () => {
     try {
       const shareContent = {
-        message: `Check out ${organization.name}! ${organization.description || ''}`,
-        title: organization.name,
-        url: 'https://www.google.com/search?q=' + organization.name,
+        message: `Check out ${organization?.name}! ${organization?.description || ''}`,
+        title: organization?.name,
+        url: 'https://www.google.com/search?q=' + organization?.name,
       };
 
       await Share.share(shareContent);
@@ -109,6 +107,8 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
       day: 'numeric',
       year: 'numeric',
     });
+
+  if (!organization) return null;
 
   return (
     <Modal
