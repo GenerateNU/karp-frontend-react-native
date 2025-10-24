@@ -7,6 +7,7 @@ async function getItem(itemId: string) {
 
 async function getAllItems() {
   const response = await api.get(`/item/all`);
+  console.log('Fetched all items:', response.data);
   return response.data;
 }
 

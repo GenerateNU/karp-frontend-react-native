@@ -43,16 +43,16 @@ async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
   return events;
 }
 
-async function getEventImageUrl(eventId: string): Promise<string | null> {
-  try {
-    const res = await api.get(`event/${eventId}/image`);
-    const data = res.data;
-    return data.url; // data.url is the pre-signed GET URL
-  } catch (err) {
-    console.error('Failed to fetch image URL:', err);
-    return null;
-  }
-}
+// async function getEventImageUrl(eventId: string): Promise<string | null> {
+//   try {
+//     const res = await api.get(`event/${eventId}/image`);
+//     const data = res.data;
+//     return data.url; // data.url is the pre-signed GET URL
+//   } catch (err) {
+//     console.error('Failed to fetch image URL:', err);
+//     return null;
+//   }
+// }
 
 export const eventService = {
   getAllEvents,
@@ -60,5 +60,5 @@ export const eventService = {
   getEventsByOrganization,
   searchEvents,
   getNearEvents,
-  getEventImageUrl,
+  // getEventImageUrl,
 };
