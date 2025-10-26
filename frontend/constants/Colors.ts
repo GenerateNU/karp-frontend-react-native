@@ -28,6 +28,10 @@ export const Colors = {
     disabledButton: '#D3D3D3',
     orderBackground: '#EAE8E8',
     insufficientFunds: '#F32727',
+    inputBorder: '#D1D5DB',
+    transparent: 'transparent',
+    fishBlue: `#34A5E4`,
+    white: `white`,
     // Bottom nav styling to match item screen tiles
     bottomNav: '#EAE8E8',
     navIconBackground: '#FFFFFF',

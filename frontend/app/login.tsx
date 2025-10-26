@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import {
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
-  SafeAreaView,
   Text,
   TextInput,
   View,
+  TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { signIn, isLoading, isAuthenticated } = useAuth();
+  const { signIn, isLoading, isAuthenticated, fetchUserEntity } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,79 +24,134 @@ export default function LoginScreen() {
       return;
     }
     try {
-      await signIn({ username, password });
+      await signIn({
+        username: username.trimEnd(),
+        password: password.trimEnd(),
+      });
+      await fetchUserEntity();
       router.replace('/');
-    } catch {
-      // error is surfaced in context via Alert; no-op here
-    }
+    } catch {}
   }
+
+  const handleSignUp = () => {
+    router.push('/signup');
+  };
 
   React.useEffect(() => {
     if (isAuthenticated) router.replace('/');
   }, [isAuthenticated, router]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-      >
-        <View
-          style={{ flex: 1, padding: 24, justifyContent: 'center', gap: 16 }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: '600', marginBottom: 8 }}>
-            Sign in
-          </Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Sign In</Text>
+        </View>
 
-          <View style={{ gap: 8 }}>
-            <Text style={{ fontSize: 14, color: '#444' }}>Username</Text>
+        <View style={styles.form}>
+          <View style={styles.inputGroup}>
             <TextInput
               autoCapitalize="none"
-              placeholder="karp-volunteer"
+              placeholder="Username"
               value={username}
               onChangeText={setUsername}
-              style={{
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-                borderRadius: 8,
-                padding: 12,
-              }}
+              style={styles.input}
             />
           </View>
 
-          <View style={{ gap: 8 }}>
-            <Text style={{ fontSize: 14, color: '#444' }}>Password</Text>
+          <View style={styles.inputGroup}>
             <TextInput
-              placeholder="••••••••"
+              placeholder="Password"
               secureTextEntry
               value={password}
               onChangeText={setPassword}
-              style={{
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-                borderRadius: 8,
-                padding: 12,
-              }}
+              style={styles.input}
             />
           </View>
 
           <Pressable
             onPress={handleSubmit}
             disabled={isLoading}
-            style={{
-              backgroundColor: isLoading ? '#9ca3af' : '#111827',
-              paddingVertical: 12,
-              borderRadius: 8,
-              alignItems: 'center',
-              marginTop: 8,
-            }}
+            style={[styles.button, isLoading && styles.buttonDisabled]}
           >
-            <Text style={{ color: 'white', fontWeight: '600' }}>
-              {isLoading ? 'Signing in…' : 'Sign in'}
+            <Text style={styles.buttonText}>
+              {isLoading ? 'Signing in…' : 'Sign In'}
             </Text>
           </Pressable>
+
+          <View style={styles.signUpContainer}>
+            <Text style={styles.signUpText}>Don&apos;t have an account? </Text>
+            <TouchableOpacity onPress={handleSignUp}>
+              <Text style={styles.signUpLink}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  content: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#1f2937',
+  },
+  form: {
+    gap: 16,
+  },
+  inputGroup: {
+    gap: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: 'white',
+  },
+  button: {
+    backgroundColor: '#3b82f6',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  buttonDisabled: {
+    backgroundColor: '#9ca3af',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  signUpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  signUpText: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  signUpLink: {
+    fontSize: 14,
+    color: '#3b82f6',
+    fontWeight: '500',
+  },
+});

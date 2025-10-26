@@ -4,6 +4,7 @@ import {
 } from 'react-native-calendars';
 import { StyleSheet } from 'react-native';
 import { MarkedDates } from 'react-native-calendars/src/types';
+import { Colors } from '@/constants/Colors';
 
 export function Calendar({
   onDayPress,
@@ -28,6 +29,6 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: Colors.light.transparent,
   },
 });

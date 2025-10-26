@@ -46,13 +46,19 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="shop/[itemId]"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="login" options={{ title: 'Sign in' }} />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="shop/[itemId]" />
+            <Stack.Screen name="login" />
+            <Stack.Screen name="signup" />
+            <Stack.Screen name="signup-success" />
+            <Stack.Screen name="events/[eventId]/info" />
+            <Stack.Screen name="events/[eventId]/signup" />
+            <Stack.Screen name="events/[eventId]/success" />
             <Stack.Screen name="+not-found" />
           </Stack>
           <StatusBar style="auto" />
