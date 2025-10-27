@@ -16,7 +16,7 @@ export interface Item {
   expiration: string;
   price: number;
   description: string;
-  imageUrl?: string;
+  imageS3Key: string;
 }
 
 export interface ItemResponse {
@@ -27,4 +27,12 @@ export interface ItemResponse {
   time_posted: string;
   expiration: string;
   price: number;
+}
+
+export interface ShopItem {
+  id: string;
+  name: string;
+  store: string;
+  coins: number;
+  imageS3Key?: string;
 }

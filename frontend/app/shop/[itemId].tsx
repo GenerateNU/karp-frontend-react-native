@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import { BackHeader } from '@/components/common/BackHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Image } from 'expo-image';
+import { imageService } from '@/services/imageService';
 
 export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
@@ -23,6 +24,27 @@ export default function ItemDetailScreen() {
     useItemDetail(itemId);
 
   const hasEnoughCoins = userCoins >= (item?.price ?? 30);
+
+  const [imagePreSignedUrl, setImagePreSignedUrl] = React.useState<
+    string | null
+  >(null);
+
+  useEffect(() => {
+    async function fetchImageUrl() {
+      try {
+        if (item) {
+          const url = await imageService.getImageUrl('item', item.id);
+          setImagePreSignedUrl(url);
+        }
+      } catch (err) {
+        console.error('Failed to fetch image:', err);
+      }
+    }
+
+    if (item?.imageS3Key) {
+      fetchImageUrl();
+    }
+  }, [item?.id, item?.imageS3Key]);
 
   if (loading) {
     return <LoadingScreen text="Loading item details..." />;
@@ -40,13 +62,17 @@ export default function ItemDetailScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackHeader />
-        <Image
-          source={{
-            uri: 'https://tse1.mm.bing.net/th/id/OIP.OwbQJoh6_P_Jr7aaidhehAHaHa?cb=12&pid=Api&ucfimg=1',
-          }}
-          style={styles.imagePlaceholder}
-          contentFit="cover"
-        />
+        {imagePreSignedUrl ? (
+          <Image
+            source={{
+              uri: imagePreSignedUrl,
+            }}
+            style={styles.imagePlaceholder}
+            contentFit="cover"
+          />
+        ) : (
+          <View style={styles.imagePlaceholder} />
+        )}
         <Text style={styles.title}>{item.name}</Text>
 
         <Text style={styles.subtitle}>Crumbl</Text>
