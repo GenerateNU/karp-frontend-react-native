@@ -27,8 +27,6 @@ export default function OrgsScreen() {
   const [filters, setFilters] = useState<OrgFilters>({});
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
   const [showOrgModal, setShowOrgModal] = useState(false);
-  //   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
-  // const router = useRouter();
   // const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadOrganizations = useCallback(
