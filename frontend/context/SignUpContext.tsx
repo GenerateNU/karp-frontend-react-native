@@ -31,14 +31,6 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const submitSignUp = useCallback(async () => {
-    if (!data.email || !data.password || !data.firstName || !data.lastName) {
-      Alert.alert(
-        'Missing Information',
-        'Please complete all required fields.'
-      );
-      return;
-    }
-
     setIsLoading(true);
     try {
       if (

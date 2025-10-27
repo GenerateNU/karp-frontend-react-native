@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import {
-  Alert,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { Alert, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
+import { Image } from 'expo-image';
+import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
+import { SignUpFlowInput } from '@/components/signup/SignUpFlowInput';
+import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -42,42 +39,47 @@ export default function LoginScreen() {
   }, [isAuthenticated, router]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.container}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('@/assets/images/logo_temp.svg')}
+            style={styles.logo}
+          />
+        </View>
         <View style={styles.header}>
           <Text style={styles.title}>Sign In</Text>
         </View>
 
         <View style={styles.form}>
-          <View style={styles.inputGroup}>
-            <TextInput
-              autoCapitalize="none"
-              placeholder="Username"
-              value={username}
-              onChangeText={setUsername}
-              style={styles.input}
-            />
-          </View>
+          <SignUpFlowInput
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Username"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
 
-          <View style={styles.inputGroup}>
-            <TextInput
-              placeholder="Password"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-              style={styles.input}
-            />
-          </View>
+          <SignUpFlowInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry
+          />
 
-          <Pressable
-            onPress={handleSubmit}
-            disabled={isLoading}
-            style={[styles.button, isLoading && styles.buttonDisabled]}
+          <TouchableOpacity
+            style={styles.forgotPasswordContainer}
+            onPress={() => router.push('/forgot-password')}
           >
-            <Text style={styles.buttonText}>
-              {isLoading ? 'Signing in…' : 'Sign In'}
-            </Text>
-          </Pressable>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <SignUpFlowButton
+            onPress={handleSubmit}
+            text={isLoading ? 'Signing in…' : 'Sign In'}
+            style={styles.signUpFlowButton}
+            disabled={isLoading}
+          />
 
           <View style={styles.signUpContainer}>
             <Text style={styles.signUpText}>Don&apos;t have an account? </Text>
@@ -92,52 +94,38 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: Colors.light.white,
+  },
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: Colors.light.transparent,
+    paddingHorizontal: 50,
+    paddingTop: 50,
+    paddingBottom: 25,
+    justifyContent: 'flex-start',
   },
-  content: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: -20,
+  },
+  logo: {
+    width: 225,
+    height: 225,
   },
   header: {
+    marginBottom: 24,
     alignItems: 'center',
-    marginBottom: 32,
   },
   title: {
     fontSize: 28,
-    fontWeight: '600',
-    color: '#1f2937',
+    color: Colors.light.text,
+    fontFamily: Fonts.medium_500,
+    alignSelf: 'flex-start',
   },
   form: {
-    gap: 16,
-  },
-  inputGroup: {
-    gap: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: 'white',
-  },
-  button: {
-    backgroundColor: '#3b82f6',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  buttonDisabled: {
-    backgroundColor: '#9ca3af',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    gap: 20,
   },
   signUpContainer: {
     flexDirection: 'row',
@@ -147,11 +135,23 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     fontSize: 14,
-    color: '#6b7280',
+    fontFamily: Fonts.light_300,
+    color: Colors.light.text,
   },
   signUpLink: {
     fontSize: 14,
-    color: '#3b82f6',
-    fontWeight: '500',
+    color: Colors.light.fishBlue,
+    fontFamily: Fonts.medium_500,
+  },
+  signUpFlowButton: {
+    width: '100%',
+  },
+  forgotPasswordContainer: {
+    alignSelf: 'flex-end',
+    marginTop: -10,
+  },
+  forgotPasswordText: {
+    fontSize: 12,
+    fontFamily: Fonts.medium_500,
   },
 });
