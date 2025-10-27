@@ -13,8 +13,6 @@ import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '../../components/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
 
-type ShopItem = { id: string; name: string; store: string; coins: number };
-
 export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
   const [items, setItems] = useState<ShopItem[]>([]);

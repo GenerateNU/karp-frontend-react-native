@@ -6,7 +6,9 @@ import {
   Button,
   Platform,
   Pressable,
+  Dimensions,
 } from 'react-native';
+import PriceRangeSlider from './PriceRangeSlider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Colors } from '@/constants/Colors';
@@ -25,9 +27,9 @@ export default function ItemFilterDrawer({ onClose }: Props) {
     'Category'
   );
 
-  const sheetRef = useRef<any>(null);
+  const sheetRef = useRef<BottomSheet>(null);
+  const scrollViewRef = useRef(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
-  // Start at index 0 (smallest height) when mounting
 
   const handleSheetChange = useCallback(
     (index: number) => {
@@ -77,11 +79,8 @@ export default function ItemFilterDrawer({ onClose }: Props) {
       </Pressable>
     </View>
   );
-
   return (
     <GestureHandlerRootView style={styles.container}>
-      {/* Remove test buttons as they're not needed in production */}
-
       {isWeb ? (
         <View style={styles.webFallback}>
           <Text>
@@ -97,14 +96,13 @@ export default function ItemFilterDrawer({ onClose }: Props) {
           index={0}
           backgroundStyle={{ backgroundColor: Colors.light.background }}
           handleIndicatorStyle={{ backgroundColor: '#999', paddingTop: 8 }}
-          enableDynamicSizing={false}
-          enableOverDrag={true}
-          enablePanDownToClose={true}
+          enablePanDownToClose
+          enableContentPanningGesture
           onChange={handleSheetChange}
           style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
         >
-          {/* Use a scroll-capable content container so long content is visible and the sheet can size/scroll correctly */}
           <BottomSheetScrollView
+            ref={scrollViewRef}
             contentContainerStyle={styles.contentContainer}
           >
             <Text style={styles.title}>Sort Filters By:</Text>
@@ -117,11 +115,10 @@ export default function ItemFilterDrawer({ onClose }: Props) {
                   {FILTER_OPTIONS.map(option => (
                     <Pressable
                       key={option}
-                      className={`w-100 rounded-lg border px-3 py-2 ${
-                        selectedFilter === option
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 bg-gray-100'
-                      }`}
+                      style={[
+                        styles.filterOption,
+                        selectedFilter === option && styles.filterOptionActive,
+                      ]}
                       onPress={() =>
                         setSelectedFilter(
                           selectedFilter === option ? '' : option
@@ -129,11 +126,11 @@ export default function ItemFilterDrawer({ onClose }: Props) {
                       }
                     >
                       <Text
-                        className={`text-sm ${
-                          selectedFilter === option
-                            ? 'text-blue-500'
-                            : 'text-gray-600'
-                        }`}
+                        style={[
+                          styles.filterOptionText,
+                          selectedFilter === option &&
+                            styles.filterOptionTextActive,
+                        ]}
                       >
                         {option}
                       </Text>
@@ -141,6 +138,19 @@ export default function ItemFilterDrawer({ onClose }: Props) {
                   ))}
                 </View>
                 <Text style={styles.sectionTitle}>Filter by Cost:</Text>
+                <View style={styles.priceRangeContainer}>
+                  <PriceRangeSlider
+                    onRangeChange={(min, max) => {
+                      console.log(`Price range: ${min} - ${max}`);
+                      // TODO: Add to filters
+                    }}
+                    width={Dimensions.get('window').width - 72}
+                  />
+                  <View style={styles.priceFilterContainer}>
+                    <Text style={styles.priceFilterText}>0 </Text>
+                    <Text style={styles.priceFilterText}>100+ </Text>
+                  </View>
+                </View>
               </>
             ) : (
               <>
@@ -171,15 +181,19 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
+  priceRangeContainer: {
+    width: '100%',
+    paddingVertical: 10,
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
   contentContainer: {
-    flex: 1,
     flexDirection: 'column',
     gap: 11,
     padding: 36,
+    paddingBottom: 50,
     alignItems: 'center',
     backgroundColor: Colors.light.background,
-    paddingBottom: 50,
-    marginBottom: 15,
   },
   title: {
     fontSize: 16,
@@ -234,5 +248,43 @@ const styles = StyleSheet.create({
   toggleTextActive: {
     color: 'white',
     fontWeight: '600',
+  },
+  priceFilterContainer: {
+    width: '100%',
+    height: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 300,
+    // display: 'inline-flex',
+  },
+  priceFilterText: {
+    width: 18,
+    color: 'black',
+    fontSize: 12,
+    fontFamily: 'Josefin Sans',
+    fontWeight: '300',
+    wordWrap: 'break-word',
+  },
+  filterOption: {
+    width: '100%',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 8,
+  },
+  filterOptionActive: {
+    borderColor: '#3B82F6',
+    backgroundColor: '#EFF6FF',
+  },
+  filterOptionText: {
+    fontSize: 14,
+    color: '#4B5563',
+  },
+  filterOptionTextActive: {
+    color: '#3B82F6',
   },
 });
