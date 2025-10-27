@@ -10,6 +10,7 @@ export const Colors = {
   light: {
     text: '#000000',
     background: '#D9D9D9',
+    eggshellWhite: '#FFFDFA',
     primary: '#90D0CD',
     primaryPressed: '#628fa4ff',
     formInputBackground: '#F3F2F2',
@@ -32,6 +33,14 @@ export const Colors = {
     bottomNav: '#EAE8E8',
     navIconBackground: '#FFFFFF',
     navIconBorder: '#000000',
+    // Profile specific colors
+    cardBackground: '#9D9D9D',
+    cardBorder: '#000000',
+    fishTankWater: '#D9D9D9',
+    fishTankBase: '#9D9D9D',
+    progressBarBackground: '#9D9D9D',
+    progressBarFill: '#375361',
+    textSecondary: '#666464',
   },
   dark: {
     text: '#ECEDEE',

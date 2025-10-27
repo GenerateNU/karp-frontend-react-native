@@ -53,7 +53,9 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="login" options={{ title: 'Sign in' }} />
-            <Stack.Screen name="+not-found" />
+            <Stack.Screen name="+not-found" /> 
+            <Stack.Screen name="profile/events/past" options={{ headerShown: false }} />
+            <Stack.Screen name="profile/settings" options={{ headerShown: false }} />
           </Stack>
           <StatusBar style="auto" />
         </AuthProvider>

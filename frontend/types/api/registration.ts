@@ -1,9 +1,16 @@
+export enum RegistrationStatus {
+  UPCOMING = 'upcoming',
+  COMPLETED = 'completed',
+  INCOMPLETED = 'incompleted',
+  UNREGISTERED = 'unregistered',
+}
+
 export interface Registration {
   id: string;
-  event_id: string;
-  volunteer_id: string;
-  registered_at: string;
-  registration_status: string;
-  clocked_in: boolean;
-  clocked_out: boolean;
+  eventId: string;
+  volunteerId: string;
+  registeredAt: string;
+  registrationStatus: RegistrationStatus;
+  clockedIn: string | null;
+  clockedOut: string | null;
 }
