@@ -8,7 +8,7 @@ import {
   Pressable,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Colors } from '@/constants/Colors';
 
 interface Props {
@@ -25,24 +25,10 @@ export default function ItemFilterDrawer({ onClose }: Props) {
     'Category'
   );
 
-  // useEffect(() => {
-  //   if (!isWeb) {
-  //     try {
-  //       // avoid static analysis by Metro/webpack by using eval('require')
-
-  //       const req: any = eval('require');
-  //       const mod = req('@gorhom/bottom-sheet');
-  //       setBottomSheetComp(mod.default || mod);
-  //       setBottomSheetViewComp(mod.BottomSheetView || mod.BottomSheetView);
-  //     } catch (err) {
-  //       // package not available on this platform — fallback UI will be used
-  //       console.log(err);
-  //     }
-  //   }
-  // }, [isWeb]);
-
   const sheetRef = useRef<any>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
+  // Start at index 0 (smallest height) when mounting
+
   const handleSheetChange = useCallback(
     (index: number) => {
       // if sheet closes (some libs use -1 for closed) call onClose
@@ -51,9 +37,6 @@ export default function ItemFilterDrawer({ onClose }: Props) {
     [onClose]
   );
 
-  const handleSnapPress = useCallback((index: number) => {
-    sheetRef.current?.snapToIndex(index);
-  }, []);
   const handleClosePress = useCallback(() => {
     sheetRef.current?.close?.();
     if (onClose) onClose();
@@ -97,10 +80,7 @@ export default function ItemFilterDrawer({ onClose }: Props) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <Button title="Snap To 90%" onPress={() => handleSnapPress(2)} />
-      <Button title="Snap To 50%" onPress={() => handleSnapPress(1)} />
-      <Button title="Snap To 25%" onPress={() => handleSnapPress(0)} />
-      <Button title="Close" onPress={() => handleClosePress()} />
+      {/* Remove test buttons as they're not needed in production */}
 
       {isWeb ? (
         <View style={styles.webFallback}>
@@ -112,13 +92,21 @@ export default function ItemFilterDrawer({ onClose }: Props) {
         </View>
       ) : (
         <BottomSheet
-          style={{ setStatusBarBackgroundColor: Colors.light.background }}
           ref={sheetRef}
           snapPoints={snapPoints}
+          index={0}
+          backgroundStyle={{ backgroundColor: Colors.light.background }}
+          handleIndicatorStyle={{ backgroundColor: '#999', paddingTop: 8 }}
           enableDynamicSizing={false}
+          enableOverDrag={true}
+          enablePanDownToClose={true}
           onChange={handleSheetChange}
+          style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
         >
-          <BottomSheetView style={styles.contentContainer}>
+          {/* Use a scroll-capable content container so long content is visible and the sheet can size/scroll correctly */}
+          <BottomSheetScrollView
+            contentContainerStyle={styles.contentContainer}
+          >
             <Text style={styles.title}>Sort Filters By:</Text>
             <FilterToggle />
 
@@ -162,21 +150,26 @@ export default function ItemFilterDrawer({ onClose }: Props) {
                 </View>
               </>
             )}
-          </BottomSheetView>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Button title="Close" onPress={() => handleClosePress()} />
+              <Button title="Apply" onPress={() => handleClosePress()} />
+            </View>
+          </BottomSheetScrollView>
         </BottomSheet>
       )}
-      <View style={{ flexDirection: 'row', gap: 10 }}>
-        <Button title="Close" onPress={() => handleClosePress()} />
-        <Button title="Apply" onPress={() => handleClosePress()} />
-      </View>
     </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 200,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   contentContainer: {
     flex: 1,

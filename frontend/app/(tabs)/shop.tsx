@@ -63,61 +63,27 @@ export default function StoreScreen() {
   }
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#8ecde8', dark: '#8ecde8' }}
-      headerImage={
-        <ThemedView
-          lightColor="#8ecde8"
-          darkColor="#8ecde8"
-          className="flex-1 items-center justify-end pb-5"
-        >
-          <ThemedText
-            type="title"
-            className="text-center text-3xl font-extrabold text-white"
-            style={{ fontFamily: Fonts.regular_400 }}
-          >
-            Gift Shop
-          </ThemedText>
-
+    <>
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: '#8ecde8', dark: '#8ecde8' }}
+        headerImage={
           <ThemedView
             lightColor="#8ecde8"
             darkColor="#8ecde8"
-            className="mt-6 w-full flex-row items-center justify-between px-6"
+            className="flex-1 items-center justify-end pb-5"
           >
             <ThemedText
-              type="subtitle"
-              style={{
-                color: 'white',
-                fontSize: 20,
-                fontFamily: Fonts.medium_500,
-              }}
+              type="title"
+              className="text-center text-3xl font-extrabold text-white"
+              style={{ fontFamily: Fonts.regular_400 }}
             >
-              Level 10
+              Gift Shop
             </ThemedText>
 
-            <ThemedText
-              type="subtitle"
-              style={{
-                color: 'white',
-                fontSize: 20,
-                fontFamily: Fonts.medium_500,
-              }}
-            >
-              {volunteer?.coins ?? 0} coins
-            </ThemedText>
-
-            <TouchableOpacity
-              onPress={() => {
-                throw new Error('History button not implemented yet');
-              }}
-              style={{
-                backgroundColor: 'rgba(12, 120, 128, 0.5)', // semi-dark circle
-                paddingHorizontal: 10, // allow text to fit
-                paddingVertical: 10,
-                borderRadius: 20,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+            <ThemedView
+              lightColor="#8ecde8"
+              darkColor="#8ecde8"
+              className="mt-6 w-full flex-row items-center justify-between px-6"
             >
               <ThemedText
                 type="subtitle"
@@ -127,145 +93,181 @@ export default function StoreScreen() {
                   fontFamily: Fonts.medium_500,
                 }}
               >
-                History &gt;
+                Level 10
               </ThemedText>
-            </TouchableOpacity>
+
+              <ThemedText
+                type="subtitle"
+                style={{
+                  color: 'white',
+                  fontSize: 20,
+                  fontFamily: Fonts.medium_500,
+                }}
+              >
+                {volunteer?.coins ?? 0} coins
+              </ThemedText>
+
+              <TouchableOpacity
+                onPress={() => {
+                  throw new Error('History button not implemented yet');
+                }}
+                style={{
+                  backgroundColor: 'rgba(12, 120, 128, 0.5)', // semi-dark circle
+                  paddingHorizontal: 10, // allow text to fit
+                  paddingVertical: 10,
+                  borderRadius: 20,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <ThemedText
+                  type="subtitle"
+                  style={{
+                    color: 'white',
+                    fontSize: 20,
+                    fontFamily: Fonts.medium_500,
+                  }}
+                >
+                  History &gt;
+                </ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
           </ThemedView>
-        </ThemedView>
-      }
-    >
-      <ThemedView
-        lightColor="#F2F2F2"
-        darkColor="#FFFFF"
-        className="flex-1 px-4"
+        }
       >
-        <SearchInputWithFilter
-          value={searchText}
-          onChangeText={setSearchText}
-          onFilterPress={() => setDrawerOpen(true)}
-        />
-
-        {/* Popular in Boston */}
-        <ThemedText
-          className="mb-2 text-lg font-bold text-black"
-          style={{
-            color: 'black',
-            textAlign: 'left',
-            marginTop: 4,
-            fontFamily: Fonts.regular_400,
-            fontSize: 20,
-          }}
+        <ThemedView
+          lightColor="#F2F2F2"
+          darkColor="#FFFFF"
+          className="flex-1 px-4"
         >
-          Popular in Boston
-        </ThemedText>
-        {(() => {
-          const popularItems = filteredItems.slice(0, 3);
-          return (
-            <FlatList
-              horizontal
-              data={popularItems}
-              keyExtractor={item => item.id}
-              renderItem={({ item, index }) => (
-                <CarouselItem
-                  id={item.id}
-                  name={item.name}
-                  coins={item.coins}
-                  index={index}
-                  count={popularItems.length}
-                  onPress={handlePress}
-                />
-              )}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingLeft: 0,
-                paddingRight: 0,
-                marginBottom: 20,
-              }}
-            />
-          );
-        })()}
+          <SearchInputWithFilter
+            value={searchText}
+            onChangeText={setSearchText}
+            onFilterPress={() => setDrawerOpen(true)}
+          />
 
-        <ThemedText
-          className="mb-2 text-lg font-bold text-black"
-          style={{
-            color: 'black',
-            textAlign: 'left',
-            marginTop: 4,
-            fontFamily: Fonts.regular_400,
-            fontSize: 20,
-          }}
-        >
-          Sweet Treats
-        </ThemedText>
-        {(() => {
-          const sweetItems = filteredItems.slice(2, 5);
-          return (
-            <FlatList
-              horizontal
-              data={sweetItems}
-              keyExtractor={item => item.id}
-              renderItem={({ item, index }) => (
-                <CarouselItem
-                  id={item.id}
-                  name={item.name}
-                  coins={item.coins}
-                  index={index}
-                  count={sweetItems.length}
-                  onPress={handlePress}
-                />
-              )}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingLeft: 0,
-                paddingRight: 0,
-                marginBottom: 20,
-              }}
-            />
-          );
-        })()}
+          {/* Popular in Boston */}
+          <ThemedText
+            className="mb-2 text-lg font-bold text-black"
+            style={{
+              color: 'black',
+              textAlign: 'left',
+              marginTop: 4,
+              fontFamily: Fonts.regular_400,
+              fontSize: 20,
+            }}
+          >
+            Popular in Boston
+          </ThemedText>
+          {(() => {
+            const popularItems = filteredItems.slice(0, 3);
+            return (
+              <FlatList
+                horizontal
+                data={popularItems}
+                keyExtractor={item => item.id}
+                renderItem={({ item, index }) => (
+                  <CarouselItem
+                    id={item.id}
+                    name={item.name}
+                    coins={item.coins}
+                    index={index}
+                    count={popularItems.length}
+                    onPress={handlePress}
+                  />
+                )}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                  marginBottom: 20,
+                }}
+              />
+            );
+          })()}
 
-        {/* Rewards */}
-        <ThemedText
-          className="mb-2 text-lg font-bold text-black"
-          style={{
-            color: 'black',
-            textAlign: 'left',
-            marginTop: 4,
-            fontFamily: Fonts.regular_400,
-            fontSize: 20,
-          }}
-        >
-          Shopping Spree
-        </ThemedText>
-        {(() => {
-          const spreeItems = filteredItems.slice(3, 6);
-          return (
-            <FlatList
-              horizontal
-              data={spreeItems}
-              keyExtractor={item => item.id}
-              renderItem={({ item, index }) => (
-                <CarouselItem
-                  id={item.id}
-                  name={item.name}
-                  coins={item.coins}
-                  index={index}
-                  count={spreeItems.length}
-                  onPress={handlePress}
-                />
-              )}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingLeft: 0,
-                paddingRight: 0,
-                marginBottom: 20,
-              }}
-            />
-          );
-        })()}
-      </ThemedView>
-      {/* render drawer only when requested */}
+          <ThemedText
+            className="mb-2 text-lg font-bold text-black"
+            style={{
+              color: 'black',
+              textAlign: 'left',
+              marginTop: 4,
+              fontFamily: Fonts.regular_400,
+              fontSize: 20,
+            }}
+          >
+            Sweet Treats
+          </ThemedText>
+          {(() => {
+            const sweetItems = filteredItems.slice(2, 5);
+            return (
+              <FlatList
+                horizontal
+                data={sweetItems}
+                keyExtractor={item => item.id}
+                renderItem={({ item, index }) => (
+                  <CarouselItem
+                    id={item.id}
+                    name={item.name}
+                    coins={item.coins}
+                    index={index}
+                    count={sweetItems.length}
+                    onPress={handlePress}
+                  />
+                )}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                  marginBottom: 20,
+                }}
+              />
+            );
+          })()}
+
+          {/* Rewards */}
+          <ThemedText
+            className="mb-2 text-lg font-bold text-black"
+            style={{
+              color: 'black',
+              textAlign: 'left',
+              marginTop: 4,
+              fontFamily: Fonts.regular_400,
+              fontSize: 20,
+            }}
+          >
+            Shopping Spree
+          </ThemedText>
+          {(() => {
+            const spreeItems = filteredItems.slice(3, 6);
+            return (
+              <FlatList
+                horizontal
+                data={spreeItems}
+                keyExtractor={item => item.id}
+                renderItem={({ item, index }) => (
+                  <CarouselItem
+                    id={item.id}
+                    name={item.name}
+                    coins={item.coins}
+                    index={index}
+                    count={spreeItems.length}
+                    onPress={handlePress}
+                  />
+                )}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                  marginBottom: 20,
+                }}
+              />
+            );
+          })()}
+        </ThemedView>
+      </ParallaxScrollView>
+      {/* Position drawer outside the scroll view to keep it fixed to viewport bottom */}
       {drawerOpen && <ItemFilterDrawer onClose={() => setDrawerOpen(false)} />}
-    </ParallaxScrollView>
+    </>
   );
 }
