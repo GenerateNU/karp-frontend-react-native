@@ -10,7 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { itemService } from '@/services/itemService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
-import ItemFilterDrawer from '../../components/ItemFilterDrawer';
+import ItemFilterDrawer from '../../components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
 export interface ItemFilters {
   priceRange: { min: number; max: number };
