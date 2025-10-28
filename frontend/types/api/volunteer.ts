@@ -30,8 +30,9 @@ export interface Volunteer {
   id: string;
   first_name: string;
   last_name: string;
-  age: number;
   coins: number;
+  preferred_name?: string;
+  birth_date: string;
   preferences: EventType[];
   qualifications: Qualification[];
   preferred_days: DayOfWeek[];
@@ -43,8 +44,9 @@ export interface Volunteer {
 export interface CreateVolunteerRequest {
   first_name: string;
   last_name: string;
-  age: number;
   coins: number;
+  preferred_name?: string;
+  birth_date: string;
   preferences: EventType[];
   qualifications?: Qualification[];
   preferred_days?: DayOfWeek[];

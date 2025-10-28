@@ -35,7 +35,5 @@ export type CreateUserRequest = {
   password: string;
   first_name: string;
   last_name: string;
-  preferred_name?: string;
-  birth_date: string;
   user_type: UserType;
 };

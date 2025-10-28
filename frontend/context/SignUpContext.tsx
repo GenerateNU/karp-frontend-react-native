@@ -52,8 +52,6 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
         password: data.password.trimEnd(),
         first_name: data.firstName.trimEnd(),
         last_name: data.lastName.trimEnd(),
-        preferred_name: data.preferredName?.trimEnd(),
-        birth_date: data.birthday,
         user_type: UserType.VOLUNTEER,
       });
 
@@ -82,8 +80,9 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
         await volunteerService.createVolunteer({
           first_name: data.firstName,
           last_name: data.lastName,
-          age: calculateAge(data.birthday),
           coins: 0,
+          preferred_name: data.preferredName?.trimEnd(),
+          birth_date: data.birthday,
           preferences: data.preferences,
           qualifications: data.qualifications || [],
           preferred_days: data.preferredDays || [],
@@ -134,20 +133,4 @@ export function useSignUp(): SignUpContextType {
     throw new Error('useSignUp must be used within SignUpProvider');
   }
   return context;
-}
-
-function calculateAge(birthday: string): number {
-  const today = new Date();
-  const birthDate = new Date(birthday);
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-
-  if (
-    monthDiff < 0 ||
-    (monthDiff === 0 && today.getDate() < birthDate.getDate())
-  ) {
-    age--;
-  }
-
-  return age;
 }

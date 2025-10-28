@@ -7,7 +7,7 @@ import { Button } from '@/components/common/Button';
 import { useAuth } from '@/context/AuthContext';
 import { ThemedView } from '../ThemedView';
 import { Event } from '@/types/api/event';
-import { createRegistration } from '@/services/registration';
+import { createRegistration } from '@/services/registrationService';
 import { router } from 'expo-router';
 
 interface EventSignUpFormProps {
