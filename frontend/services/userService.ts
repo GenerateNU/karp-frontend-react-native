@@ -1,5 +1,5 @@
 import api from '@/api';
-import { LoginResponse } from '@/types/api/user';
+import { AuthUser, CreateUserRequest, LoginResponse } from '@/types/api/user';
 
 async function login(params: {
   username: string;
@@ -11,6 +11,12 @@ async function login(params: {
   return response.data as LoginResponse;
 }
 
+async function createUser(params: CreateUserRequest): Promise<AuthUser> {
+  const response = await api.post('/user/', params, {});
+  return response.data;
+}
+
 export const userService = {
   login,
+  createUser,
 };

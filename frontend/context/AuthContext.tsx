@@ -21,6 +21,7 @@ type AuthContextValue = {
   isLoading: boolean;
   signIn: (params: { username: string; password: string }) => Promise<void>;
   signOut: () => void;
+  fetchUserEntity: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -42,11 +43,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setAuthToken(accessToken);
 
-        const volunteerResponse = await volunteerService.getSelf();
-
         setUser(userResponse);
         setToken(accessToken);
-        setVolunteer(volunteerResponse);
 
         // Persist on web to survive page refresh
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
@@ -55,10 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             window.localStorage.setItem(
               'auth_user',
               JSON.stringify(userResponse)
-            );
-            window.localStorage.setItem(
-              'volunteer',
-              JSON.stringify(volunteerResponse)
             );
           } catch {}
         }
@@ -72,6 +66,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     []
   );
+
+  const fetchUserEntity = useCallback(async () => {
+    if (!user?.entityId) return;
+
+    // only fetch volunteer for now
+    const volunteerResponse = await volunteerService.getSelf();
+    setVolunteer(volunteerResponse);
+  }, [user?.entityId]);
 
   const signOut = useCallback(() => {
     setUser(null);
@@ -95,8 +97,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading,
       signIn,
       signOut,
+      fetchUserEntity,
     }),
-    [user, volunteer, token, isLoading, signIn, signOut]
+    [user, volunteer, token, isLoading, signIn, signOut, fetchUserEntity]
   );
 
   useEffect(() => {

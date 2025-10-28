@@ -5,6 +5,7 @@ import {
   Pressable,
   Modal,
   ScrollView,
+  // Linking,
   Image,
   Share,
 } from 'react-native';

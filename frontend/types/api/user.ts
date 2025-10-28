@@ -1,10 +1,17 @@
+export enum UserType {
+  VOLUNTEER = 'VOLUNTEER',
+  VENDOR = 'VENDOR',
+  ORGANIZATION = 'ORGANIZATION',
+  ADMIN = 'ADMIN',
+}
+
 export type AuthUser = {
   id: string;
   username: string;
   email?: string;
   firstName?: string;
   lastName?: string;
-  userType?: string;
+  userType?: UserType;
   entityId?: string | null;
 };
 
@@ -17,7 +24,16 @@ export type LoginResponse = {
     username: string;
     firstName?: string;
     lastName?: string;
-    userType?: string;
+    userType?: UserType;
     entityId?: string | null;
   };
+};
+
+export type CreateUserRequest = {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  userType: UserType;
 };
