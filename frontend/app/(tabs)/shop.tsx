@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { FlatList, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -9,8 +9,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { itemService } from '@/services/itemService';
 import { LoadingScreen } from '@/components/LoadingScreen';
-
-type ShopItem = { id: string; name: string; store: string; coins: number };
+import { ShopItem } from '@/types/api/item';
 
 export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
@@ -19,29 +18,32 @@ export default function StoreScreen() {
   const router = useRouter();
   const { volunteer, token } = useAuth();
 
-  useEffect(() => {
-    const loadItems = async () => {
-      try {
-        setLoading(true);
-        if (!token) return;
-        const response = await itemService.getAllItems();
-        const mapped: ShopItem[] = (
-          Array.isArray(response) ? response : []
-        ).map((raw: any) => ({
-          id: raw.id || raw._id || raw.item_id,
+  const loadItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      if (!token) return;
+      const response = await itemService.getAllItems();
+      const mapped: ShopItem[] = (Array.isArray(response) ? response : []).map(
+        (raw: any) => ({
+          id: raw.id,
           name: raw.name ?? 'Unnamed',
           store: raw.vendor_name ?? raw.vendor_id ?? 'Unknown',
-          coins: raw.price ?? raw.coins ?? 0,
-        }));
-        setItems(mapped);
-      } catch (e) {
-        Alert.alert('Error', `Failed to load items. Please try again ${e}.`);
-      } finally {
-        setLoading(false);
-      }
-    };
+          coins: raw.price ?? 0,
+          imageS3Key: raw.imageS3Key || null,
+        })
+      );
+      setItems(mapped);
+      console.log('Loaded items:', mapped);
+    } catch (e) {
+      Alert.alert('Error', `Failed to load items. Please try again ${e}.`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
     loadItems();
-  }, [token]);
+  }, [loadItems]);
 
   const filteredItems = useMemo(
     () =>
@@ -158,7 +160,8 @@ export default function StoreScreen() {
           Popular in Boston
         </ThemedText>
         {(() => {
-          const popularItems = filteredItems.slice(0, 3);
+          // values are hardcoded right now, will change later
+          const popularItems = filteredItems.slice(0, 12);
           return (
             <FlatList
               horizontal
@@ -171,6 +174,7 @@ export default function StoreScreen() {
                   coins={item.coins}
                   index={index}
                   count={popularItems.length}
+                  imageS3Key={item.imageS3Key}
                   onPress={handlePress}
                 />
               )}
@@ -197,6 +201,7 @@ export default function StoreScreen() {
           Sweet Treats
         </ThemedText>
         {(() => {
+          // values are hardcoded right now, will change later
           const sweetItems = filteredItems.slice(2, 5);
           return (
             <FlatList
@@ -210,6 +215,7 @@ export default function StoreScreen() {
                   coins={item.coins}
                   index={index}
                   count={sweetItems.length}
+                  imageS3Key={item.imageS3Key}
                   onPress={handlePress}
                 />
               )}
@@ -250,6 +256,7 @@ export default function StoreScreen() {
                   coins={item.coins}
                   index={index}
                   count={spreeItems.length}
+                  imageS3Key={item.imageS3Key}
                   onPress={handlePress}
                 />
               )}

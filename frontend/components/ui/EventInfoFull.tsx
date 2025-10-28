@@ -7,7 +7,7 @@ import { Fonts } from '@/constants/Fonts';
 import { Event } from '@/types/api/event';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { eventService } from '@/services/eventService';
+import { imageService } from '@/services/imageService';
 
 interface Props extends Event {
   onSelectTime?: (time: string) => void;
@@ -34,7 +34,7 @@ export default function EventInfoTable({
   useEffect(() => {
     async function fetchImageUrl() {
       try {
-        const url = await eventService.getEventImageUrl(id);
+        const url = await imageService.getImageUrl('event', id);
         setImagePreSignedUrl(url);
       } catch (err) {
         console.error('Failed to fetch image:', err);
