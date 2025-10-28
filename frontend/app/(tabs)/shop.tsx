@@ -12,12 +12,23 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '../../components/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
+export interface ItemFilters {
+  priceRange: { min: number; max: number };
+  category: string;
+  location: string;
+}
 
 export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
   const [items, setItems] = useState<ShopItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [filters, setFilters] = useState<ItemFilters>({
+    priceRange: { min: 0, max: 100 },
+    category: '',
+    location: '',
+  });
+
   const router = useRouter();
   const { volunteer, token } = useAuth();
 
@@ -48,16 +59,34 @@ export default function StoreScreen() {
     loadItems();
   }, [loadItems]);
 
-  const filteredItems = useMemo(
-    () =>
-      items.filter(item =>
-        item.name.toLowerCase().includes(searchText.toLowerCase())
-      ),
-    [items, searchText]
-  );
+  const filteredItems = useMemo(() => {
+    return items.filter(item => {
+      // Search filter
+      const matchesSearch = item.name
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
+
+      // Price range filter
+      const matchesPrice =
+        item.coins >= filters.priceRange.min &&
+        item.coins <= filters.priceRange.max;
+
+      // Category filter (if you have categories in your data)
+      const matchesCategory =
+        !filters.category ||
+        item.name.toLowerCase().includes(filters.category.toLowerCase());
+
+      return matchesSearch && matchesPrice && matchesCategory;
+    });
+  }, [items, searchText, filters]);
 
   const handlePress = (itemId: string) => {
     router.push(`/shop/${itemId}`);
+  };
+
+  const handleApplyFilters = (newFilters: ItemFilters) => {
+    setFilters(newFilters);
+    setDrawerOpen(false);
   };
 
   if (loading) {
@@ -114,8 +143,8 @@ export default function StoreScreen() {
                   throw new Error('History button not implemented yet');
                 }}
                 style={{
-                  backgroundColor: 'rgba(12, 120, 128, 0.5)', // semi-dark circle
-                  paddingHorizontal: 10, // allow text to fit
+                  backgroundColor: 'rgba(12, 120, 128, 0.5)',
+                  paddingHorizontal: 10,
                   paddingVertical: 10,
                   borderRadius: 20,
                   justifyContent: 'center',
@@ -148,7 +177,6 @@ export default function StoreScreen() {
             onFilterPress={() => setDrawerOpen(true)}
           />
 
-          {/* Popular in Boston */}
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
@@ -202,7 +230,6 @@ export default function StoreScreen() {
             Sweet Treats
           </ThemedText>
           {(() => {
-            // values are hardcoded right now, will change later
             const sweetItems = filteredItems.slice(2, 5);
             return (
               <FlatList
@@ -230,7 +257,6 @@ export default function StoreScreen() {
             );
           })()}
 
-          {/* Rewards */}
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
@@ -272,8 +298,14 @@ export default function StoreScreen() {
           })()}
         </ThemedView>
       </ParallaxScrollView>
-      {/* Position drawer outside the scroll view to keep it fixed to viewport bottom */}
-      {drawerOpen && <ItemFilterDrawer onClose={() => setDrawerOpen(false)} />}
+
+      {drawerOpen && (
+        <ItemFilterDrawer
+          currentFilters={filters}
+          onApplyFilters={handleApplyFilters}
+          onClose={() => setDrawerOpen(false)}
+        />
+      )}
     </>
   );
 }

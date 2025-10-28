@@ -1,39 +1,40 @@
 import React, { useCallback, useRef, useMemo, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  Platform,
-  Pressable,
-  Dimensions,
-} from 'react-native';
-import PriceRangeSlider from './PriceRangeSlider';
+import { StyleSheet, View, Text, Platform, Pressable } from 'react-native';
+import { Button } from './common/Button';
+import PriceRangeInput from './PriceRangeInput';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Colors } from '@/constants/Colors';
+import { ItemFilters } from '@/app/(tabs)/shop';
 
 interface Props {
+  currentFilters: ItemFilters;
+  onApplyFilters: (filters: ItemFilters) => void;
   onClose?: () => void;
 }
 
 const FILTER_OPTIONS = ['LOCAL', 'FOOD', 'GIFT CARDS'];
 
-export default function ItemFilterDrawer({ onClose }: Props) {
+export default function ItemFilterDrawer({
+  currentFilters,
+  onApplyFilters,
+  onClose,
+}: Props) {
   const isWeb = Platform.OS === 'web';
 
-  const [selectedFilter, setSelectedFilter] = useState<string>('');
+  const [selectedFilter, setSelectedFilter] = useState<string>(
+    currentFilters.category
+  );
+  const [priceRange, setPriceRange] = useState(currentFilters.priceRange);
   const [filtersBy, setFiltersBy] = useState<'Category' | 'Location'>(
     'Category'
   );
 
-  const sheetRef = useRef<BottomSheet>(null);
-  const scrollViewRef = useRef(null);
+  const sheetRef = useRef<any>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
 
   const handleSheetChange = useCallback(
     (index: number) => {
-      // if sheet closes (some libs use -1 for closed) call onClose
       if (index === -1 && onClose) onClose();
     },
     [onClose]
@@ -43,6 +44,16 @@ export default function ItemFilterDrawer({ onClose }: Props) {
     sheetRef.current?.close?.();
     if (onClose) onClose();
   }, [onClose]);
+
+  const handleApplyPress = useCallback(() => {
+    const newFilters: ItemFilters = {
+      priceRange,
+      category: selectedFilter,
+      location: '',
+    };
+    onApplyFilters(newFilters);
+  }, [priceRange, selectedFilter, onApplyFilters]);
+
   const FilterToggle = () => (
     <View style={styles.toggleContainer}>
       <Pressable
@@ -52,14 +63,7 @@ export default function ItemFilterDrawer({ onClose }: Props) {
         ]}
         onPress={() => setFiltersBy('Category')}
       >
-        <Text
-          style={[
-            styles.toggleText,
-            filtersBy === 'Category' && styles.toggleTextActive,
-          ]}
-        >
-          Category
-        </Text>
+        <Text style={styles.toggleText}>Category</Text>
       </Pressable>
       <Pressable
         style={[
@@ -68,17 +72,11 @@ export default function ItemFilterDrawer({ onClose }: Props) {
         ]}
         onPress={() => setFiltersBy('Location')}
       >
-        <Text
-          style={[
-            styles.toggleText,
-            filtersBy === 'Location' && styles.toggleTextActive,
-          ]}
-        >
-          Location
-        </Text>
+        <Text style={styles.toggleText}>Location</Text>
       </Pressable>
     </View>
   );
+
   return (
     <GestureHandlerRootView style={styles.container}>
       {isWeb ? (
@@ -87,7 +85,7 @@ export default function ItemFilterDrawer({ onClose }: Props) {
             Bottom sheet not available on web. Use native device to view the
             drawer.
           </Text>
-          <Button title="Dismiss" onPress={() => onClose && onClose()} />
+          <Button text="Dismiss" onPress={() => onClose && onClose()} />
         </View>
       ) : (
         <BottomSheet
@@ -96,13 +94,13 @@ export default function ItemFilterDrawer({ onClose }: Props) {
           index={0}
           backgroundStyle={{ backgroundColor: Colors.light.background }}
           handleIndicatorStyle={{ backgroundColor: '#999', paddingTop: 8 }}
-          enablePanDownToClose
-          enableContentPanningGesture
+          enableDynamicSizing={false}
+          enableOverDrag={false}
+          enablePanDownToClose={true}
           onChange={handleSheetChange}
           style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
         >
           <BottomSheetScrollView
-            ref={scrollViewRef}
             contentContainerStyle={styles.contentContainer}
           >
             <Text style={styles.title}>Sort Filters By:</Text>
@@ -139,30 +137,37 @@ export default function ItemFilterDrawer({ onClose }: Props) {
                 </View>
                 <Text style={styles.sectionTitle}>Filter by Cost:</Text>
                 <View style={styles.priceRangeContainer}>
-                  <PriceRangeSlider
-                    onRangeChange={(min, max) => {
-                      console.log(`Price range: ${min} - ${max}`);
-                      // TODO: Add to filters
-                    }}
-                    width={Dimensions.get('window').width - 72}
+                  <PriceRangeInput
+                    minValue={priceRange.min}
+                    maxValue={priceRange.max}
+                    onMinChange={min => setPriceRange({ ...priceRange, min })}
+                    onMaxChange={max => setPriceRange({ ...priceRange, max })}
                   />
-                  <View style={styles.priceFilterContainer}>
-                    <Text style={styles.priceFilterText}>0 </Text>
-                    <Text style={styles.priceFilterText}>100+ </Text>
-                  </View>
                 </View>
               </>
             ) : (
               <>
                 <Text style={styles.sectionTitle}>Location Filters:</Text>
-                <View style={styles.filterContainer}>
-                  <Text>this is where the location filters will go</Text>
+                <View style={styles.locationContainer}>
+                  <View style={styles.mapPlaceholder}>
+                    <View style={styles.locationButtons}>
+                      <Pressable style={styles.locationButton}>
+                        <Text style={styles.locationButtonText}>
+                          Use my location
+                        </Text>
+                      </Pressable>
+                      <Pressable style={styles.locationButton}>
+                        <Text style={styles.locationButtonText}>Edit</Text>
+                      </Pressable>
+                    </View>
+                  </View>
                 </View>
               </>
             )}
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <Button title="Close" onPress={() => handleClosePress()} />
-              <Button title="Apply" onPress={() => handleClosePress()} />
+
+            <View style={styles.buttonContainer}>
+              <Button text="Close" onPress={handleClosePress} />
+              <Button text="Apply" onPress={handleApplyPress} />
             </View>
           </BottomSheetScrollView>
         </BottomSheet>
@@ -185,26 +190,29 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 10,
     alignItems: 'center',
-    flexDirection: 'column',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
   contentContainer: {
     flexDirection: 'column',
     gap: 11,
     padding: 36,
     paddingBottom: 50,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: Colors.light.background,
   },
   title: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 12,
+    alignSelf: 'flex-start',
   },
   sectionTitle: {
     fontSize: 14,
     fontWeight: '500',
     marginTop: 16,
     marginBottom: 12,
+    alignSelf: 'flex-start',
   },
   filterContainer: {
     gap: 15,
@@ -217,7 +225,7 @@ const styles = StyleSheet.create({
   },
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: '#EDECEC',
+    backgroundColor: 'white',
     borderRadius: 10,
     borderWidth: 0.2,
     borderColor: 'black',
@@ -234,7 +242,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   toggleOptionActive: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#EDECEC',
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -243,28 +251,14 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: '#000',
   },
-  toggleTextActive: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  priceFilterContainer: {
-    width: '100%',
-    height: '100%',
+  buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    gap: 300,
-    // display: 'inline-flex',
-  },
-  priceFilterText: {
-    width: 18,
-    color: 'black',
-    fontSize: 12,
-    fontFamily: 'Josefin Sans',
-    fontWeight: '300',
-    wordWrap: 'break-word',
+    gap: 10,
+    marginTop: 20,
+    width: '100%',
+    justifyContent: 'center',
   },
   filterOption: {
     width: '100%',
@@ -286,5 +280,37 @@ const styles = StyleSheet.create({
   },
   filterOptionTextActive: {
     color: '#3B82F6',
+  },
+  locationContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  mapPlaceholder: {
+    width: '100%',
+
+    aspectRatio: 4 / 3,
+    backgroundColor: '#F3F2F2',
+    borderRadius: 8,
+    position: 'relative',
+  },
+  locationButtons: {
+    position: 'absolute',
+    bottom: 16,
+    flexDirection: 'row',
+    gap: 12,
+    alignSelf: 'center',
+  },
+  locationButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  locationButtonText: {
+    fontSize: 14,
+    color: '#4B5563',
+    fontWeight: '500',
   },
 });
