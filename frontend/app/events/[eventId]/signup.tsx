@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { EventSignUpForm } from '@/components/forms/EventSignUpForm';
+import { EventSignUpForm } from '@/components/events/EventSignUpForm';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';

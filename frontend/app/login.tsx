@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  SafeAreaView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Alert, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
+import { Image } from 'expo-image';
+import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
+import { SignUpFlowInput } from '@/components/signup/SignUpFlowInput';
+import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { signIn, isLoading, isAuthenticated } = useAuth();
+  const { signIn, isLoading, isAuthenticated, fetchUserEntity } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,79 +21,137 @@ export default function LoginScreen() {
       return;
     }
     try {
-      await signIn({ username, password });
+      await signIn({
+        username: username.trimEnd(),
+        password: password.trimEnd(),
+      });
+      await fetchUserEntity();
       router.replace('/');
-    } catch {
-      // error is surfaced in context via Alert; no-op here
-    }
+    } catch {}
   }
+
+  const handleSignUp = () => {
+    router.push('/signup');
+  };
 
   React.useEffect(() => {
     if (isAuthenticated) router.replace('/');
   }, [isAuthenticated, router]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-      >
-        <View
-          style={{ flex: 1, padding: 24, justifyContent: 'center', gap: 16 }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: '600', marginBottom: 8 }}>
-            Sign in
-          </Text>
-
-          <View style={{ gap: 8 }}>
-            <Text style={{ fontSize: 14, color: '#444' }}>Username</Text>
-            <TextInput
-              autoCapitalize="none"
-              placeholder="karp-volunteer"
-              value={username}
-              onChangeText={setUsername}
-              style={{
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-                borderRadius: 8,
-                padding: 12,
-              }}
-            />
-          </View>
-
-          <View style={{ gap: 8 }}>
-            <Text style={{ fontSize: 14, color: '#444' }}>Password</Text>
-            <TextInput
-              placeholder="••••••••"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-              style={{
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-                borderRadius: 8,
-                padding: 12,
-              }}
-            />
-          </View>
-
-          <Pressable
-            onPress={handleSubmit}
-            disabled={isLoading}
-            style={{
-              backgroundColor: isLoading ? '#9ca3af' : '#111827',
-              paddingVertical: 12,
-              borderRadius: 8,
-              alignItems: 'center',
-              marginTop: 8,
-            }}
-          >
-            <Text style={{ color: 'white', fontWeight: '600' }}>
-              {isLoading ? 'Signing in…' : 'Sign in'}
-            </Text>
-          </Pressable>
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.container}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('@/assets/images/logo_temp.svg')}
+            style={styles.logo}
+          />
         </View>
-      </KeyboardAvoidingView>
+        <View style={styles.header}>
+          <Text style={styles.title}>Sign In</Text>
+        </View>
+
+        <View style={styles.form}>
+          <SignUpFlowInput
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Username"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+
+          <SignUpFlowInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry
+          />
+
+          <TouchableOpacity
+            style={styles.forgotPasswordContainer}
+            onPress={() => router.push('/forgot-password')}
+          >
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <SignUpFlowButton
+            onPress={handleSubmit}
+            text={isLoading ? 'Signing in…' : 'Sign In'}
+            style={styles.signUpFlowButton}
+            disabled={isLoading}
+          />
+
+          <View style={styles.signUpContainer}>
+            <Text style={styles.signUpText}>Don&apos;t have an account? </Text>
+            <TouchableOpacity onPress={handleSignUp}>
+              <Text style={styles.signUpLink}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: Colors.light.white,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: Colors.light.transparent,
+    paddingHorizontal: 50,
+    paddingTop: 50,
+    paddingBottom: 25,
+    justifyContent: 'flex-start',
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: -20,
+  },
+  logo: {
+    width: 225,
+    height: 225,
+  },
+  header: {
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    color: Colors.light.text,
+    fontFamily: Fonts.medium_500,
+    alignSelf: 'flex-start',
+  },
+  form: {
+    gap: 20,
+  },
+  signUpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  signUpText: {
+    fontSize: 14,
+    fontFamily: Fonts.light_300,
+    color: Colors.light.text,
+  },
+  signUpLink: {
+    fontSize: 14,
+    color: Colors.light.fishBlue,
+    fontFamily: Fonts.medium_500,
+  },
+  signUpFlowButton: {
+    width: '100%',
+  },
+  forgotPasswordContainer: {
+    alignSelf: 'flex-end',
+    marginTop: -10,
+  },
+  forgotPasswordText: {
+    fontSize: 12,
+    fontFamily: Fonts.medium_500,
+  },
+});
