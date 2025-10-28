@@ -1,9 +1,4 @@
-import {
-  DayOfWeek,
-  EventType,
-  GradeLevel,
-  Qualification,
-} from '@/types/api/volunteer';
+import { DayOfWeek, EventType, Qualification } from '@/types/api/volunteer';
 
 export type SignUpData = {
   username: string;
@@ -17,8 +12,6 @@ export type SignUpData = {
 
   birthday: string;
 
-  gradeLevel: GradeLevel;
-
   preferences: EventType[];
 
   qualifications?: Qualification[];
@@ -26,7 +19,7 @@ export type SignUpData = {
   preferredDays?: DayOfWeek[];
 };
 
-export type SignUpStep = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type SignUpStep = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type SignUpContextType = {
   currentStep: number;
@@ -47,9 +40,6 @@ export type CreateUserRequest = {
   password: string;
   first_name: string;
   last_name: string;
-  preferred_name?: string;
-  birth_date?: string;
-  grade_level?: string;
   user_type: 'VOLUNTEER';
 };
 

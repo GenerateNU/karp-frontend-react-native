@@ -56,7 +56,7 @@ function SignUpBirthday() {
       const formattedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
       setData({ ...data, birthday: formattedDate });
-      router.push('/signup/grade-level');
+      router.push('/signup/preferences');
     }
   };
 

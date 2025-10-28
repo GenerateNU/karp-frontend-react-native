@@ -31,7 +31,7 @@ function SignUpPreferences() {
   ];
 
   useEffect(() => {
-    setCurrentStep(5);
+    setCurrentStep(4);
   }, [setCurrentStep]);
 
   const togglePreference = (preference: EventType) => {

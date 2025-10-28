@@ -36,7 +36,7 @@ function SignUpQualifications() {
   ];
 
   useEffect(() => {
-    setCurrentStep(6);
+    setCurrentStep(5);
   }, [setCurrentStep]);
 
   const toggleQualification = (qualification: Qualification) => {

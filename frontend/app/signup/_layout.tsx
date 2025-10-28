@@ -22,7 +22,6 @@ export default function SignUpLayout() {
           <Stack.Screen name="index" />
           <Stack.Screen name="personal" />
           <Stack.Screen name="birthday" />
-          <Stack.Screen name="grade-level" />
           <Stack.Screen name="preferences" />
           <Stack.Screen name="qualifications" />
           <Stack.Screen name="volunteer-days" />

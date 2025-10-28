@@ -1,16 +1,3 @@
-export enum GradeLevel {
-  SIXTH_GRADE = '6th Grade',
-  SEVENTH_GRADE = '7th Grade',
-  EIGHTH_GRADE = '8th Grade',
-  NINTH_GRADE = '9th Grade',
-  TENTH_GRADE = '10th Grade',
-  ELEVENTH_GRADE = '11th Grade',
-  TWELFTH_GRADE = '12th Grade',
-  UNDERGRADUATE = 'Undergraduate',
-  MASTERS = 'Masters',
-  PHD = 'PhD',
-}
-
 export enum EventType {
   ANIMAL_SHELTER = 'Animal Shelter',
   HOMELESS_SHELTER = 'Homeless Shelter',
@@ -58,7 +45,6 @@ export interface CreateVolunteerRequest {
   last_name: string;
   age: number;
   coins: number;
-  grade_level: GradeLevel;
   preferences: EventType[];
   qualifications?: Qualification[];
   preferred_days?: DayOfWeek[];

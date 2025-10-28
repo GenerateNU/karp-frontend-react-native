@@ -15,9 +15,8 @@ export function SignUpProgress() {
       2: '/signup',
       3: '/signup/personal',
       4: '/signup/birthday',
-      5: '/signup/grade-level',
-      6: '/signup/preferences',
-      7: '/signup/qualifications',
+      5: '/signup/preferences',
+      6: '/signup/qualifications',
     };
 
     const previousRoute = routeMap[currentStep];
@@ -33,7 +32,7 @@ export function SignUpProgress() {
           <View
             style={[
               styles.progressFill,
-              { width: `${((currentStep - 1) / 6) * 100}%` },
+              { width: `${((currentStep - 1) / 5) * 100}%` },
             ]}
           />
         </View>

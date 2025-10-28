@@ -12,8 +12,7 @@ async function login(params: {
 }
 
 async function createUser(params: CreateUserRequest): Promise<AuthUser> {
-  const response = await api.post('/user/', params, {
-  });
+  const response = await api.post('/user/', params, {});
   return response.data;
 }
 

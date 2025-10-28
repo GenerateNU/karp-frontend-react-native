@@ -40,7 +40,6 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
         !data.firstName ||
         !data.lastName ||
         !data.birthday ||
-        !data.gradeLevel ||
         !data.preferences
       ) {
         Alert.alert('Missing Information');
@@ -63,7 +62,7 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
         password: data.password.trimEnd(),
       });
 
-      if (data.preferences && data.birthday && data.gradeLevel) {
+      if (data.preferences && data.birthday) {
         const { status } = await Location.requestForegroundPermissionsAsync();
 
         let location;
@@ -85,7 +84,6 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
           last_name: data.lastName,
           age: calculateAge(data.birthday),
           coins: 0,
-          grade_level: data.gradeLevel,
           preferences: data.preferences,
           qualifications: data.qualifications || [],
           preferred_days: data.preferredDays || [],

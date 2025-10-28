@@ -31,7 +31,7 @@ function SignUpVolunteerDays() {
   ];
 
   useEffect(() => {
-    setCurrentStep(7);
+    setCurrentStep(6);
   }, [setCurrentStep]);
 
   const toggleDay = (day: DayOfWeek) => {
