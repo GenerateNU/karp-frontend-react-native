@@ -23,7 +23,6 @@ import { Fonts } from '@/constants/Fonts';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { signOut } = useAuth();
   const { profileData, upcomingEvents, loading, refreshing, handleRefresh } =
     useProfile();
 
@@ -55,7 +54,11 @@ export default function ProfileScreen() {
             onPress={() => router.push('/profile/settings')}
             style={styles.settingsButton}
           >
-            <Ionicons name="settings-outline" size={24} color={Colors.light.text} />
+            <Ionicons
+              name="settings-outline"
+              size={24}
+              color={Colors.light.text}
+            />
           </Pressable>
         </View>
 
@@ -70,7 +73,7 @@ export default function ProfileScreen() {
           <Text style={styles.levelLabel}>Level {stats.level}</Text>
         </View>
 
-        <FishTank  />
+        <FishTank />
 
         <LevelProgress
           level={stats.level}
@@ -120,7 +123,6 @@ export default function ProfileScreen() {
             <Text style={styles.seePastText}>See past events</Text>
           </Pressable>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -183,7 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 18,
     marginTop: 20,
-    marginBottom: 26
+    marginBottom: 26,
   },
   eventsSection: {
     paddingBottom: 24,
@@ -193,8 +195,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     color: Colors.light.text,
-    paddingHorizontal: 20,
     marginBottom: 12,
+    width: 460,
+    alignSelf: 'center'
   },
   emptyState: {
     paddingHorizontal: 32,
@@ -211,7 +214,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 12,
     alignItems: 'flex-end',
-    marginRight: 20,
+    width: 460,
+    alignSelf: 'center'
   },
   seePastText: {
     fontFamily: Fonts.regular_400,

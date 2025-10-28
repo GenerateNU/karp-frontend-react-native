@@ -48,12 +48,10 @@ export default function SettingsScreen() {
       <SafeAreaView style={styles.container}>
         <BackHeader />
         <ScrollView contentContainerStyle={styles.content}>
-          {/* Header - match profile page spacing */}
           <View style={styles.header}>
             <View style={styles.headerSpacer} />
           </View>
 
-          {/* Profile Section - match profile page exactly */}
           <View style={styles.profileSection}>
             <ProfileAvatar
               firstName={firstName}
@@ -63,16 +61,14 @@ export default function SettingsScreen() {
             <Text style={styles.profileName}>{displayName}</Text>
           </View>
 
-          {/* Settings Menu */}
           <View style={styles.menuContainer}>
             <SettingsItem
               icon="person-outline"
               title="Basic Info"
               subtitle="Update your personal information"
               onPress={() => {
-                // TODO: Navigate to basic info screen
-                alert('Basic Info - Coming soon!');
-              }}
+                router.push('/profile/settings/basic-info');
+            }}
             />
 
             <SettingsItem
@@ -80,8 +76,7 @@ export default function SettingsScreen() {
               title="Change password"
               subtitle="Update your password"
               onPress={() => {
-                // TODO: Navigate to change password screen
-                alert('Change Password - Coming soon!');
+                router.push('/profile/settings/change-password');
               }}
             />
 
@@ -90,8 +85,7 @@ export default function SettingsScreen() {
               title="Documents"
               subtitle="Update your password"
               onPress={() => {
-                // TODO: Navigate to documents screen
-                alert('Documents - Coming soon!');
+                alert('Documents will go here lol');
               }}
             />
 
@@ -100,8 +94,7 @@ export default function SettingsScreen() {
               title="Delete account"
               subtitle="Delete your account"
               onPress={() => {
-                // TODO: Show delete account confirmation
-                alert('Delete Account - Coming soon!');
+                router.push('/profile/settings/delete-account');
               }}
             />
           </View>

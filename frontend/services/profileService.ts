@@ -1,7 +1,7 @@
 import api from '@/api';
 import { Event } from '@/types/api/event';
 import { RegistrationStatus } from '@/types/api/registration';
-import { VolunteerAchievement } from '@/types/api/volunteer-achievement';
+import { VolunteerAchievement } from '@/types/api/achievement';
 
 async function getUpcomingEvents(volunteerId: string): Promise<Event[]> {
   const response = await api.get(`/registration/events/${volunteerId}`, {
@@ -20,7 +20,9 @@ async function getPastEvents(volunteerId: string): Promise<Event[]> {
 async function getVolunteerAchievements(
   volunteerId: string
 ): Promise<VolunteerAchievement[]> {
-  const response = await api.get(`/volunteer-achievement/volunteer/${volunteerId}`);
+  const response = await api.get(
+    `/volunteer-achievement/volunteer/${volunteerId}`
+  );
   return response.data;
 }
 

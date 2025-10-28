@@ -1,16 +1,29 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Colors } from '@/constants/Colors';
+import React, { useState } from 'react';
+import { View, StyleSheet, Pressable } from 'react-native';
+import { Image } from 'expo-image';
+import { MyFishModal } from './MyFishModal';
+
 
 export function FishTank() {
+  const [showFishModal, setShowFishModal] = useState(false);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.tank}>
-        <View style={styles.water}>
-        </View>
-        <View style={styles.base} />
+    <>
+      <View style={styles.container}>
+        <Pressable onPress={() => setShowFishModal(true)}>
+          <Image
+            source={require('@/assets/images/fish-tank.png')}
+            style={styles.fishTankImage}
+            contentFit="contain"
+          />
+        </Pressable>
       </View>
-    </View>
+
+      <MyFishModal
+        visible={showFishModal}
+        onClose={() => setShowFishModal(false)}
+      />
+    </>
   );
 }
 
@@ -19,18 +32,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 20,
   },
-  tank: {
+  fishTankImage: {
     width: 268,
     height: 190,
-    backgroundColor: "#D9D9D9",
-  },
-  water: {
-    height: 170,
-    backgroundColor: Colors.light.fishTankWater,
-    position: 'relative',
-  },
-  base: {
-    height: 20,
-    backgroundColor: Colors.light.fishTankBase
   },
 });

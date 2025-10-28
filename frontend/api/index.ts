@@ -2,7 +2,7 @@ import axios from 'axios';
 import { camelizeKeys, decamelizeKeys } from '@/utils/case';
 
 const api = axios.create({
-  baseURL: 'https://karp-backend.onrender.com/',
+  baseURL: process.env.EXPO_PUBLIC_API_URL || 'https://localhost:8080',
   timeout: 10000,
 });
 

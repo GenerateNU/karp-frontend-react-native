@@ -1,5 +1,5 @@
-import { Volunteer } from "./volunteer";
-import { Event } from "./event";
+import { Volunteer } from './volunteer';
+import { Event } from './event';
 
 export interface ProfileStats {
   totalHours: number;

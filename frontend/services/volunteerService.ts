@@ -1,13 +1,12 @@
 import api from '@/api';
-import { Volunteer } from '@/types/api/volunteer';
-
-async function getSelf() {
-  const response = await api.get(`/volunteer/me`);
-  return response.data;
-}
 
 async function getVolunteer(volunteerId: string) {
   const response = await api.get(`/volunteer/${volunteerId}`);
+  return response.data;
+}
+
+async function getSelf() {
+  const response = await api.get(`/volunteer/me`);
   return response.data;
 }
 
@@ -21,13 +20,18 @@ async function updateVolunteer(
     preferences?: string[];
     isActive?: boolean;
   }
-): Promise<Volunteer> {
+) {
   const response = await api.put(`/volunteer/${volunteerId}`, updates);
   return response.data;
 }
 
+async function deleteVolunteer(volunteerId: string): Promise<void> {
+  await api.delete(`/volunteer/${volunteerId}`);
+}
+
 export const volunteerService = {
-  getSelf,
   getVolunteer,
+  getSelf,
   updateVolunteer,
+  deleteVolunteer,
 };

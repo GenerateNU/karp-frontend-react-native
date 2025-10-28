@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     width: 67,
     height: 80,
     borderRadius: 8,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: '#D9D9D9',
   },
   eventInfo: {
     flex: 1,

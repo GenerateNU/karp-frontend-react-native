@@ -7,12 +7,13 @@ import { ProfileData } from '@/types/api/profile';
 import { Event } from '@/types/api/event';
 import { Volunteer } from '@/types/api/volunteer';
 
+// temporary logic idk how we're calculating level lol
 function calculateLevel(experience: number): number {
   if (experience < 100) return 1;
-  
+
   let level = 1;
   let totalXPNeeded = 0;
-  
+
   while (totalXPNeeded <= experience) {
     const xpForNextLevel = level * 100 + (level - 1) * 50;
     totalXPNeeded += xpForNextLevel;
@@ -22,7 +23,7 @@ function calculateLevel(experience: number): number {
       break;
     }
   }
-  
+
   return level;
 }
 
@@ -49,7 +50,7 @@ function calculateLevelProgress(experience: number): {
   const xpForNextLevel = getXPForNextLevel(level);
   const currentLevelXP = experience - xpForCurrentLevel;
   const progress = (currentLevelXP / xpForNextLevel) * 100;
-  
+
   return {
     level,
     progress: Math.min(Math.max(progress, 0), 100),

@@ -70,13 +70,13 @@ const styles = StyleSheet.create({
   },
   progressBarBackground: {
     height: 5,
-    backgroundColor: "#EAE8E8",
+    backgroundColor: '#EAE8E8',
     borderRadius: 100,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: "#9D9D9D",
+    backgroundColor: '#9D9D9D',
     borderRadius: 100,
   },
   percentageText: {
@@ -86,6 +86,6 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     width: 35,
     textAlign: 'right',
-    lineHeight: 13
+    lineHeight: 13,
   },
 });
