@@ -50,9 +50,9 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
         username: data.username.trimEnd(),
         email: data.email.trimEnd(),
         password: data.password.trimEnd(),
-        first_name: data.firstName.trimEnd(),
-        last_name: data.lastName.trimEnd(),
-        user_type: UserType.VOLUNTEER,
+        firstName: data.firstName.trimEnd(),
+        lastName: data.lastName.trimEnd(),
+        userType: UserType.VOLUNTEER,
       });
 
       await signIn({
@@ -78,14 +78,13 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
           };
         }
         await volunteerService.createVolunteer({
-          first_name: data.firstName,
-          last_name: data.lastName,
-          coins: 0,
-          preferred_name: data.preferredName?.trimEnd(),
-          birth_date: data.birthday,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          preferredName: data.preferredName?.trimEnd(),
+          birthDate: data.birthday,
           preferences: data.preferences,
           qualifications: data.qualifications || [],
-          preferred_days: data.preferredDays || [],
+          preferredDays: data.preferredDays || [],
           location: {
             type: 'Point',
             coordinates: [location.coords.longitude, location.coords.latitude],

@@ -28,28 +28,27 @@ export enum DayOfWeek {
 
 export interface Volunteer {
   id: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   coins: number;
-  preferred_name?: string;
-  birth_date: string;
+  preferredName?: string;
+  birthDate: string;
   preferences: EventType[];
   qualifications: Qualification[];
-  preferred_days: DayOfWeek[];
-  is_active: boolean;
+  preferredDays: DayOfWeek[];
+  isActive: boolean;
   experience: number;
   location: Location;
 }
 
 export interface CreateVolunteerRequest {
-  first_name: string;
-  last_name: string;
-  coins: number;
-  preferred_name?: string;
-  birth_date: string;
+  firstName: string;
+  lastName: string;
+  preferredName?: string;
+  birthDate: string;
   preferences: EventType[];
   qualifications?: Qualification[];
-  preferred_days?: DayOfWeek[];
+  preferredDays?: DayOfWeek[];
   location: Location;
 }
 

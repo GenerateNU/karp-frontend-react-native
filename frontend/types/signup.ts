@@ -38,14 +38,14 @@ export type CreateUserRequest = {
   username: string;
   email: string;
   password: string;
-  first_name: string;
-  last_name: string;
-  user_type: 'VOLUNTEER';
+  firstName: string;
+  lastName: string;
+  userType: 'VOLUNTEER';
 };
 
 export type CreateVolunteerRequest = {
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   age: number;
   coins: number;
   preferences: string[];

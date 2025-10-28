@@ -33,7 +33,7 @@ export type CreateUserRequest = {
   username: string;
   email: string;
   password: string;
-  first_name: string;
-  last_name: string;
-  user_type: UserType;
+  firstName: string;
+  lastName: string;
+  userType: UserType;
 };
