@@ -32,7 +32,7 @@ export function LevelProgress({
 
 const styles = StyleSheet.create({
   container: {
-    width: 400,
+    width: '90%',
     height: 88,
     paddingTop: 26,
     paddingHorizontal: 32,

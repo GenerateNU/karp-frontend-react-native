@@ -99,6 +99,11 @@ export function useProfile() {
       setVolunteer(volunteerData);
       setUpcomingEvents(eventsData);
 
+      if (!volunteerData) {
+        setProfileData(null);
+        return;
+      }
+
       const levelData = calculateLevelProgress(volunteerData.experience);
       const totalHours = calculateTotalHours(pastEventsData);
 
@@ -106,7 +111,7 @@ export function useProfile() {
         totalHours,
         level: levelData.level,
         levelProgress: levelData.progress,
-        experiencePoints: volunteerData.experience,
+        experiencePoints: volunteerData?.experience,
         nextLevelXP: levelData.nextLevelXP,
       };
 
@@ -116,6 +121,7 @@ export function useProfile() {
         stats,
       });
     } catch (error) {
+      console.log('Error loading profile data:', error);
       Alert.alert('Error', 'Failed to load profile data. Please try again.');
     } finally {
       setLoading(false);

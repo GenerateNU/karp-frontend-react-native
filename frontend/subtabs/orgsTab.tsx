@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -29,7 +29,7 @@ export default function OrgsScreen() {
   const [showOrgModal, setShowOrgModal] = useState(false);
   //   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
   // const router = useRouter();
-  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadOrganizations = useCallback(
     async (searchQuery?: string, filters?: OrgFilters) => {

@@ -3,7 +3,6 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { MyFishModal } from './MyFishModal';
 
-
 export function FishTank() {
   const [showFishModal, setShowFishModal] = useState(false);
 

@@ -1,11 +1,11 @@
 export interface Volunteer {
   id: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   age: number;
   coins: number;
   preferences: string[];
-  is_active: boolean;
+  isActive: boolean;
   experience: number;
   location: Location;
 }

@@ -45,7 +45,8 @@ export default function ChangePasswordScreen() {
       ]);
     } catch (error: any) {
       console.error('Error changing password:', error);
-      const message = error?.response?.data?.detail || 'Failed to change password';
+      const message =
+        error?.response?.data?.detail || 'Failed to change password';
       Alert.alert('Error', message);
     } finally {
       setLoading(false);
@@ -89,7 +90,10 @@ export default function ChangePasswordScreen() {
           </View>
 
           <Pressable
-            style={[styles.changeButton, loading && styles.changeButtonDisabled]}
+            style={[
+              styles.changeButton,
+              loading && styles.changeButtonDisabled,
+            ]}
             onPress={handleChangePassword}
             disabled={loading}
           >

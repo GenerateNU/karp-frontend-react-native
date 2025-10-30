@@ -129,8 +129,7 @@ export default function BasicInfoScreen() {
               keyboardType="phone-pad"
               placeholderTextColor={Colors.light.textSecondary}
             />
-            <Text style={styles.helperText}>
-            </Text>
+            <Text style={styles.helperText}></Text>
           </View>
 
           <View style={styles.fieldContainer}>
@@ -170,9 +169,8 @@ export default function BasicInfoScreen() {
                 ))}
               </View>
             )}
-            <Text style={styles.helperText}>
-            </Text>
-          </View> 
+            <Text style={styles.helperText}></Text>
+          </View>
 
           <View style={styles.fieldContainer}>
             <Text style={styles.label}>Profile Photo</Text>
@@ -185,8 +183,7 @@ export default function BasicInfoScreen() {
                 <Text style={styles.browseButtonText}>Browse images</Text>
               </Pressable>
             </View>
-            <Text style={styles.helperText}>
-            </Text>
+            <Text style={styles.helperText}></Text>
           </View>
 
           <Pressable

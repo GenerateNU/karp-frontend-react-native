@@ -35,9 +35,10 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { user, volunteer } = useAuth();
 
-  const displayName = user && volunteer 
-    ? `${volunteer.firstName} ${volunteer.lastName}`
-    : 'John Doe';
+  const displayName =
+    user && volunteer
+      ? `${volunteer.firstName} ${volunteer.lastName}`
+      : 'John Doe';
 
   const firstName = volunteer?.firstName || 'John';
   const lastName = volunteer?.lastName || 'Doe';
@@ -68,7 +69,7 @@ export default function SettingsScreen() {
               subtitle="Update your personal information"
               onPress={() => {
                 router.push('/profile/settings/basic-info');
-            }}
+              }}
             />
 
             <SettingsItem

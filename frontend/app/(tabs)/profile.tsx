@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '@/context/AuthContext';
+// import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { LevelProgress } from '@/components/profile/LevelProgress';
@@ -41,8 +41,15 @@ export default function ProfileScreen() {
   const { volunteer, stats } = profileData;
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView
+      style={styles.container}
+      edges={['top', 'bottom', 'left', 'right']}
+    >
       <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingBottom: 80, // 👈 gives room for the bottom button
+        }}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
@@ -197,7 +204,6 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 12,
     width: 460,
-    alignSelf: 'center'
   },
   emptyState: {
     paddingHorizontal: 32,
@@ -214,8 +220,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 12,
     alignItems: 'flex-end',
-    width: 460,
-    alignSelf: 'center'
+    width: '95%',
+    alignSelf: 'center',
   },
   seePastText: {
     fontFamily: Fonts.regular_400,
