@@ -18,6 +18,7 @@ async function resetPassword(params: {
   await api.post('/user/reset-password', params, {
     headers: { 'Content-Type': 'application/json' },
   });
+}
 async function createUser(params: CreateUserRequest): Promise<AuthUser> {
   const response = await api.post('/user/', params, {});
   return response.data;

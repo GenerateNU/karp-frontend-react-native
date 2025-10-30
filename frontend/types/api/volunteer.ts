@@ -41,17 +41,6 @@ export interface Volunteer {
   location: Location;
 }
 
-export interface CreateVolunteerRequest {
-  firstName: string;
-  lastName: string;
-  preferredName?: string;
-  birthDate: string;
-  preferences: EventType[];
-  qualifications?: Qualification[];
-  preferredDays?: DayOfWeek[];
-  location: Location;
-}
-
 export interface Location {
   type: string;
   coordinates: number[];
