@@ -1,5 +1,5 @@
 import api from '@/api';
-import { LoginResponse } from '@/types/api/user';
+import { AuthUser, CreateUserRequest, LoginResponse } from '@/types/api/user';
 
 async function login(params: {
   username: string;
@@ -18,9 +18,13 @@ async function resetPassword(params: {
   await api.post('/user/reset-password', params, {
     headers: { 'Content-Type': 'application/json' },
   });
+async function createUser(params: CreateUserRequest): Promise<AuthUser> {
+  const response = await api.post('/user/', params, {});
+  return response.data;
 }
 
 export const userService = {
   login,
   resetPassword,
+  createUser,
 };

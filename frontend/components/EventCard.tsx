@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import { Event } from '@/types/api/event';
-import { eventService } from '@/services/eventService';
+import { imageService } from '@/services/imageService';
 
 interface EventCardProps {
   event: Event;
@@ -16,7 +16,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
   useEffect(() => {
     async function fetchImageUrl() {
       try {
-        const url = await eventService.getEventImageUrl(event.id);
+        const url = await imageService.getImageUrl('event', event.id);
         setImagePreSignedUrl(url);
       } catch (err) {
         console.error('Failed to fetch image:', err);

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import { FormSection } from './FormSection';
-import { FormField } from './FormField';
+import { FormSection } from '../forms/FormSection';
+import { FormField } from '../forms/FormField';
 import { EventSlotSelection } from '@/components/events/EventSlotSelection';
 import { Button } from '@/components/common/Button';
 import { useAuth } from '@/context/AuthContext';
 import { ThemedView } from '../ThemedView';
 import { Event } from '@/types/api/event';
-import { useCreateRegistration } from '@/api/registration';
+import { createRegistration } from '@/services/registrationService';
 import { router } from 'expo-router';
 
 interface EventSignUpFormProps {
@@ -16,9 +16,7 @@ interface EventSignUpFormProps {
 }
 
 export function EventSignUpForm({ event }: EventSignUpFormProps) {
-  console.log('Event in form:', event);
   const { user } = useAuth();
-  const createRegistration = useCreateRegistration();
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
@@ -64,8 +62,7 @@ export function EventSignUpForm({ event }: EventSignUpFormProps) {
     if (!validateForm()) return;
 
     try {
-      await createRegistration.mutateAsync({ eventId: event.id });
-      console.log('Event id', event.id);
+      await createRegistration(event.id);
       router.push({
         pathname: '/events/[eventId]/success',
         params: {

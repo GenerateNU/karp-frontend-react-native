@@ -43,6 +43,12 @@
         {
           "calendarPermission": "The app needs to access your calendar."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Karp to use your location."
+        }
       ]
     ],
     "experiments": {
