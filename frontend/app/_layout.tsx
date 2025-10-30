@@ -60,6 +60,14 @@ export default function RootLayout() {
             <Stack.Screen name="events/[eventId]/signup" />
             <Stack.Screen name="events/[eventId]/success" />
             <Stack.Screen name="+not-found" />
+            <Stack.Screen
+              name="profile/events/past"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="profile/settings"
+              options={{ headerShown: false }}
+            />
           </Stack>
           <StatusBar style="auto" />
         </AuthProvider>

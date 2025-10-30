@@ -11,6 +11,13 @@ async function login(params: {
   return response.data as LoginResponse;
 }
 
+async function resetPassword(params: {
+  currentPassword: string;
+  newPassword: string;
+}): Promise<void> {
+  await api.post('/user/reset-password', params, {
+    headers: { 'Content-Type': 'application/json' },
+  });
 async function createUser(params: CreateUserRequest): Promise<AuthUser> {
   const response = await api.post('/user/', params, {});
   return response.data;
@@ -18,5 +25,6 @@ async function createUser(params: CreateUserRequest): Promise<AuthUser> {
 
 export const userService = {
   login,
+  resetPassword,
   createUser,
 };
