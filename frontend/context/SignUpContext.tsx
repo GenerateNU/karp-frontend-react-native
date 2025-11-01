@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { SignUpData, SignUpContextType } from '@/types/signup';
-import { useAuth } from './AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'expo-router';
 import { volunteerService } from '@/services/volunteerService';
 import { userService } from '@/services/userService';
 import { UserType } from '@/types/api/user';
-import * as Location from 'expo-location';
+import { useLocation } from '@/context/LocationContext';
 const SignUpContext = createContext<SignUpContextType | undefined>(undefined);
 
 export function SignUpProvider({ children }: { children: React.ReactNode }) {
@@ -14,6 +14,7 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<Partial<SignUpData>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { userLocation } = useLocation();
 
   const { signIn, fetchUserEntity } = useAuth();
   const router = useRouter();
@@ -61,22 +62,6 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (data.preferences && data.birthday) {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-
-        let location;
-        if (status === 'granted') {
-          location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced,
-          });
-        } else {
-          // default to Boston if permission denied
-          location = {
-            coords: {
-              longitude: -71.0589,
-              latitude: 42.3601,
-            },
-          };
-        }
         await volunteerService.createVolunteer({
           firstName: data.firstName,
           lastName: data.lastName,
@@ -87,7 +72,7 @@ export function SignUpProvider({ children }: { children: React.ReactNode }) {
           preferredDays: data.preferredDays || [],
           location: {
             type: 'Point',
-            coordinates: [location.coords.longitude, location.coords.latitude],
+            coordinates: userLocation.coordinates,
           },
         });
         await fetchUserEntity();
