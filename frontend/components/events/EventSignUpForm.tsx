@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import { FormSection } from '../forms/FormSection';
-import { FormField } from '../forms/FormField';
+import { FormSection } from '@/components/forms/FormSection';
+import { FormField } from '@/components/forms/FormField';
 import { EventSlotSelection } from '@/components/events/EventSlotSelection';
 import { Button } from '@/components/common/Button';
 import { useAuth } from '@/context/AuthContext';
-import { ThemedView } from '../ThemedView';
+import { ThemedView } from '@/components/ThemedView';
 import { Event } from '@/types/api/event';
 import { createRegistration } from '@/services/registrationService';
 import { router } from 'expo-router';

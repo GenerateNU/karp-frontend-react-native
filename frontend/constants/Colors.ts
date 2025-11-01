@@ -45,6 +45,17 @@ export const Colors = {
     progressBarBackground: '#9D9D9D',
     progressBarFill: '#375361',
     textSecondary: '#666464',
+    // Filter and drawer colors
+    filterBlue: '#3B82F6',
+    filterBorder: '#E5E7EB',
+    filterActiveBackground: '#EFF6FF',
+    filterText: '#4B5563',
+    toggleActiveBackground: '#EDECEC',
+    handleIndicatorGray: '#999',
+    sliderGray: '#9CA3AF',
+    semiTransparentTeal: 'rgba(12, 120, 128, 0.5)',
+    overlay: 'rgba(0,0,0,0.5)',
+    mapCircleFill: 'rgba(59, 130, 246, 0.1)',
   },
   dark: {
     text: '#ECEDEE',

@@ -1,3 +1,5 @@
+import { Location } from '@/types/api/location';
+
 export enum EventStatus {
   COMPLETED = 'COMPLETED',
   DRAFT = 'DRAFT',
@@ -25,11 +27,9 @@ export interface Event {
   timeSlots?: string[];
   imageS3Key: string;
 }
-
 export interface EventFilters {
   category?: string;
   date?: string;
-  location?: string;
   isFree?: boolean;
 }
 

@@ -46,10 +46,7 @@ export default function ProfileScreen() {
       edges={['top', 'bottom', 'left', 'right']}
     >
       <ScrollView
-        contentContainerStyle={{
-          paddingHorizontal: 16,
-          paddingBottom: 80, // 👈 gives room for the bottom button
-        }}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
@@ -228,5 +225,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.light.text,
     textDecorationLine: 'underline',
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 80, // gives room for the bottom button
   },
 });

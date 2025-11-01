@@ -1,5 +1,6 @@
 import api from '@/api';
 import { Volunteer } from '@/types/api/volunteer';
+import { CreateVolunteerRequest } from '@/types/signup';
 
 async function getVolunteer(volunteerId: string): Promise<Volunteer | null> {
   const response = await api.get(`/volunteer/${volunteerId}`);
@@ -8,6 +9,13 @@ async function getVolunteer(volunteerId: string): Promise<Volunteer | null> {
 
 async function getSelf(): Promise<Volunteer | null> {
   const response = await api.get(`/volunteer/me`);
+  return response.data;
+}
+
+async function createVolunteer(
+  volunteer: CreateVolunteerRequest
+): Promise<Volunteer> {
+  const response = await api.post(`/volunteer/new`, volunteer);
   return response.data;
 }
 
@@ -32,6 +40,7 @@ async function deleteVolunteer(volunteerId: string): Promise<void> {
 
 export const volunteerService = {
   getVolunteer,
+  createVolunteer,
   getSelf,
   updateVolunteer,
   deleteVolunteer,

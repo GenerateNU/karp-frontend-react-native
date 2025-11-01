@@ -10,12 +10,12 @@ import { useAuth } from '@/context/AuthContext';
 import { itemService } from '@/services/itemService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
-import ItemFilterDrawer from '../../components/drawers/ItemFilterDrawer';
+import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
+
 export interface ItemFilters {
   priceRange: { min: number; max: number };
   category: string;
-  location: string;
 }
 
 export default function StoreScreen() {
@@ -26,7 +26,6 @@ export default function StoreScreen() {
   const [filters, setFilters] = useState<ItemFilters>({
     priceRange: { min: 0, max: 100 },
     category: '',
-    location: '',
   });
 
   const router = useRouter();
@@ -53,7 +52,7 @@ export default function StoreScreen() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     loadItems();

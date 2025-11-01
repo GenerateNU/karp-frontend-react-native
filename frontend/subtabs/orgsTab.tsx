@@ -17,8 +17,10 @@ import { FilterModal } from '@/components/FilterModal';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { OrgSelect } from '@/components/OrgSelect';
+import { useLocation } from '@/context/LocationContext';
 
 export default function OrgsScreen() {
+  const { locationFilter } = useLocation();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -35,7 +37,10 @@ export default function OrgsScreen() {
     async (searchQuery?: string, filters?: OrgFilters) => {
       try {
         setLoading(true);
-        const fetchedOrgs = await orgService.getAllOrganizations(filters);
+        const fetchedOrgs = await orgService.getAllOrganizations(
+          filters,
+          locationFilter
+        );
         setOrganizations(fetchedOrgs);
       } catch (error) {
         console.error('Error loading organizations:', error);
@@ -44,7 +49,7 @@ export default function OrgsScreen() {
         setLoading(false);
       }
     },
-    []
+    [locationFilter]
   );
 
   const handleRefresh = useCallback(async () => {

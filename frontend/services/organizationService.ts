@@ -1,13 +1,24 @@
 import api from '@/api';
 import { Organization, OrgFilters } from '@/types/api/organization';
+import { LocationFilter } from '@/types/api/location';
 
 async function getAllOrganizations(
-  filters?: OrgFilters
+  filters?: OrgFilters,
+  locationFilter?: LocationFilter
 ): Promise<Organization[]> {
-  const { data: events } = await api.get('organization/all', {
-    params: filters,
+  const params: Record<string, unknown> = {
+    lat: locationFilter?.latitude,
+    lng: locationFilter?.longitude,
+    distance_km: locationFilter?.radiusKm,
+  };
+  if (filters) {
+    Object.assign(params, filters);
+  }
+
+  const { data: organizations } = await api.get('organization/all', {
+    params,
   });
-  return events;
+  return organizations;
 }
 
 async function getOrganizationById(id: string): Promise<Organization | null> {

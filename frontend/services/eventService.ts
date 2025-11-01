@@ -1,5 +1,6 @@
 import api from '@/api';
 import { Event, EventFilters, EventStatus } from '@/types/api/event';
+import { LocationFilter } from '@/types/api/location';
 
 async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
   const { data: events } = await api.get('event/all', {
@@ -24,22 +25,21 @@ async function getEventsByOrganization(
 
 async function searchEvents(
   query: string,
-  filters?: EventFilters
+  filters?: EventFilters,
+  locationFilter?: LocationFilter
 ): Promise<Event[]> {
   const params: Record<string, unknown> = {
     q: query,
     statuses: EventStatus.PUBLISHED,
+    lat: locationFilter?.latitude,
+    lng: locationFilter?.longitude,
+    distance_km: locationFilter?.radiusKm,
   };
-  if (filters) Object.assign(params, filters);
+  if (filters) {
+    Object.assign(params, filters);
+  }
 
   const { data: events } = await api.get('event/search', { params });
-  return events;
-}
-
-async function getNearEvents(filters?: EventFilters): Promise<Event[]> {
-  const { data: events } = await api.get('event/near', {
-    params: filters,
-  });
   return events;
 }
 
@@ -48,5 +48,4 @@ export const eventService = {
   getEventById,
   getEventsByOrganization,
   searchEvents,
-  getNearEvents,
 };

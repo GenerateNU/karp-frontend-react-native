@@ -1,4 +1,5 @@
 import { DayOfWeek, EventType, Qualification } from '@/types/api/volunteer';
+import { Location } from '@/types/api/location';
 
 export type SignUpData = {
   username: string;
@@ -46,12 +47,10 @@ export type CreateUserRequest = {
 export type CreateVolunteerRequest = {
   firstName: string;
   lastName: string;
-  age: number;
-  coins: number;
-  preferences: string[];
-  location: {
-    latitude: number;
-    longitude: number;
-    address: string;
-  };
+  preferredName?: string;
+  birthDate: string;
+  preferences: EventType[];
+  qualifications: Qualification[];
+  preferredDays: DayOfWeek[];
+  location: Location;
 };
