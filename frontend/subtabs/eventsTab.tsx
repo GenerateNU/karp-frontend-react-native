@@ -16,8 +16,10 @@ import { FilterModal } from '@/components/FilterModal';
 import { useRouter } from 'expo-router';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Ionicons } from '@expo/vector-icons';
+import { useLocation } from '@/context/LocationContext';
 
 export default function EventsScreen() {
+  const { locationFilter } = useLocation();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -33,7 +35,8 @@ export default function EventsScreen() {
         setLoading(true);
         const fetchedEvents = await eventService.searchEvents(
           searchQuery?.trim() || '',
-          filters
+          filters,
+          locationFilter
         );
         setEvents(fetchedEvents);
         console.log('Loaded events:', fetchedEvents);
@@ -44,7 +47,7 @@ export default function EventsScreen() {
         setLoading(false);
       }
     },
-    []
+    [locationFilter]
   );
 
   const handleRefresh = useCallback(async () => {

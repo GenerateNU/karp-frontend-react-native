@@ -7,7 +7,7 @@ import {
   Pressable,
   ViewStyle,
 } from 'react-native';
-import { Button } from '../common/Button';
+import { Button } from '@/components/ui/Button';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { Colors } from '@/constants/Colors';
@@ -38,7 +38,7 @@ export default function FilterDrawer({
   const isWeb = Platform.OS === 'web';
   const [activeSide, setActiveSide] = useState<'one' | 'two'>('one');
 
-  const sheetRef = useRef<any>(null);
+  const sheetRef = useRef<React.ComponentRef<typeof BottomSheet>>(null);
   const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
 
   const handleSheetChange = useCallback(
@@ -95,13 +95,13 @@ export default function FilterDrawer({
           ref={sheetRef}
           snapPoints={snapPoints}
           index={0}
-          backgroundStyle={{ backgroundColor: Colors.light.background }}
-          handleIndicatorStyle={{ backgroundColor: '#999', paddingTop: 8 }}
+          backgroundStyle={styles.bottomSheetBackground}
+          handleIndicatorStyle={styles.handleIndicator}
           enableDynamicSizing={false}
           enableOverDrag={false}
           enablePanDownToClose={true}
           onChange={handleSheetChange}
-          style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
+          style={styles.bottomSheet}
         >
           <BottomSheetScrollView
             contentContainerStyle={styles.contentContainer}
@@ -137,7 +137,20 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 1000,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
+  },
+  bottomSheet: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  bottomSheetBackground: {
+    backgroundColor: Colors.light.background,
+  },
+  handleIndicator: {
+    backgroundColor: Colors.light.handleIndicatorGray,
+    paddingTop: 8,
   },
   contentContainer: {
     flexDirection: 'column',
@@ -163,10 +176,10 @@ const styles = StyleSheet.create({
   },
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: Colors.light.white,
     borderRadius: 10,
     borderWidth: 0.2,
-    borderColor: 'black',
+    borderColor: Colors.light.text,
     padding: 2,
     marginVertical: 10,
     width: '100%',
@@ -176,21 +189,21 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: 'white',
+    backgroundColor: Colors.light.white,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
   toggleOptionActive: {
-    backgroundColor: '#EDECEC',
+    backgroundColor: Colors.light.toggleActiveBackground,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: Colors.light.text,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
   toggleText: {
     fontSize: 14,
-    color: '#000',
+    color: Colors.light.text,
   },
   buttonContainer: {
     flexDirection: 'row',

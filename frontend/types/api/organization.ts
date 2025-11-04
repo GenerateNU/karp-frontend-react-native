@@ -18,7 +18,6 @@ export interface Organization {
 export interface OrgFilters {
   category?: string;
   date?: string;
-  location?: string;
   isFree?: boolean;
 }
 
