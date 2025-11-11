@@ -40,6 +40,15 @@ export function EventCard({ event, onPress }: EventCardProps) {
     });
   };
 
+  const numCoins = event.coins;
+
+  const numCoinIcons = (() => {
+    if (numCoins <= 10) return 1;
+    if (numCoins <= 30) return 2;
+    if (numCoins <= 50) return 3;
+    return 4;
+  })();
+
   return (
     <Pressable
       className="mx-4 my-2 overflow-hidden rounded-xl bg-white shadow-sm"
@@ -64,12 +73,23 @@ export function EventCard({ event, onPress }: EventCardProps) {
       </View>
 
       <View className="p-4">
-        <Text
-          className="mb-1 text-lg font-semibold text-gray-900"
-          numberOfLines={2}
-        >
-          {event.name}
-        </Text>
+        <View className="mb-1 flex-row items-center">
+          <Text
+            className="flex-1 text-lg font-semibold text-gray-900"
+            numberOfLines={2}
+          >
+            {event.name}
+          </Text>
+          <View className="ml-2 flex-row items-center">
+            {Array.from({ length: numCoinIcons }).map((_, idx) => (
+              <Image
+                key={idx}
+                source={require('@/assets/images/karp-coin.svg')}
+                className="ml-1 h-5 w-5"
+              />
+            ))}
+          </View>
+        </View>
 
         {/* <Text className="mb-3 text-sm text-gray-600" numberOfLines={1}>
           Organization ID: {event.organization_id}
@@ -97,7 +117,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
 
           <View className="rounded-xl bg-green-100 px-2 py-1">
             <Text className="text-xs font-semibold text-green-800">
-              {event.coins} coins
+              {numCoins} coins
             </Text>
           </View>
         </View>
