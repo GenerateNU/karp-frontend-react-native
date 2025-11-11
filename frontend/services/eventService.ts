@@ -6,6 +6,7 @@ async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
   const { data: events } = await api.get('event/all', {
     params: filters,
   });
+  console.log('Actual Events:', events);
   return events;
 }
 
@@ -40,6 +41,7 @@ async function searchEvents(
   }
 
   const { data: events } = await api.get('event/search', { params });
+  console.log('Actual Events:', events);
   return events;
 }
 

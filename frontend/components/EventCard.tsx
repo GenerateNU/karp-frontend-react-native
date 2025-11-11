@@ -24,6 +24,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
     }
 
     if (event.imageS3Key) {
+      console.log('image key!');
       fetchImageUrl();
     }
   }, [event.id, event.imageS3Key]);
