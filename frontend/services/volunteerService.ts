@@ -38,10 +38,18 @@ async function deleteVolunteer(volunteerId: string): Promise<void> {
   await api.delete(`/volunteer/${volunteerId}`);
 }
 
+async function getTopVolunteers(limit: number = 10): Promise<Volunteer[]> {
+  const response = await api.get(`/volunteer/top`, {
+    params: { limit },
+  });
+  return response.data;
+}
+
 export const volunteerService = {
   getVolunteer,
   createVolunteer,
   getSelf,
   updateVolunteer,
   deleteVolunteer,
+  getTopVolunteers,
 };
