@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-color-literals */
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { FlatList, Alert, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
@@ -5,6 +7,7 @@ import { ThemedView } from '@/components/ThemedView';
 import CarouselItem from '@/components/items/CarouselItem';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Fonts } from '@/constants/Fonts';
+import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { itemService } from '@/services/itemService';
@@ -95,11 +98,12 @@ export default function StoreScreen() {
   return (
     <>
       <ParallaxScrollView
+        backgroundType="bubbles"
         headerBackgroundColor={{ light: '#8ecde8', dark: '#8ecde8' }}
         headerImage={
           <ThemedView
-            lightColor="#8ecde8"
-            darkColor="#8ecde8"
+            lightColor={Colors.light.transparent}
+            darkColor={Colors.light.transparent}
             className="flex-1 items-center justify-end pb-5"
           >
             <ThemedText
@@ -111,14 +115,14 @@ export default function StoreScreen() {
             </ThemedText>
 
             <ThemedView
-              lightColor="#8ecde8"
-              darkColor="#8ecde8"
+              lightColor={Colors.light.transparent}
+              darkColor={Colors.light.transparent}
               className="mt-6 w-full flex-row items-center justify-between px-6"
             >
               <ThemedText
                 type="subtitle"
                 style={{
-                  color: 'white',
+                  color: Colors.light.primaryText,
                   fontSize: 20,
                   fontFamily: Fonts.medium_500,
                 }}
@@ -129,7 +133,7 @@ export default function StoreScreen() {
               <ThemedText
                 type="subtitle"
                 style={{
-                  color: 'white',
+                  color: Colors.light.primaryText,
                   fontSize: 20,
                   fontFamily: Fonts.medium_500,
                 }}
@@ -138,9 +142,7 @@ export default function StoreScreen() {
               </ThemedText>
 
               <TouchableOpacity
-                onPress={() => {
-                  throw new Error('History button not implemented yet');
-                }}
+                onPress={() => router.push('/shop/history')}
                 style={{
                   backgroundColor: 'rgba(12, 120, 128, 0.5)',
                   paddingHorizontal: 10,
@@ -166,8 +168,8 @@ export default function StoreScreen() {
         }
       >
         <ThemedView
-          lightColor="#F2F2F2"
-          darkColor="#FFFFF"
+          lightColor={Colors.light.transparent}
+          darkColor={Colors.light.transparent}
           className="flex-1 px-4"
         >
           <SearchInputWithFilter

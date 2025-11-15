@@ -11,8 +11,8 @@ export interface Item {
   id: string;
   name: string;
   status: ItemStatus;
-  vendor_name: string;
-  time_posted: string;
+  vendorId: string;
+  timePosted: string;
   expiration: string;
   price: number;
   description: string;
@@ -23,8 +23,8 @@ export interface ItemResponse {
   id: string;
   name: string;
   status: ItemStatus;
-  vendor_id: string;
-  time_posted: string;
+  vendorId: string;
+  timePosted: string;
   expiration: string;
   price: number;
 }
