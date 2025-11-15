@@ -39,6 +39,7 @@ export interface Volunteer {
   isActive: boolean;
   experience: number;
   location: Location;
+  hours?: number;
 }
 
 export interface Location {
