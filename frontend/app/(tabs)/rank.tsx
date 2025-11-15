@@ -110,9 +110,12 @@ function Avatar({ volunteerId, size }: AvatarProps) {
 }
 
 export default function LeaderboardScreen() {
-  const { volunteer: currentVolunteer } = useAuth();
+  const { user } = useAuth();
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
+  );
+  const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(
+    null
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -122,6 +125,18 @@ export default function LeaderboardScreen() {
       try {
         setLoading(true);
         setError(null);
+
+        // Fetch current volunteer if user is available (same approach as profile page)
+        let volunteerData: Volunteer | null = null;
+        if (user?.entityId) {
+          try {
+            volunteerData = await volunteerService.getSelf();
+            setCurrentVolunteer(volunteerData);
+          } catch (err) {
+            console.error('Error fetching current volunteer:', err);
+          }
+        }
+
         const topVolunteers = await volunteerService.getTopVolunteers(10);
 
         // Sort by coins descending to ensure correct ranking
@@ -135,7 +150,7 @@ export default function LeaderboardScreen() {
             name: getVolunteerName(volunteer),
             coins: volunteer.coins,
             level: calculateLevel(volunteer.experience),
-            isCurrentUser: currentVolunteer?.id === volunteer.id,
+            isCurrentUser: volunteerData?.id === volunteer.id,
             volunteer,
           })
         );
@@ -150,9 +165,7 @@ export default function LeaderboardScreen() {
     };
 
     fetchLeaderboard();
-  }, [currentVolunteer?.id]);
-
-  const currentUser = leaderboardData.find(entry => entry.isCurrentUser);
+  }, [user?.entityId]);
 
   if (loading) {
     return (
@@ -190,29 +203,32 @@ export default function LeaderboardScreen() {
         {/* Header */}
         <Text style={styles.headerTitle}>Leaderboard</Text>
 
-        {/* Current User Rank Highlight */}
-        {currentUser && (
-          <View style={styles.currentRankBox}>
-            <View style={styles.currentRankContent}>
-              <Text style={styles.currentRankNumber}>{currentUser.rank}</Text>
-              <View style={styles.avatarContainer}>
-                <Avatar volunteerId={currentUser.volunteer.id} size={50} />
+        {(() => {
+          const currentUserEntry = leaderboardData.find(
+            entry => entry.isCurrentUser
+          );
+          return currentUserEntry ? (
+            <View style={[styles.leaderboardEntry, styles.currentUserEntry]}>
+              <Text style={styles.rankNumber}>{currentUserEntry.rank}</Text>
+              <View style={styles.entryAvatarContainer}>
+                <Avatar volunteerId={currentUserEntry.volunteer.id} size={40} />
               </View>
-              <View style={styles.currentRankInfo}>
-                <Text style={styles.currentRankLabel}>Your Current Rank</Text>
-                <Text style={styles.currentRankLevel}>
-                  Lv. {currentUser.level}
-                </Text>
-                <Text style={styles.currentRankCoins}>
-                  {currentUser.coins} coins
+              <View style={styles.entryInfo}>
+                <Text style={styles.entryName}>Your Current Rank</Text>
+                <Text style={styles.entryCoins}>
+                  {currentUserEntry.coins} coins
                 </Text>
               </View>
+              <Text style={styles.entryLevel}>
+                Lv. {currentUserEntry.level}
+              </Text>
             </View>
-          </View>
-        )}
+          ) : null;
+        })()}
 
-        {/* Call to Action */}
-        <Text style={styles.callToAction}>See how you rank among others!</Text>
+        <Text style={styles.headerSubtitle}>
+          See how you rank among others!
+        </Text>
 
         {/* Leaderboard List */}
         <ScrollView
@@ -267,55 +283,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  currentRankBox: {
-    backgroundColor: '#FFB84D', // Yellow-orange color
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  currentRankContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  currentRankNumber: {
-    fontFamily: Fonts.regular_400,
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1D0F48', // Dark purple
-    marginRight: 12,
-  },
-  avatarContainer: {
-    marginRight: 12,
-  },
-  currentRankInfo: {
-    flex: 1,
-  },
-  currentRankLabel: {
+  headerSubtitle: {
     fontFamily: Fonts.regular_400,
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1D0F48',
-    marginBottom: 4,
-  },
-  currentRankLevel: {
-    fontFamily: Fonts.regular_400,
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#1D0F48',
-    marginBottom: 2,
-  },
-  currentRankCoins: {
-    fontFamily: Fonts.light_300,
-    fontSize: 12,
-    color: '#1D0F48',
-  },
-  callToAction: {
-    fontFamily: Fonts.regular_400,
-    fontSize: 16,
-    fontWeight: 'bold',
+    paddingTop: 10,
     color: Colors.light.text,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   leaderboardList: {
     flex: 1,
@@ -334,7 +308,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   currentUserEntry: {
-    backgroundColor: '#FFB84D', // Yellow-orange highlight
+    backgroundColor: 'rgba(251, 191, 36, 0.5)', // Amber-400 with 50% opacity (gold)
   },
   rankNumber: {
     fontFamily: Fonts.regular_400,
