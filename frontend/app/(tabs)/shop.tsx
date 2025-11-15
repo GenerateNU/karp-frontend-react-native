@@ -29,7 +29,7 @@ export default function StoreScreen() {
   });
 
   const router = useRouter();
-  const { volunteer, token } = useAuth();
+  const { volunteer, token, isGuest } = useAuth();
 
   const loadItems = useCallback(async () => {
     try {
@@ -110,45 +110,11 @@ export default function StoreScreen() {
               Gift Shop
             </ThemedText>
 
-            <ThemedView
-              lightColor="#8ecde8"
-              darkColor="#8ecde8"
-              className="mt-6 w-full flex-row items-center justify-between px-6"
-            >
-              <ThemedText
-                type="subtitle"
-                style={{
-                  color: 'white',
-                  fontSize: 20,
-                  fontFamily: Fonts.medium_500,
-                }}
-              >
-                Level 10
-              </ThemedText>
-
-              <ThemedText
-                type="subtitle"
-                style={{
-                  color: 'white',
-                  fontSize: 20,
-                  fontFamily: Fonts.medium_500,
-                }}
-              >
-                {volunteer?.coins ?? 0} coins
-              </ThemedText>
-
-              <TouchableOpacity
-                onPress={() => {
-                  throw new Error('History button not implemented yet');
-                }}
-                style={{
-                  backgroundColor: 'rgba(12, 120, 128, 0.5)',
-                  paddingHorizontal: 10,
-                  paddingVertical: 10,
-                  borderRadius: 20,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+            {isGuest ? null : (
+              <ThemedView
+                lightColor="#8ecde8"
+                darkColor="#8ecde8"
+                className="mt-6 w-full flex-row items-center justify-between px-6"
               >
                 <ThemedText
                   type="subtitle"
@@ -158,10 +124,46 @@ export default function StoreScreen() {
                     fontFamily: Fonts.medium_500,
                   }}
                 >
-                  History &gt;
+                  Level 10
                 </ThemedText>
-              </TouchableOpacity>
-            </ThemedView>
+
+                <ThemedText
+                  type="subtitle"
+                  style={{
+                    color: 'white',
+                    fontSize: 20,
+                    fontFamily: Fonts.medium_500,
+                  }}
+                >
+                  {volunteer?.coins ?? 0} coins
+                </ThemedText>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    throw new Error('History button not implemented yet');
+                  }}
+                  style={{
+                    backgroundColor: 'rgba(12, 120, 128, 0.5)',
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                    borderRadius: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ThemedText
+                    type="subtitle"
+                    style={{
+                      color: 'white',
+                      fontSize: 20,
+                      fontFamily: Fonts.medium_500,
+                    }}
+                  >
+                    History &gt;
+                  </ThemedText>
+                </TouchableOpacity>
+              </ThemedView>
+            )}
           </ThemedView>
         }
       >

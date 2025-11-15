@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
+import { ScrollView, View, StyleSheet, Pressable } from 'react-native';
 import { Button } from '@/components/common/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
@@ -8,7 +8,6 @@ import { ThemedText } from '@/components/ThemedText';
 import EventInfoTable from '@/components/ui/EventInfoFull';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
 import { Event } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { BackHeader } from '@/components/common/BackHeader';
@@ -17,7 +16,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
   const router = useRouter();
-  const { isAuthenticated, isGuest } = useAuth();
+  const { isAuthenticated, isGuest, clearGuestMode } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
@@ -45,6 +44,10 @@ export default function EventSignUpPage() {
   }, [eventId, isAuthenticated, router]);
 
   const handleSignUp = async () => {
+    if (isGuest) {
+      setMessage('You need an account to sign up for events!');
+      return;
+    }
     if (false) {
       setMessage('Sorry, this event has no spots left.');
       return;
@@ -52,6 +55,11 @@ export default function EventSignUpPage() {
     if (event?.id) {
       router.push(`/events/${event.id}/signup`);
     }
+  };
+
+  const handleSignIn = () => {
+    clearGuestMode();
+    router.push('/login');
   };
 
   if (loading) {
@@ -66,28 +74,27 @@ export default function EventSignUpPage() {
           <ThemedView style={styles.content}>
             <EventInfoTable {...event!} />
 
-            {isGuest ? (
-              <View style={styles.messageBox}>
-                <ThemedText style={styles.guestText}>
-                  Sign in or make an account to sign up for this event.
-                </ThemedText>
-              </View>
-            ) : (
-              <View style={styles.signUpSection}>
-                <Button
-                  text="SIGN UP"
-                  onPress={handleSignUp}
-                  loading={false}
-                  disabled={false}
-                />
+            <View style={styles.signUpSection}>
+              <Button
+                text="SIGN UP"
+                onPress={handleSignUp}
+                loading={false}
+                disabled={false}
+              />
 
-                {message ? (
-                  <View style={styles.messageBox}>
-                    <ThemedText style={styles.errorText}>{message}</ThemedText>
-                  </View>
-                ) : null}
-              </View>
-            )}
+              {message ? (
+                <View style={styles.messageBox}>
+                  <ThemedText style={styles.errorText}>{message}</ThemedText>
+                  {isGuest ? (
+                    <Pressable onPress={handleSignIn}>
+                      <ThemedText style={styles.signUpLink}>
+                        Sign In Now
+                      </ThemedText>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
+            </View>
           </ThemedView>
         </ScrollView>
       </SafeAreaView>
@@ -118,11 +125,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: Colors.light.errorText,
   },
-  guestText: {
+  signUpLink: {
     color: Colors.light.text,
-    fontFamily: Fonts.regular_400,
-    fontSize: 16,
-    lineHeight: 22,
-    marginBottom: 8,
+    textDecorationLine: 'underline',
   },
 });

@@ -19,16 +19,34 @@ import { ProfileEventCard } from '@/components/profile/ProfileEventCard';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { profileData, upcomingEvents, loading, refreshing, handleRefresh } =
     useProfile();
+  const { isGuest, clearGuestMode } = useAuth();
+
+  const handleSignIn = () => {
+    clearGuestMode();
+    router.push('/login');
+  };
 
   if (loading) {
     return <LoadingScreen text="Loading profile..." />;
   }
-
+  if (isGuest) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>
+          Sign in or make an account to check your profile
+        </Text>
+        <Pressable style={{ marginTop: 16 }} onPress={handleSignIn}>
+          <Text style={styles.signUpLink}>Sign In Now</Text>
+        </Pressable>
+      </View>
+    );
+  }
   if (!profileData) {
     return (
       <View style={styles.errorContainer}>
@@ -231,5 +249,11 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingBottom: 80, // gives room for the bottom button
+  },
+  signUpLink: {
+    fontSize: 14,
+    color: Colors.light.text,
+    textDecorationLine: 'underline',
+    fontFamily: Fonts.regular_400,
   },
 });

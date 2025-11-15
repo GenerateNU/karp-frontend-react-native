@@ -23,6 +23,7 @@ type AuthContextValue = {
   signIn: (params: { username: string; password: string }) => Promise<void>;
   signOut: () => void;
   continueAsGuest: () => void;
+  clearGuestMode: () => void;
   fetchUserEntity: () => Promise<void>;
 };
 
@@ -81,6 +82,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const clearGuestMode = useCallback(() => {
+    setIsGuest(false);
+
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      try {
+        window.localStorage.removeItem('is_guest');
+      } catch {}
+    }
+  }, []);
+
   const fetchUserEntity = useCallback(async () => {
     if (!user?.entityId) return;
 
@@ -116,6 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signIn,
       signOut,
       continueAsGuest,
+      clearGuestMode,
       fetchUserEntity,
     }),
     [user, volunteer, token, isGuest, isLoading]
