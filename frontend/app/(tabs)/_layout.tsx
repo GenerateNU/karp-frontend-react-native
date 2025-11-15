@@ -1,10 +1,10 @@
 import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
+import { Image } from 'expo-image';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/HapticTab';
-import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAuth } from '@/context/AuthContext';
@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { isAuthenticated } = useAuth();
+  const insets = useSafeAreaInsets();
 
   if (!isAuthenticated) {
     // When not authenticated, redirect away from tabs to login
@@ -20,57 +21,62 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: '#1D0F48', // indigo-950
+        tabBarInactiveTintColor: '#1D0F48', // indigo-950
         headerShown: false,
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '400',
+          marginTop: 4,
+        },
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarItemStyle: {
           alignItems: 'center',
           justifyContent: 'center',
-          marginTop: 6,
-          marginBottom: 6,
+          paddingTop: 4,
+          paddingBottom: 4,
         },
         tabBarStyle: [
           Platform.select({
             ios: {
               position: 'absolute',
+              bottom: 0,
             },
-            default: {},
+            default: {
+              position: 'absolute',
+              bottom: 0,
+            },
           }),
           {
-            height: 90,
-            paddingTop: 10,
-            paddingBottom: 10,
-            backgroundColor: Colors.light.bottomNav,
-            borderTopWidth: 1,
-            borderTopColor: '#000000',
+            height: 70 + insets.bottom, // Base height + safe area
+            paddingTop: 8,
+            paddingBottom: Math.max(insets.bottom, 8),
+            backgroundColor: '#7DD3FC', // sky-300
+            borderTopWidth: 0.2,
+            borderTopColor: '#1D0F48', // indigo-950
+            elevation: 0, // Remove shadow on Android
+            shadowOpacity: 0, // Remove shadow on iOS
           },
         ],
-      }}
+      })}
     >
       <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
         name="fypTabs"
         options={{
-          title: 'Events and Orgs',
+          title: 'Home',
           tabBarIcon: ({ focused }) => (
-            <View
+            <Image
+              source={require('@/assets/images/home-icon.svg')}
               style={{
-                width: 56,
-                height: 56,
-                backgroundColor: (Colors as any)?.light?.navIconBackground,
-                borderRadius: 12,
-                borderWidth: 1,
-                borderColor: (Colors as any)?.light?.navIconBorder,
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: 33,
+                height: 30,
                 opacity: focused ? 1 : 0.6,
               }}
-            >
-              <Ionicons name="notifications-outline" size={28} color="#000" />
-            </View>
+              contentFit="contain"
+            />
           ),
         }}
       />
@@ -79,21 +85,32 @@ export default function TabLayout() {
         options={{
           title: 'Shop',
           tabBarIcon: ({ focused }) => (
-            <View
+            <Image
+              source={require('@/assets/images/shop-icon.svg')}
               style={{
-                width: 56,
-                height: 56,
-                backgroundColor: (Colors as any)?.light?.navIconBackground,
-                borderRadius: 12,
-                borderWidth: 1,
-                borderColor: (Colors as any)?.light?.navIconBorder,
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: 28,
+                height: 30,
                 opacity: focused ? 1 : 0.6,
               }}
-            >
-              <Ionicons name="fish-outline" size={28} color="#000" />
-            </View>
+              contentFit="contain"
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="rank"
+        options={{
+          title: 'Rank',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('@/assets/images/rank-icon.svg')}
+              style={{
+                width: 28,
+                height: 31,
+                opacity: focused ? 1 : 0.6,
+              }}
+              contentFit="contain"
+            />
           ),
         }}
       />
@@ -102,21 +119,15 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ focused }) => (
-            <View
+            <Image
+              source={require('@/assets/images/profile-icon.svg')}
               style={{
-                width: 56,
-                height: 56,
-                backgroundColor: (Colors as any)?.light?.navIconBackground,
-                borderRadius: 12,
-                borderWidth: 1,
-                borderColor: (Colors as any)?.light?.navIconBorder,
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: 30,
+                height: 30,
                 opacity: focused ? 1 : 0.6,
               }}
-            >
-              <Ionicons name="person-outline" size={28} color="#000" />
-            </View>
+              contentFit="contain"
+            />
           ),
         }}
       />
