@@ -18,9 +18,11 @@ type AuthContextValue = {
   volunteer: Volunteer | null;
   token: string | null;
   isAuthenticated: boolean;
+  isGuest: boolean;
   isLoading: boolean;
   signIn: (params: { username: string; password: string }) => Promise<void>;
   signOut: () => void;
+  continueAsGuest: () => void;
   fetchUserEntity: () => Promise<void>;
 };
 
@@ -30,6 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [volunteer, setVolunteer] = useState<Volunteer | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isGuest, setIsGuest] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const signIn = useCallback(
@@ -45,6 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(userResponse);
         setToken(accessToken);
+        setIsGuest(false);
 
         // Persist on web to survive page refresh
         if (Platform.OS === 'web' && typeof window !== 'undefined') {
@@ -54,6 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               'auth_user',
               JSON.stringify(userResponse)
             );
+            window.localStorage.removeItem('is_guest');
           } catch {}
         }
       } catch (err) {
@@ -67,23 +72,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
+  const continueAsGuest = useCallback(() => {
+    setIsGuest(true);
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem('is_guest', 'true');
+      } catch {}
+    }
+  }, []);
+
   const fetchUserEntity = useCallback(async () => {
     if (!user?.entityId) return;
 
     // only fetch volunteer for now
     const volunteerResponse = await volunteerService.getSelf();
     setVolunteer(volunteerResponse);
-  }, [user?.entityId]);
+  }, [user?.entityId]); // Keep this dependency
 
   const signOut = useCallback(() => {
     setUser(null);
     setVolunteer(null);
     setToken(null);
+    setIsGuest(false); // Clear guest mode on sign out
+
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       try {
         window.localStorage.removeItem('auth_token');
         window.localStorage.removeItem('auth_user');
         window.localStorage.removeItem('volunteer');
+        window.localStorage.removeItem('is_guest');
       } catch {}
     }
   }, []);
@@ -94,12 +111,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       volunteer,
       token,
       isAuthenticated: !!token,
+      isGuest,
       isLoading,
       signIn,
       signOut,
+      continueAsGuest,
       fetchUserEntity,
     }),
-    [user, volunteer, token, isLoading, signIn, signOut, fetchUserEntity]
+    [
+      user,
+      volunteer,
+      token,
+      isGuest,
+      isLoading,
+      signIn,
+      signOut,
+      continueAsGuest,
+      fetchUserEntity,
+    ]
   );
 
   useEffect(() => {
@@ -112,18 +141,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const storedToken = window.localStorage.getItem('auth_token');
       const storedUser = window.localStorage.getItem('auth_user');
       const storedVolunteer = window.localStorage.getItem('volunteer');
+      const storedIsGuest = window.localStorage.getItem('is_guest');
       if (storedToken) setToken(storedToken);
       if (storedUser) setUser(JSON.parse(storedUser) as AuthUser);
       if (storedVolunteer)
         setVolunteer(JSON.parse(storedVolunteer) as Volunteer);
+      if (storedIsGuest === 'true') setIsGuest(true);
     } catch {}
   }, []);
 
+  // Change this useEffect - remove fetchUserEntity from dependencies
   useEffect(() => {
     if (user?.entityId && !volunteer && token) {
       fetchUserEntity();
     }
-  }, [user?.entityId, volunteer, token, fetchUserEntity]);
+  }, [user?.entityId, volunteer, token]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
