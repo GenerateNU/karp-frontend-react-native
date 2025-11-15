@@ -106,7 +106,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthToken(token);
   }, [token]);
 
-  // Hydrate auth state on mount (web)
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') return;
     try {
@@ -119,6 +118,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setVolunteer(JSON.parse(storedVolunteer) as Volunteer);
     } catch {}
   }, []);
+
+  useEffect(() => {
+    if (user?.entityId && !volunteer && token) {
+      fetchUserEntity();
+    }
+  }, [user?.entityId, volunteer, token, fetchUserEntity]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
