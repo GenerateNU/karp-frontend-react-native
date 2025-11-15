@@ -72,7 +72,7 @@ function SignUpCredentials() {
     <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
-          source={require('@/assets/images/logo_temp.svg')}
+          source={require('@/assets/images/logo.svg')}
           style={styles.logo}
         />
       </View>

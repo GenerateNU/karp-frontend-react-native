@@ -31,7 +31,11 @@ export function useItemDetail(itemId: string) {
         ]);
 
         setItem(itemData);
-        setUserCoins(volunteerData.coins);
+        if (volunteerData) {
+          setUserCoins(volunteerData.coins);
+        } else {
+          setUserCoins(0);
+        }
 
         const alreadyOrdered = orders.some(
           (order: Order) =>
@@ -40,6 +44,7 @@ export function useItemDetail(itemId: string) {
         setHasOrdered(alreadyOrdered);
       } catch (error) {
         Alert.alert('Error', `Failed to load item details: ${error}`);
+        console.log(error);
       } finally {
         setLoading(false);
       }

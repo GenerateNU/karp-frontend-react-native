@@ -19,7 +19,7 @@ export const BackHeader: React.FC<BackHeaderProps> = ({ onBack, style }) => {
         style={styles.backButtonContainer}
       >
         <Image
-          source={require('@/assets/images/backArrow.svg')}
+          source={require('@/assets/images/back-arrow.svg')}
           style={styles.backButtonIcon}
           contentFit="contain"
         />
