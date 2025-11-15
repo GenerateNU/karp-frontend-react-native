@@ -86,6 +86,9 @@ export default function LoginScreen() {
             <TouchableOpacity onPress={handleSignUp}>
               <Text style={styles.signUpLink}>Sign Up</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={handleSignUp}>
+              <Text style={styles.signUpLink}>Continue As Guest</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
