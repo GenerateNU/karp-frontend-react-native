@@ -6,18 +6,31 @@ import Animated, {
   useAnimatedStyle,
   useScrollViewOffset,
 } from 'react-native-reanimated';
+import { ImageBackground } from 'expo-image';
 
 import { ThemedView } from '@/components/ThemedView';
 import { useBottomTabOverflow } from '@/components/ui/TabBarBackground';
+import { Colors } from '@/constants/Colors';
 
 const HEADER_HEIGHT = 200;
+
+const backgroundImages: Record<string, ReturnType<typeof require>> = {
+  fishes: require('@/assets/images/fishes-bg.png'),
+  bubbles: require('@/assets/images/bubbles-bg.png'),
+  waves: require('@/assets/images/waves-bg.png'),
+};
 
 type Props = PropsWithChildren<{
   headerImage?: React.ReactElement;
   headerBackgroundColor: { dark: string; light: string };
+  backgroundType?: 'fishes' | 'bubbles' | 'waves' | 'default';
 }>;
 
-export default function ParallaxScrollView({ children, headerImage }: Props) {
+export default function ParallaxScrollView({
+  children,
+  headerImage,
+  backgroundType = 'default',
+}: Props) {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
@@ -42,35 +55,74 @@ export default function ParallaxScrollView({ children, headerImage }: Props) {
     };
   });
 
+  const backgroundImage = backgroundImages[backgroundType];
+  const backgroundColor =
+    backgroundType === 'default' ? '#FFFFFF' : Colors.light.transparent;
+
   return (
     <ThemedView lightColor="#FFFFFF" darkColor="#FFFFFF" style={{ flex: 1 }}>
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ bottom }}
-        style={{ backgroundColor: '#FFFFFF' }}
+        style={{ backgroundColor: backgroundColor }}
         contentContainerStyle={{
           paddingBottom: bottom,
-          backgroundColor: '#FFFFFF',
+          backgroundColor: backgroundColor,
         }}
       >
-        <Animated.View
-          style={[
-            styles.header,
-            {
-              backgroundColor: '#FFFFFF',
-              paddingTop: 40, // extra space for title
-            },
-            headerAnimatedStyle,
-          ]}
-        >
-          {headerImage}
-        </Animated.View>
-        <ThemedView
-          style={[styles.content, { backgroundColor: '#FFFFFF' }]} // white content
-        >
-          {children}
-        </ThemedView>
+        {backgroundImage ? (
+          <ImageBackground
+            source={backgroundImage}
+            style={styles.backgroundImage}
+            contentFit="cover"
+            contentPosition="top center"
+          >
+            <Animated.View
+              style={[
+                styles.header,
+                {
+                  backgroundColor: Colors.light.transparent,
+                  paddingTop: 40, // extra space for title
+                },
+                headerAnimatedStyle,
+              ]}
+            >
+              {headerImage}
+            </Animated.View>
+            <ThemedView
+              style={[
+                styles.content,
+                { backgroundColor: Colors.light.transparent },
+              ]}
+            >
+              {children}
+            </ThemedView>
+          </ImageBackground>
+        ) : (
+          <>
+            <Animated.View
+              style={[
+                styles.header,
+                {
+                  backgroundColor: '#FFFFFF',
+                  paddingTop: 40, // extra space for title
+                },
+                headerAnimatedStyle,
+              ]}
+            >
+              {headerImage}
+            </Animated.View>
+            <ThemedView
+              style={[
+                styles.content,
+                { backgroundColor: Colors.light.transparent },
+              ]}
+            >
+              {children}
+            </ThemedView>
+          </>
+        )}
       </Animated.ScrollView>
     </ThemedView>
   );
@@ -85,5 +137,9 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginRight: 0,
     gap: 16,
+  },
+  backgroundImage: {
+    width: '100%',
+    flexGrow: 1,
   },
 });
