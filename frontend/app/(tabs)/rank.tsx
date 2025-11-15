@@ -6,8 +6,10 @@ import {
   StyleSheet,
   ActivityIndicator,
   Image,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { volunteerService } from '@/services/volunteerService';
@@ -111,6 +113,7 @@ function Avatar({ volunteerId, size }: AvatarProps) {
 
 export default function LeaderboardScreen() {
   const { user } = useAuth();
+  const router = useRouter();
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
@@ -240,23 +243,32 @@ export default function LeaderboardScreen() {
             <Text style={styles.emptyText}>No leaderboard data available</Text>
           ) : (
             leaderboardData.map(entry => (
-              <View
+              <Pressable
                 key={entry.volunteer.id}
-                style={[
-                  styles.leaderboardEntry,
-                  entry.isCurrentUser && styles.currentUserEntry,
-                ]}
+                onPress={() => {
+                  if (!entry.isCurrentUser) {
+                    router.push(`/profile/${entry.volunteer.id}`);
+                  }
+                }}
+                disabled={entry.isCurrentUser}
               >
-                <Text style={styles.rankNumber}>{entry.rank}</Text>
-                <View style={styles.entryAvatarContainer}>
-                  <Avatar volunteerId={entry.volunteer.id} size={40} />
+                <View
+                  style={[
+                    styles.leaderboardEntry,
+                    entry.isCurrentUser && styles.currentUserEntry,
+                  ]}
+                >
+                  <Text style={styles.rankNumber}>{entry.rank}</Text>
+                  <View style={styles.entryAvatarContainer}>
+                    <Avatar volunteerId={entry.volunteer.id} size={40} />
+                  </View>
+                  <View style={styles.entryInfo}>
+                    <Text style={styles.entryName}>{entry.name}</Text>
+                    <Text style={styles.entryCoins}>{entry.coins} coins</Text>
+                  </View>
+                  <Text style={styles.entryLevel}>Lv. {entry.level}</Text>
                 </View>
-                <View style={styles.entryInfo}>
-                  <Text style={styles.entryName}>{entry.name}</Text>
-                  <Text style={styles.entryCoins}>{entry.coins} coins</Text>
-                </View>
-                <Text style={styles.entryLevel}>Lv. {entry.level}</Text>
-              </View>
+              </Pressable>
             ))
           )}
         </ScrollView>
