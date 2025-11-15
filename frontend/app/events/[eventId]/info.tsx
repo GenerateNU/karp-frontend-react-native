@@ -8,6 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import EventInfoTable from '@/components/ui/EventInfoFull';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 import { Event } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { BackHeader } from '@/components/common/BackHeader';
@@ -16,16 +17,16 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isGuest } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
-    // if (!isAuthenticated) {
-    //   router.replace('/login');
-    //   return;
-    // }
+    if (!isAuthenticated && !isGuest) {
+      router.replace('/login');
+      return;
+    }
 
     const fetchEventDetails = async () => {
       console.log('Event ID for Info:', eventId);
@@ -65,20 +66,28 @@ export default function EventSignUpPage() {
           <ThemedView style={styles.content}>
             <EventInfoTable {...event!} />
 
-            <View style={styles.signUpSection}>
-              <Button
-                text="SIGN UP"
-                onPress={handleSignUp}
-                loading={false}
-                disabled={false}
-              />
+            {isGuest ? (
+              <View style={styles.messageBox}>
+                <ThemedText style={styles.guestText}>
+                  Sign in or make an account to sign up for this event.
+                </ThemedText>
+              </View>
+            ) : (
+              <View style={styles.signUpSection}>
+                <Button
+                  text="SIGN UP"
+                  onPress={handleSignUp}
+                  loading={false}
+                  disabled={false}
+                />
 
-              {message ? (
-                <View style={styles.messageBox}>
-                  <ThemedText style={styles.errorText}>{message}</ThemedText>
-                </View>
-              ) : null}
-            </View>
+                {message ? (
+                  <View style={styles.messageBox}>
+                    <ThemedText style={styles.errorText}>{message}</ThemedText>
+                  </View>
+                ) : null}
+              </View>
+            )}
           </ThemedView>
         </ScrollView>
       </SafeAreaView>
@@ -108,5 +117,12 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: Colors.light.errorText,
+  },
+  guestText: {
+    color: Colors.light.text,
+    fontFamily: Fonts.regular_400,
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 8,
   },
 });
