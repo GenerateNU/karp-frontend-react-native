@@ -19,7 +19,7 @@ import { Volunteer } from '@/types/api/volunteer';
 interface LeaderboardEntry {
   rank: number;
   name: string;
-  coins: number;
+  experience: number;
   level: number;
   isCurrentUser?: boolean;
   volunteer: Volunteer;
@@ -142,17 +142,13 @@ export default function LeaderboardScreen() {
 
         const topVolunteers = await volunteerService.getTopVolunteers(10);
 
-        // Sort by coins descending to ensure correct ranking
-        const sortedVolunteers = [...topVolunteers].sort(
-          (a, b) => b.coins - a.coins
-        );
-
-        const entries: LeaderboardEntry[] = sortedVolunteers.map(
+        const entries: LeaderboardEntry[] = topVolunteers.map(
           (volunteer, index) => ({
             rank: index + 1,
             name: getVolunteerName(volunteer),
-            coins: volunteer.coins,
-            level: calculateLevel(volunteer.experience),
+            experience: volunteer.experience,
+            level:
+              volunteer.currentLevel ?? calculateLevel(volunteer.experience),
             isCurrentUser: volunteerData?.id === volunteer.id,
             volunteer,
           })
@@ -218,8 +214,8 @@ export default function LeaderboardScreen() {
               </View>
               <View style={styles.entryInfo}>
                 <Text style={styles.entryName}>Your Current Rank</Text>
-                <Text style={styles.entryCoins}>
-                  {currentUserEntry.coins} coins
+                <Text style={styles.entryExperience}>
+                  {currentUserEntry.experience} XP
                 </Text>
               </View>
               <Text style={styles.entryLevel}>
@@ -264,7 +260,9 @@ export default function LeaderboardScreen() {
                   </View>
                   <View style={styles.entryInfo}>
                     <Text style={styles.entryName}>{entry.name}</Text>
-                    <Text style={styles.entryCoins}>{entry.coins} coins</Text>
+                    <Text style={styles.entryExperience}>
+                      {entry.experience} XP
+                    </Text>
                   </View>
                   <Text style={styles.entryLevel}>Lv. {entry.level}</Text>
                 </View>
@@ -343,7 +341,7 @@ const styles = StyleSheet.create({
     color: '#1D0F48',
     marginBottom: 4,
   },
-  entryCoins: {
+  entryExperience: {
     fontFamily: Fonts.light_300,
     fontSize: 12,
     color: '#1D0F48',
