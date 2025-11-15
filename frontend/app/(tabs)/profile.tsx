@@ -10,7 +10,6 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-// import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { LevelProgress } from '@/components/profile/LevelProgress';
@@ -77,7 +76,10 @@ export default function ProfileScreen() {
           <Text style={styles.levelLabel}>Level {stats.level}</Text>
         </View>
 
-        <FishTank />
+        <FishTank
+          volunteerId={volunteer.id}
+          refreshKey={refreshing ? Date.now() : undefined}
+        />
 
         <LevelProgress
           level={stats.level}
