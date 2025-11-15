@@ -118,17 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       continueAsGuest,
       fetchUserEntity,
     }),
-    [
-      user,
-      volunteer,
-      token,
-      isGuest,
-      isLoading,
-      signIn,
-      signOut,
-      continueAsGuest,
-      fetchUserEntity,
-    ]
+    [user, volunteer, token, isGuest, isLoading]
   );
 
   useEffect(() => {

@@ -11,10 +11,9 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isGuest } = useAuth();
 
-  if (!isAuthenticated) {
-    // When not authenticated, redirect away from tabs to login
+  if (!isAuthenticated && !isGuest) {
     return <Redirect href="/login" />;
   }
 
