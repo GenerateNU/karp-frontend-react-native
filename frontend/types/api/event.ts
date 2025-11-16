@@ -6,7 +6,7 @@ export enum EventStatus {
   PUBLISHED = 'PUBLISHED',
   CANCELLED = 'CANCELLED',
   DELETED = 'DELETED',
-  UPCOMING = 'UPCOMING',
+  APPROVED = 'APPROVED',
 }
 
 export interface Event {

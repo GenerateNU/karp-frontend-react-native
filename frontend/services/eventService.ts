@@ -31,7 +31,7 @@ async function searchEvents(
 ): Promise<Event[]> {
   const params: Record<string, unknown> = {
     q: query,
-    statuses: EventStatus.PUBLISHED,
+    statuses: EventStatus.APPROVED,
     lat: locationFilter?.latitude,
     lng: locationFilter?.longitude,
     distance_km: locationFilter?.radiusKm,
