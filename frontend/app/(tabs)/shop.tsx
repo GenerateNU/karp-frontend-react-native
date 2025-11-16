@@ -191,7 +191,7 @@ export default function StoreScreen() {
             Popular in Boston
           </ThemedText>
           {(() => {
-            const popularItems = filteredItems.slice(0, 3);
+            const popularItems = filteredItems;
             return (
               <FlatList
                 horizontal
