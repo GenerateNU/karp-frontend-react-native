@@ -231,7 +231,7 @@ export default function StoreScreen() {
             Sweet Treats
           </ThemedText>
           {(() => {
-            const sweetItems = filteredItems.slice(2, 5);
+            const sweetItems = filteredItems;
             return (
               <FlatList
                 horizontal
@@ -271,7 +271,7 @@ export default function StoreScreen() {
             Shopping Spree
           </ThemedText>
           {(() => {
-            const spreeItems = filteredItems.slice(3, 6);
+            const spreeItems = filteredItems;
             return (
               <FlatList
                 horizontal
