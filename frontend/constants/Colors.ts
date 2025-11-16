@@ -8,6 +8,8 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
+    // primary text color
+    primaryText: '#1D0F48',
     text: '#000000',
     background: '#D9D9D9',
     eggshellWhite: '#FFFDFA',
@@ -56,6 +58,11 @@ export const Colors = {
     semiTransparentTeal: 'rgba(12, 120, 128, 0.5)',
     overlay: 'rgba(0,0,0,0.5)',
     mapCircleFill: 'rgba(59, 130, 246, 0.1)',
+    // order history screen colors
+    orderStatusPending: '#F7581F',
+    orderStatusClaimed: '#2B5213',
+    orderStatusAll: '#34A5E4',
+    moreInfoButton: '#FEB83C',
   },
   dark: {
     text: '#ECEDEE',

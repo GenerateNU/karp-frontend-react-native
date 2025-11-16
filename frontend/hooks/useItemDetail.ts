@@ -8,7 +8,7 @@ import { Item } from '@/types/api/item';
 import { Order } from '@/types/api/order';
 
 export function useItemDetail(itemId: string) {
-  const { user, token } = useAuth();
+  const { user, token, fetchUserEntity } = useAuth();
 
   const [item, setItem] = useState<Item | null>(null);
   const [userCoins, setUserCoins] = useState(0);
@@ -39,7 +39,7 @@ export function useItemDetail(itemId: string) {
 
         const alreadyOrdered = orders.some(
           (order: Order) =>
-            order.item_id === itemId && order.order_status !== 'cancelled'
+            order.itemId === itemId && order.orderStatus !== 'cancelled'
         );
         setHasOrdered(alreadyOrdered);
       } catch (error) {
@@ -68,6 +68,7 @@ export function useItemDetail(itemId: string) {
 
     try {
       await orderService.createOrder(itemId);
+      await fetchUserEntity();
       setHasOrdered(true);
       setUserCoins(userCoins - item.price);
       Alert.alert('Success!', 'Your order has been placed');

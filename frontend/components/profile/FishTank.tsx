@@ -3,7 +3,12 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { MyFishModal } from './MyFishModal';
 
-export function FishTank() {
+interface FishTankProps {
+  volunteerId: string | null;
+  refreshKey?: number;
+}
+
+export function FishTank({ volunteerId }: FishTankProps) {
   const [showFishModal, setShowFishModal] = useState(false);
 
   return (
@@ -21,6 +26,7 @@ export function FishTank() {
       <MyFishModal
         visible={showFishModal}
         onClose={() => setShowFishModal(false)}
+        volunteerId={volunteerId}
       />
     </>
   );

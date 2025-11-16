@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,52 +6,69 @@ import {
   Pressable,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
+import { achievementService } from '@/services/achievementService';
+import type { Achievement } from '@/types/api/achievement';
+
+interface AchievementWithImage extends Achievement {
+  imageUrl: string | null;
+  receivedAt: string;
+}
 
 interface MyFishModalProps {
   visible: boolean;
   onClose: () => void;
+  volunteerId: string | null;
 }
 
-interface FishItem {
-  id: string;
-  name: string;
-  level: number;
-  image: any;
-}
+export function MyFishModal({
+  visible,
+  onClose,
+  volunteerId,
+}: MyFishModalProps) {
+  const [achievements, setAchievements] = useState<AchievementWithImage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-// temporary hardcoded fish
-const FISH_LIST: FishItem[] = [
-  {
-    id: '1',
-    name: 'Betta fish',
-    level: 1,
-    image: require('@/assets/images/betta-fish.png'),
-  },
-  {
-    id: '2',
-    name: 'Sea bass',
-    level: 3,
-    image: require('@/assets/images/sea-bass.png'),
-  },
-  {
-    id: '3',
-    name: 'Ocean sunfish',
-    level: 8,
-    image: require('@/assets/images/ocean-sunfish.png'),
-  },
-  {
-    id: '4',
-    name: 'Tilapia',
-    level: 22,
-    image: require('@/assets/images/tilapia.png'),
-  },
-];
+  useEffect(() => {
+    const fetchAchievements = async () => {
+      if (!volunteerId) {
+        setAchievements([]);
+        setIsLoading(false);
+        return;
+      }
 
-export function MyFishModal({ visible, onClose }: MyFishModalProps) {
+      setIsLoading(true);
+      try {
+        const volunteerAchievements =
+          await achievementService.getVolunteerAchievements(volunteerId);
+
+        const achievementsWithDetails = await Promise.all(
+          volunteerAchievements.map(async a => ({
+            ...a,
+            imageUrl: a.imageS3Key
+              ? await achievementService.getAchievementImageUrl(a.id)
+              : null,
+          }))
+        );
+
+        setAchievements(achievementsWithDetails);
+      } catch (err) {
+        console.error('Error fetching volunteer achievements:', err);
+        setAchievements([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (visible) {
+      fetchAchievements();
+    }
+  }, [volunteerId, visible]);
+
   return (
     <Modal
       visible={visible}
@@ -66,25 +83,45 @@ export function MyFishModal({ visible, onClose }: MyFishModalProps) {
         >
           <Text style={styles.title}>My Fish</Text>
 
-          <ScrollView
-            style={styles.fishList}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.fishListContent}
-          >
-            {FISH_LIST.map(fish => (
-              <View key={fish.id} style={styles.fishItem}>
-                <Image
-                  source={fish.image}
-                  style={styles.fishImage}
-                  contentFit="contain"
-                />
-                <View style={styles.fishInfo}>
-                  <Text style={styles.levelText}>Level {fish.level}</Text>
-                  <Text style={styles.fishName}>{fish.name}</Text>
+          {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={Colors.light.primary} />
+            </View>
+          ) : achievements.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                No achievements yet. Keep volunteering to earn achievements!
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              style={styles.fishList}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.fishListContent}
+            >
+              {achievements.map(achievement => (
+                <View key={achievement.id} style={styles.fishItem}>
+                  {achievement.imageUrl ? (
+                    <Image
+                      source={{ uri: achievement.imageUrl }}
+                      style={styles.fishImage}
+                      contentFit="contain"
+                    />
+                  ) : (
+                    <View style={styles.placeholderImage} />
+                  )}
+                  <View style={styles.fishInfo}>
+                    <Text style={styles.fishName}>{achievement.name}</Text>
+                    {achievement.description && (
+                      <Text style={styles.description} numberOfLines={2}>
+                        {achievement.description}
+                      </Text>
+                    )}
+                  </View>
                 </View>
-              </View>
-            ))}
-          </ScrollView>
+              ))}
+            </ScrollView>
+          )}
         </Pressable>
       </Pressable>
     </Modal>
@@ -94,7 +131,7 @@ export function MyFishModal({ visible, onClose }: MyFishModalProps) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -138,16 +175,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  levelText: {
-    fontFamily: Fonts.light_300,
-    fontSize: 12,
-    color: Colors.light.textSecondary,
-    marginBottom: 6,
-  },
   fishName: {
     fontFamily: Fonts.regular_400,
     fontSize: 20,
     fontWeight: '500',
     color: Colors.light.text,
+  },
+  description: {
+    fontFamily: Fonts.light_300,
+    fontSize: 12,
+    color: Colors.light.textSecondary,
+    marginTop: 4,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 200,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 200,
+    padding: 20,
+  },
+  emptyText: {
+    fontFamily: Fonts.regular_400,
+    fontSize: 16,
+    color: Colors.light.textSecondary,
+    textAlign: 'center',
+  },
+  placeholderImage: {
+    width: 120,
+    height: 68,
+    backgroundColor: Colors.light.cardBorder,
+    borderRadius: 4,
   },
 });

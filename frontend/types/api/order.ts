@@ -1,13 +1,13 @@
 export enum OrderStatus {
   PENDING_PICKUP = 'pending pickup',
-  COMPLETED = 'completed',
+  COMPLETED = 'completed', // same as claimed
   CANCELLED = 'cancelled',
 }
 
 export interface Order {
   id: string;
-  item_id: string;
-  volunteer_id: string;
-  placed_at: string;
-  order_status: OrderStatus;
+  itemId: string;
+  volunteerId: string;
+  placedAt: string;
+  orderStatus: OrderStatus;
 }

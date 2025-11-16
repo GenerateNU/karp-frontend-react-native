@@ -9,6 +9,12 @@ export interface Achievement {
   id: string;
   name: string;
   description: string;
-  level: number;
+  eventType: string;
+  threshold: number;
+  imageS3Key?: string | null;
   isActive: boolean;
+}
+
+export interface VolunteerReceivedAchievementResponse extends Achievement {
+  receivedAt: string;
 }
