@@ -1,7 +1,12 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { FlatList, Alert, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  Alert,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import CarouselItem from '@/components/items/CarouselItem';
@@ -25,9 +30,10 @@ export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
   const [items, setItems] = useState<ShopItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<ItemFilters>({
-    priceRange: { min: 0, max: 100 },
+    priceRange: { min: 0, max: 10000 },
     category: '',
   });
 
@@ -40,16 +46,22 @@ export default function StoreScreen() {
       if (!token) return;
       const response = await itemService.getAllItems();
       const mapped: ShopItem[] = (Array.isArray(response) ? response : []).map(
-        (raw: any) => ({
+        (raw: {
+          id: string;
+          name?: string;
+          vendor_name?: string;
+          vendor_id?: string;
+          price?: number;
+          imageS3Key?: string;
+        }) => ({
           id: raw.id,
           name: raw.name ?? 'Unnamed',
           store: raw.vendor_name ?? raw.vendor_id ?? 'Unknown',
           coins: raw.price ?? 0,
-          imageS3Key: raw.imageS3Key || null,
+          imageS3Key: raw.imageS3Key || undefined,
         })
       );
       setItems(mapped);
-      console.log('Loaded items:', mapped);
     } catch (e) {
       Alert.alert('Error', `Failed to load items. Please try again ${e}.`);
     } finally {
@@ -91,6 +103,15 @@ export default function StoreScreen() {
     setDrawerOpen(false);
   };
 
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await loadItems();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [loadItems]);
+
   if (loading) {
     return <LoadingScreen text="Loading items..." />;
   }
@@ -100,6 +121,13 @@ export default function StoreScreen() {
       <ParallaxScrollView
         backgroundType="bubbles"
         headerBackgroundColor={{ light: '#8ecde8', dark: '#8ecde8' }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor="#3B82F6"
+          />
+        }
         headerImage={
           <ThemedView
             lightColor={Colors.light.transparent}

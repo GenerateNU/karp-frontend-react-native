@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, RefreshControlProps } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -24,12 +24,14 @@ type Props = PropsWithChildren<{
   headerImage?: React.ReactElement;
   headerBackgroundColor: { dark: string; light: string };
   backgroundType?: 'fishes' | 'bubbles' | 'waves' | 'default';
+  refreshControl?: React.ReactElement<RefreshControlProps>;
 }>;
 
 export default function ParallaxScrollView({
   children,
   headerImage,
   backgroundType = 'default',
+  refreshControl,
 }: Props) {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
@@ -70,6 +72,7 @@ export default function ParallaxScrollView({
           paddingBottom: bottom,
           backgroundColor: backgroundColor,
         }}
+        refreshControl={refreshControl}
       >
         {backgroundImage ? (
           <ImageBackground
