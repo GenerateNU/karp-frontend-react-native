@@ -27,7 +27,7 @@ export default function StoreScreen() {
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<ItemFilters>({
-    priceRange: { min: 0, max: 100 },
+    priceRange: { min: 0, max: 10000 },
     category: '',
   });
 
