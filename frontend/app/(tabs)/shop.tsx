@@ -43,7 +43,6 @@ export default function StoreScreen() {
   const loadItems = useCallback(async () => {
     try {
       setLoading(true);
-      if (!token) return;
       const response = await itemService.getAllItems();
       const mapped: ShopItem[] = (Array.isArray(response) ? response : []).map(
         (raw: {
