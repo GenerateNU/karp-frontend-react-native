@@ -5,6 +5,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Fonts } from '@/constants/Fonts';
 import { Image } from 'expo-image';
 import { imageService } from '@/services/imageService';
+import { Colors } from '@/constants/Colors';
 
 export interface CarouselItemProps {
   id: string;
@@ -56,10 +57,15 @@ const CarouselItem: React.FC<CarouselItemProps> = ({
       }}
     >
       <ThemedView
-        lightColor="#E5E5E5"
-        darkColor="#E5E5E5"
+        lightColor={Colors.light.transparent}
+        darkColor={Colors.light.transparent}
         className="p2 rounded-xl shadow-md"
-        style={{ width: 180, height: 160 }}
+        style={{
+          width: 180,
+          height: 160,
+          borderWidth: 1,
+          borderColor: Colors.light.cardBorder,
+        }}
       >
         {/* Photo place holder*/}
         {imagePreSignedUrl ? (
@@ -72,7 +78,7 @@ const CarouselItem: React.FC<CarouselItemProps> = ({
           <ThemedView
             lightColor="#cccccc"
             darkColor="#444444"
-            style={{ width: 180, height: 100, borderRadius: 8 }}
+            style={{ width: '100%', height: 100, borderRadius: 8 }}
           />
         )}
         <ThemedText
@@ -90,8 +96,8 @@ const CarouselItem: React.FC<CarouselItemProps> = ({
           {name}
         </ThemedText>
         <ThemedView
-          lightColor="#E5E5E5"
-          darkColor="#E5E5E5"
+          lightColor={Colors.light.transparent}
+          darkColor={Colors.light.transparent}
           className="flex-row items-center justify-between"
           style={{ width: '100%' }}
         >

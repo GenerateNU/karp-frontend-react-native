@@ -11,7 +11,14 @@ import { Fonts } from '@/constants/Fonts';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { signIn, isLoading, isAuthenticated, fetchUserEntity } = useAuth();
+  const {
+    signIn,
+    isLoading,
+    isAuthenticated,
+    isGuest,
+    continueAsGuest,
+    fetchUserEntity,
+  } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -34,9 +41,14 @@ export default function LoginScreen() {
     router.push('/signup');
   };
 
+  const handleContinueAsGuest = () => {
+    continueAsGuest();
+    router.replace('/');
+  };
+
   React.useEffect(() => {
-    if (isAuthenticated) router.replace('/');
-  }, [isAuthenticated, router]);
+    if (isAuthenticated || isGuest) router.replace('/');
+  }, [isAuthenticated, isGuest]);
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -87,6 +99,13 @@ export default function LoginScreen() {
               <Text style={styles.signUpLink}>Sign Up</Text>
             </TouchableOpacity>
           </View>
+
+          <TouchableOpacity
+            onPress={handleContinueAsGuest}
+            style={styles.signUpContainer}
+          >
+            <Text style={styles.signUpLink}>Continue As Guest</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

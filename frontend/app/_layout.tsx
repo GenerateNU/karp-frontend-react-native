@@ -70,6 +70,10 @@ export default function RootLayout() {
                 name="profile/settings"
                 options={{ headerShown: false }}
               />
+              <Stack.Screen
+                name="profile/[volunteerId]"
+                options={{ headerShown: false }}
+              />
             </Stack>
             <StatusBar style="auto" />
           </LocationProvider>
