@@ -11,6 +11,10 @@ async function login(params: {
   return response.data as LoginResponse;
 }
 
+async function logout(): Promise<void> {
+  await api.post('/user/logout');
+}
+
 async function resetPassword(params: {
   currentPassword: string;
   newPassword: string;
@@ -26,6 +30,7 @@ async function createUser(params: CreateUserRequest): Promise<AuthUser> {
 
 export const userService = {
   login,
+  logout,
   resetPassword,
   createUser,
 };

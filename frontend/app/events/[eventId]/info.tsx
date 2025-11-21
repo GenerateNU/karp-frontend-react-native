@@ -28,7 +28,6 @@ export default function EventSignUpPage() {
     }
 
     const fetchEventDetails = async () => {
-      console.log('Event ID for Info:', eventId);
       try {
         const eventData = await eventService.getEventById(eventId as string);
         setEvent(eventData);

@@ -10,12 +10,7 @@ import { Event } from '@/types/api/event';
 import { createRegistration } from '@/services/registrationService';
 import { router } from 'expo-router';
 
-interface EventSignUpFormProps {
-  eventId: string;
-  event: Event;
-}
-
-export function EventSignUpForm({ event }: EventSignUpFormProps) {
+export function EventSignUpForm({ event }: { event: Event }) {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     firstName: user?.firstName || '',
@@ -62,6 +57,7 @@ export function EventSignUpForm({ event }: EventSignUpFormProps) {
     if (!validateForm()) return;
 
     try {
+      console.log('event', event);
       await createRegistration(event.id);
       router.push({
         pathname: '/events/[eventId]/success',

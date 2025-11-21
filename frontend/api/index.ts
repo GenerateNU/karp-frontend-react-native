@@ -35,7 +35,6 @@ api.interceptors.request.use(config => {
 
 api.interceptors.response.use(
   response => {
-    console.log('Raw backend response data:', response.data);
     if (response && response.data !== undefined) {
       response.data = camelizeKeys(response.data, {
         preserveLeadingUnderscore: false,
