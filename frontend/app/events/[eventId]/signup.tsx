@@ -56,7 +56,7 @@ export default function EventSignUpPage() {
             <ThemedText type="title" style={styles.infoConfirmationTitle}>
               Info Confirmation:
             </ThemedText>
-            <EventSignUpForm eventId={eventId as string} event={event!} />
+            <EventSignUpForm event={event!} />
           </ThemedView>
         </ScrollView>
       </SafeAreaView>
