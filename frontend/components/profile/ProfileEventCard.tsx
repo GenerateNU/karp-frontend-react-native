@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   checkOutButton: {
-    backgroundColor: '#6B7280',
+    backgroundColor: Colors.light.secondary,
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
