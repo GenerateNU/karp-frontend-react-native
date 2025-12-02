@@ -165,8 +165,6 @@ export function QRScanner({
 
       // If item scan was successful, trigger a refresh of order data
       if (type === 'item') {
-        // Use router events or a callback to refresh order history
-        // The parent component should handle the refresh
       }
 
       Alert.alert('Success', `${actionLabel} successful!`, [
