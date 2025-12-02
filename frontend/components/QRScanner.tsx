@@ -49,7 +49,6 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
 
       if (!eventId || !qrToken) throw new Error('Invalid QR Code.');
 
-      // Optional expiry check
       if (parsed.expires_at && new Date(parsed.expires_at) < new Date()) {
         throw new Error('This QR code has expired. Please request a new one.');
       }
