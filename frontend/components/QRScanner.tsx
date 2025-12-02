@@ -15,22 +15,34 @@ import { ImageBackground } from 'expo-image';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { checkIn, checkOut } from '@/services/registrationService';
+import { orderService } from '@/services/orderService';
 
-export type QRScannerType = 'check-in' | 'checkout';
+export type QRScannerType = 'check-in' | 'checkout' | 'item';
 
 interface QRScannerProps {
   type: QRScannerType;
+  orderId?: string; // Required when type is 'item'
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
-export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
+export function QRScanner({
+  type,
+  orderId,
+  onSuccess,
+  onCancel,
+}: QRScannerProps) {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const actionLabel = type === 'check-in' ? 'Check-in' : 'Check-out';
+  const actionLabel =
+    type === 'check-in'
+      ? 'Check-in'
+      : type === 'checkout'
+        ? 'Check-out'
+        : 'Scan Item';
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
     if (scanned || isProcessing) return;
@@ -40,8 +52,8 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
 
     try {
       // Parse QR code data - expecting JSON format with event_id and qr_token
-      let eventId: string;
-      let qrToken: string;
+      let eventId: string = '';
+      let qrToken: string = '';
       let parsed: any;
 
       try {
@@ -67,30 +79,60 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
           data,
           parseError,
         });
-        throw new Error(
-          'Invalid QR code format. Expected JSON with event_id and qr_token.'
-        );
+        const expectedFormat =
+          type === 'item'
+            ? 'Expected JSON with item_id and qr_token.'
+            : 'Expected JSON with event_id and qr_token.';
+        throw new Error(`Invalid QR code format. ${expectedFormat}`);
       }
 
-      eventId = parsed.event_id || parsed.eventId || '';
-      qrToken = parsed.qr_token || parsed.qrToken || '';
+      // For item scanning, we need item_id and qr_token from QR code, plus orderId from props
+      // For check-in/checkout, we need both event_id and qr_token
+      if (type === 'item') {
+        const itemIdFromQR = parsed.item_id || parsed.itemId || '';
+        qrToken = parsed.qr_token || parsed.qrToken || '';
 
-      if (
-        !eventId ||
-        typeof eventId !== 'string' ||
-        eventId.trim().length === 0
-      ) {
-        console.error('Invalid event_id:', { eventId, parsed });
-        throw new Error('QR code missing or invalid event_id');
-      }
+        if (
+          !itemIdFromQR ||
+          typeof itemIdFromQR !== 'string' ||
+          itemIdFromQR.trim().length === 0
+        ) {
+          console.error('Invalid item_id:', { itemIdFromQR, parsed });
+          throw new Error('QR code missing or invalid item_id');
+        }
 
-      if (
-        !qrToken ||
-        typeof qrToken !== 'string' ||
-        qrToken.trim().length === 0
-      ) {
-        console.error('Invalid qr_token:', { qrToken, parsed });
-        throw new Error('QR code missing or invalid qr_token');
+        if (
+          !qrToken ||
+          typeof qrToken !== 'string' ||
+          qrToken.trim().length === 0
+        ) {
+          console.error('Invalid qr_token:', { qrToken, parsed });
+          throw new Error('QR code missing or invalid qr_token');
+        }
+
+        // Store itemId for later use after expiration check
+        eventId = itemIdFromQR; // Reuse eventId variable to store itemId for item scanning
+      } else {
+        eventId = parsed.event_id || parsed.eventId || '';
+        qrToken = parsed.qr_token || parsed.qrToken || '';
+
+        if (
+          !eventId ||
+          typeof eventId !== 'string' ||
+          eventId.trim().length === 0
+        ) {
+          console.error('Invalid event_id:', { eventId, parsed });
+          throw new Error('QR code missing or invalid event_id');
+        }
+
+        if (
+          !qrToken ||
+          typeof qrToken !== 'string' ||
+          qrToken.trim().length === 0
+        ) {
+          console.error('Invalid qr_token:', { qrToken, parsed });
+          throw new Error('QR code missing or invalid qr_token');
+        }
       }
 
       // Optional: Check if QR code has expired
@@ -107,8 +149,14 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
       // Call the appropriate function based on type
       if (type === 'check-in') {
         await checkIn(eventId, qrToken);
-      } else {
+      } else if (type === 'checkout') {
         await checkOut(eventId, qrToken);
+      } else if (type === 'item') {
+        // For item scanning, eventId contains itemId from QR code
+        if (!orderId) {
+          throw new Error('Order ID is required for item scanning');
+        }
+        await orderService.scanOrder(orderId, eventId, qrToken);
       }
 
       Alert.alert('Success', `${actionLabel} successful!`, [
@@ -173,7 +221,9 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
   const backgroundImage =
     type === 'check-in'
       ? require('../assets/images/swimming-bg-checkin.png')
-      : require('../assets/images/swimming-bg-checkout.png');
+      : type === 'checkout'
+        ? require('../assets/images/swimming-bg-checkout.png')
+        : require('../assets/images/swimming-bg-checkin.png'); // We can make a item bg later
 
   return (
     <ImageBackground

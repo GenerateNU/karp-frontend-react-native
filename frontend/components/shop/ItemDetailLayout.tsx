@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BackHeader } from '@/components/common/BackHeader';
 import { PageBackground } from '@/components/common/PageBackground';
@@ -21,7 +22,8 @@ interface ItemDetailLayoutProps {
   vendorName: string;
   description: string;
   instructionsText?: string;
-  buttonConfig?: {
+  orderId?: string; // Only provided from order/[orderId].tsx to show scan button
+  buttonConfig: {
     text: string;
     onPress: () => void;
     loading?: boolean;
@@ -37,8 +39,18 @@ export function ItemDetailLayout({
   vendorName,
   description,
   instructionsText = 'Go to store and show them this page to redeem item!',
+  orderId,
   buttonConfig,
 }: ItemDetailLayoutProps) {
+  const router = useRouter();
+  // Only show scan button when orderId is provided (from order/[orderId].tsx) AND variant is redeemed
+  const showScanButton = buttonConfig?.variant === 'redeemed' && !!orderId;
+
+  const handleScanPress = () => {
+    if (orderId) {
+      router.push(`/scan?type=item&orderId=${orderId}`);
+    }
+  };
   return (
     <PageBackground type="fishes" style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -88,29 +100,39 @@ export function ItemDetailLayout({
           <Text style={styles.instructionsText}>{instructionsText}</Text>
 
           {buttonConfig && (
-            <TouchableOpacity
-              style={[
-                styles.button,
-                buttonConfig.variant === 'redeemed' && styles.redeemedButton,
-                buttonConfig.disabled && styles.buttonDisabled,
-              ]}
-              onPress={buttonConfig.onPress}
-              disabled={buttonConfig.disabled || buttonConfig.loading}
-            >
-              {buttonConfig.loading ? (
-                <ActivityIndicator color={Colors.light.white} />
-              ) : (
-                <Text
-                  style={[
-                    styles.buttonText,
-                    buttonConfig.variant === 'redeemed' &&
-                      styles.redeemedButtonText,
-                  ]}
+            <>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  buttonConfig.variant === 'redeemed' && styles.redeemedButton,
+                  buttonConfig.disabled && styles.buttonDisabled,
+                ]}
+                onPress={buttonConfig.onPress}
+                disabled={buttonConfig.disabled || buttonConfig.loading}
+              >
+                {buttonConfig.loading ? (
+                  <ActivityIndicator color={Colors.light.white} />
+                ) : (
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      buttonConfig.variant === 'redeemed' &&
+                        styles.redeemedButtonText,
+                    ]}
+                  >
+                    {buttonConfig.text}
+                  </Text>
+                )}
+              </TouchableOpacity>
+              {showScanButton && (
+                <TouchableOpacity
+                  style={styles.scanButton}
+                  onPress={handleScanPress}
                 >
-                  {buttonConfig.text}
-                </Text>
+                  <Text style={styles.scanButtonText}>Scan QR Code</Text>
+                </TouchableOpacity>
               )}
-            </TouchableOpacity>
+            </>
           )}
         </ScrollView>
       </SafeAreaView>
@@ -238,5 +260,21 @@ const styles = StyleSheet.create({
   },
   redeemedButtonText: {
     color: Colors.light.white,
+  },
+  scanButton: {
+    alignSelf: 'center',
+    paddingHorizontal: 40,
+    paddingVertical: 14,
+    backgroundColor: Colors.light.text,
+    borderRadius: 12,
+    minWidth: 200,
+    marginTop: 12,
+  },
+  scanButtonText: {
+    fontFamily: Fonts.regular_400,
+    fontSize: 16,
+    color: Colors.light.white,
+    textAlign: 'center',
+    textTransform: 'uppercase',
   },
 });

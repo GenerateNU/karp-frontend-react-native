@@ -14,6 +14,11 @@ export default function OrderDetailScreen() {
     imageUrl: string;
   }>();
 
+  // Ensure orderId is a string (expo-router can return arrays)
+  const orderId = Array.isArray(params.orderId)
+    ? params.orderId[0]
+    : params.orderId;
+
   return (
     <ItemDetailLayout
       imageUrl={params.imageUrl || null}
@@ -22,6 +27,7 @@ export default function OrderDetailScreen() {
       vendorName={params.vendorName || 'Store'}
       description={params.itemDescription || ''}
       instructionsText="Go to store and show them this page to redeem item!"
+      orderId={orderId}
       buttonConfig={{
         text: 'REDEEMED',
         onPress: () => {},
