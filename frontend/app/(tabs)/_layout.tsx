@@ -5,12 +5,9 @@ import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/HapticTab';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAuth } from '@/context/AuthContext';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
   const { isAuthenticated, isGuest } = useAuth();
   const insets = useSafeAreaInsets();
 
@@ -20,6 +17,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      // eslint-disable-next-line
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: '#1D0F48', // indigo-950
         tabBarInactiveTintColor: '#1D0F48', // indigo-950

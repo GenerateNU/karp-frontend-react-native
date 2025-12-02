@@ -117,6 +117,7 @@ export default function LeaderboardScreen() {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
+  // eslint-disable-next-line
   const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(
     null
   );
