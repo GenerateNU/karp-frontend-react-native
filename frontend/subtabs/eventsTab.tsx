@@ -5,10 +5,10 @@ import {
   TextInput,
   Pressable,
   FlatList,
+  SafeAreaView,
   Alert,
   RefreshControl,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Event, EventFilters } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { EventCard } from '@/components/EventCard';
