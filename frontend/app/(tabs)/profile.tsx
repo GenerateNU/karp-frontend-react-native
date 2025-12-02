@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.light.text,
     marginBottom: 12,
-    width: 460,
+    width: '100%',
   },
   emptyState: {
     paddingHorizontal: 32,
