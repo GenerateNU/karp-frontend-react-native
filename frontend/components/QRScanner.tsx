@@ -170,9 +170,14 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
     );
   }
 
+  const backgroundImage =
+    type === 'check-in'
+      ? require('../assets/images/swimming-bg-checkin.png')
+      : require('../assets/images/swimming-bg-checkout.png');
+
   return (
     <ImageBackground
-      source={require('../assets/images/swimming-bg.png')}
+      source={backgroundImage}
       style={styles.container}
       contentFit="cover"
     >
