@@ -12,8 +12,15 @@ import { Fonts } from '@/constants/Fonts';
 export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
 
-  const { item, userCoins, hasOrdered, loading, orderLoading, placeOrder } =
-    useItemDetail(itemId);
+  const {
+    item,
+    userCoins,
+    hasOrdered,
+    orderStatus,
+    loading,
+    orderLoading,
+    placeOrder,
+  } = useItemDetail(itemId);
 
   const hasEnoughCoins = userCoins >= (item?.price ?? 30);
 
@@ -69,7 +76,7 @@ export default function ItemDetailScreen() {
       buttonConfig={
         hasOrdered
           ? {
-              text: 'REDEEMED',
+              text: 'CLAIM',
               onPress: () => {},
               variant: 'redeemed',
             }

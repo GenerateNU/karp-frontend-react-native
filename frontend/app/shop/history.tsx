@@ -222,6 +222,7 @@ export default function OrderHistoryScreen() {
                 vendorId: order.item?.vendorId || '',
                 vendorName: order.vendorName || '',
                 imageUrl: order.imageUrl || '',
+                orderStatus: order.orderStatus,
               },
             });
           }}

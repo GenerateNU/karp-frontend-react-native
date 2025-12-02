@@ -28,7 +28,7 @@ interface ItemDetailLayoutProps {
     onPress: () => void;
     loading?: boolean;
     disabled?: boolean;
-    variant?: 'order' | 'redeemed';
+    variant?: 'order' | 'redeemed' | 'claimed';
   };
 }
 
@@ -43,7 +43,7 @@ export function ItemDetailLayout({
   buttonConfig,
 }: ItemDetailLayoutProps) {
   const router = useRouter();
-  // Only show scan button when orderId is provided (from order/[orderId].tsx) AND variant is redeemed
+  // Only show scan button when orderId is provided (from order/[orderId].tsx) AND variant is redeemed (not claimed)
   const showScanButton = buttonConfig?.variant === 'redeemed' && !!orderId;
 
   const handleScanPress = () => {
@@ -105,6 +105,7 @@ export function ItemDetailLayout({
                 style={[
                   styles.button,
                   buttonConfig.variant === 'redeemed' && styles.redeemedButton,
+                  buttonConfig.variant === 'claimed' && styles.claimedButton,
                   buttonConfig.disabled && styles.buttonDisabled,
                 ]}
                 onPress={buttonConfig.onPress}
@@ -118,6 +119,8 @@ export function ItemDetailLayout({
                       styles.buttonText,
                       buttonConfig.variant === 'redeemed' &&
                         styles.redeemedButtonText,
+                      buttonConfig.variant === 'claimed' &&
+                        styles.claimedButtonText,
                     ]}
                   >
                     {buttonConfig.text}
@@ -259,6 +262,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.orderStatusPending,
   },
   redeemedButtonText: {
+    color: Colors.light.white,
+  },
+  claimedButton: {
+    backgroundColor: Colors.light.orderStatusClaimed,
+  },
+  claimedButtonText: {
     color: Colors.light.white,
   },
   scanButton: {
