@@ -10,7 +10,16 @@ export async function createRegistration(
 }
 
 export async function checkIn(eventId: string, qrToken: string): Promise<void> {
-  await api.post(`/registration/${eventId}/check-in`, null, {
+  await api.put(`/registration/${eventId}/check-in`, null, {
+    params: { qr_token: qrToken },
+  });
+}
+
+export async function checkOut(
+  eventId: string,
+  qrToken: string
+): Promise<void> {
+  await api.put(`/registration/${eventId}/check-out`, null, {
     params: { qr_token: qrToken },
   });
 }

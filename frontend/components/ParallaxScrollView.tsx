@@ -18,12 +18,13 @@ const backgroundImages: Record<string, ReturnType<typeof require>> = {
   fishes: require('@/assets/images/fishes-bg.png'),
   bubbles: require('@/assets/images/bubbles-bg.png'),
   waves: require('@/assets/images/waves-bg.png'),
+  swimming: require('@/assets/images/swimming-bg.png'),
 };
 
 type Props = PropsWithChildren<{
   headerImage?: React.ReactElement;
   headerBackgroundColor: { dark: string; light: string };
-  backgroundType?: 'fishes' | 'bubbles' | 'waves' | 'default';
+  backgroundType?: 'fishes' | 'bubbles' | 'waves' | 'default' | 'swimming';
   refreshControl?: React.ReactElement<RefreshControlProps>;
 }>;
 
