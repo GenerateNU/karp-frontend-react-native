@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
   checkOutButtonText: {
     fontFamily: Fonts.regular_400,
     fontSize: 12,
-    color: '#fff',
+    color: Colors.light.white,
   },
 });
