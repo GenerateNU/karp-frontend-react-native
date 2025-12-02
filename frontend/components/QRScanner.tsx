@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -27,114 +27,58 @@ interface QRScannerProps {
 export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
-  const [scanned, setScanned] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [cameraActive, setCameraActive] = useState(true);
+
+  const scannedRef = useRef(false); // to prevent multiple scans
 
   const actionLabel = type === 'check-in' ? 'Check-in' : 'Check-out';
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
-    if (scanned || isProcessing) return;
-
-    setScanned(true);
+    if (scannedRef.current || isProcessing) return; // prevent multiple calls
+    scannedRef.current = true; // block re-entry immediately
     setIsProcessing(true);
+    setCameraActive(false);
 
     try {
-      // Parse QR code data - expecting JSON format with event_id and qr_token
-      let eventId: string;
-      let qrToken: string;
-      let parsed: any;
+      let parsed: any = JSON.parse(data);
+      if (typeof parsed === 'string') parsed = JSON.parse(parsed);
 
-      try {
-        // Try parsing the data directly first
-        parsed = JSON.parse(data);
+      const eventId = parsed.event_id || parsed.eventId;
+      const qrToken = parsed.qr_token || parsed.qrToken;
 
-        // If the result is still a string, it's double-encoded - parse again
-        if (typeof parsed === 'string') {
-          try {
-            parsed = JSON.parse(parsed);
-          } catch (secondParseError) {
-            console.warn(
-              'Second JSON parse failed, using first parse result:',
-              {
-                firstParse: parsed,
-                secondParseError,
-              }
-            );
-          }
-        }
-      } catch (parseError) {
-        console.error('QR code parsing error:', {
-          data,
-          parseError,
-        });
-        throw new Error(
-          'Invalid QR code format. Expected JSON with event_id and qr_token.'
-        );
+      if (!eventId || !qrToken) throw new Error('Invalid QR Code.');
+
+      // Optional expiry check
+      if (parsed.expires_at && new Date(parsed.expires_at) < new Date()) {
+        throw new Error('This QR code has expired. Please request a new one.');
       }
 
-      eventId = parsed.event_id || parsed.eventId || '';
-      qrToken = parsed.qr_token || parsed.qrToken || '';
-
-      if (
-        !eventId ||
-        typeof eventId !== 'string' ||
-        eventId.trim().length === 0
-      ) {
-        console.error('Invalid event_id:', { eventId, parsed });
-        throw new Error('QR code missing or invalid event_id');
-      }
-
-      if (
-        !qrToken ||
-        typeof qrToken !== 'string' ||
-        qrToken.trim().length === 0
-      ) {
-        console.error('Invalid qr_token:', { qrToken, parsed });
-        throw new Error('QR code missing or invalid qr_token');
-      }
-
-      // Optional: Check if QR code has expired
-      if (parsed.expires_at) {
-        const expiresAt = new Date(parsed.expires_at);
-        const now = new Date();
-        if (expiresAt < now) {
-          throw new Error(
-            'This QR code has expired. Please request a new one.'
-          );
-        }
-      }
-
-      // Call the appropriate function based on type
-      if (type === 'check-in') {
-        await checkIn(eventId, qrToken);
-      } else {
-        await checkOut(eventId, qrToken);
-      }
+      if (type === 'check-in') await checkIn(eventId, qrToken);
+      else await checkOut(eventId, qrToken);
 
       Alert.alert('Success', `${actionLabel} successful!`, [
         {
           text: 'OK',
           onPress: () => {
-            setScanned(false);
+            scannedRef.current = false;
             setIsProcessing(false);
-            if (onSuccess) {
-              onSuccess();
-            } else {
-              router.back();
-            }
+            setCameraActive(true);
+            if (onSuccess) onSuccess();
+            else router.back();
           },
         },
       ]);
     } catch (error) {
-      console.error(`${actionLabel} error:`, error);
       const message =
         error instanceof Error ? error.message : `${actionLabel} failed`;
       Alert.alert(`${actionLabel} Failed`, message, [
         {
           text: 'Try Again',
           onPress: () => {
-            setScanned(false);
+            scannedRef.current = false; // reset immediately
             setIsProcessing(false);
+            setCameraActive(true);
           },
         },
       ]);
@@ -153,11 +97,8 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
   };
 
   const handleCancel = () => {
-    if (onCancel) {
-      onCancel();
-    } else {
-      router.back();
-    }
+    if (onCancel) onCancel();
+    else router.back();
   };
 
   if (!permission) {
@@ -208,14 +149,17 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
             </>
           ) : (
             <View style={styles.cameraContainer}>
-              <CameraView
-                style={styles.cameraView}
-                facing="back"
-                onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-                barcodeScannerSettings={{
-                  barcodeTypes: ['qr'],
-                }}
-              />
+              {cameraActive ? (
+                <CameraView
+                  style={styles.cameraView}
+                  facing="back"
+                  onBarcodeScanned={handleBarCodeScanned}
+                  barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+                />
+              ) : (
+                <View style={styles.cameraView} />
+              )}
+
               <View style={styles.scannerOverlay}>
                 <View style={styles.scannerFrame}>
                   <View style={styles.scannerCorner} />
@@ -223,6 +167,7 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
                   <View style={[styles.scannerCorner, styles.bottomLeft]} />
                   <View style={[styles.scannerCorner, styles.bottomRight]} />
                 </View>
+
                 {isProcessing && (
                   <View style={styles.processingContainer}>
                     <ActivityIndicator size="large" color="#fff" />
@@ -239,22 +184,10 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
+  safeArea: { flex: 1 },
+  header: { paddingHorizontal: 20, paddingTop: 10 },
+  backButton: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   backText: {
     fontFamily: Fonts.regular_400,
     fontSize: 16,
@@ -277,10 +210,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
@@ -305,15 +235,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
   },
-  cameraContainer: {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-  },
-  cameraView: {
-    width: '100%',
-    height: '100%',
-  },
+  cameraContainer: { width: '100%', height: '100%', position: 'relative' },
+  cameraView: { width: '100%', height: '100%' },
   scannerOverlay: {
     position: 'absolute',
     top: 0,
@@ -369,10 +292,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     borderBottomRightRadius: 20,
   },
-  processingContainer: {
-    marginTop: 30,
-    alignItems: 'center',
-  },
+  processingContainer: { marginTop: 30, alignItems: 'center' },
   processingText: {
     fontFamily: Fonts.regular_400,
     fontSize: 16,
@@ -382,9 +302,5 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  loadingContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
