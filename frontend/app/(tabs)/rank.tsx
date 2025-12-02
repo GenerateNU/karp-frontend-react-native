@@ -117,9 +117,10 @@ export default function LeaderboardScreen() {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
-  // const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(
-  //   null
-  // );
+  // eslint-disable-next-line
+  const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -134,7 +135,7 @@ export default function LeaderboardScreen() {
         if (user?.entityId) {
           try {
             volunteerData = await volunteerService.getSelf();
-            // setCurrentVolunteer(volunteerData);
+            setCurrentVolunteer(volunteerData);
           } catch (err) {
             console.error('Error fetching current volunteer:', err);
           }

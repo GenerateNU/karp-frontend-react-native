@@ -58,12 +58,6 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Karp to use your location."
         }
-      ],
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow Karp to access your camera to scan QR codes."
-        }
       ]
     ],
     "experiments": {
