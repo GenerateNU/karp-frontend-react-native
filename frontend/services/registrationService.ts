@@ -8,3 +8,9 @@ export async function createRegistration(
   console.log(response.data);
   return response.data;
 }
+
+export async function checkIn(eventId: string, qrToken: string): Promise<void> {
+  await api.post(`/registration/${eventId}/check-in`, null, {
+    params: { qr_token: qrToken },
+  });
+}

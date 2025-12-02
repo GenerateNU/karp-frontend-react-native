@@ -8,9 +8,14 @@ import { Image } from 'expo-image';
 interface ProfileEventCardProps {
   event: EventType;
   onPress: (event: EventType) => void;
+  onCheckIn: (event: EventType) => void;
 }
 
-export function ProfileEventCard({ event, onPress }: ProfileEventCardProps) {
+export function ProfileEventCard({
+  event,
+  onPress,
+  onCheckIn,
+}: ProfileEventCardProps) {
   return (
     <Pressable
       onPress={() => onPress(event)}
@@ -30,6 +35,13 @@ export function ProfileEventCard({ event, onPress }: ProfileEventCardProps) {
           {event.name}
         </Text>
       </View>
+      <Pressable
+        style={styles.checkInButton}
+        onPress={() => onCheckIn(event)}
+        hitSlop={10}
+      >
+        <Text style={styles.checkInButtonText}>Check In</Text>
+      </Pressable>
     </Pressable>
   );
 }
@@ -69,5 +81,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: Colors.light.text,
+  },
+  checkInButton: {
+    backgroundColor: Colors.light.primary,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  checkInButtonText: {
+    fontFamily: Fonts.regular_400,
+    fontSize: 12,
+    color: '#fff',
   },
 });

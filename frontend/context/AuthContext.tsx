@@ -100,9 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setVolunteer(volunteerResponse);
   }, [user?.entityId]); // Keep this dependency
 
-  const signOut = useCallback(async () => {
-    userService.logout();
-
+  const signOut = useCallback(() => {
     setUser(null);
     setVolunteer(null);
     setToken(null);

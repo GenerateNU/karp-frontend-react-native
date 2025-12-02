@@ -1,0 +1,42 @@
+<svg width="393" height="940" viewBox="0 0 393 940" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g clip-path="url(#clip0_3927_51485)">
+<rect width="393" height="940" fill="url(#paint0_radial_3927_51485)"/>
+<rect x="300.926" y="-46" width="127.751" height="123.188" transform="rotate(33.463 300.926 -46)" fill="url(#pattern0_3927_51485)"/>
+<rect x="-41" y="243.273" width="121.692" height="121.692" transform="rotate(-27.5441 -41 243.273)" fill="url(#pattern1_3927_51485)"/>
+<rect width="393" height="1" fill="#FFFDFA"/>
+<rect x="-36" y="748.178" width="145" height="145" transform="rotate(-18.57 -36 748.178)" fill="url(#pattern2_3927_51485)"/>
+<rect width="99.2296" height="99.2296" transform="matrix(-0.282589 0.959241 0.959241 0.282589 316.041 632)" fill="url(#pattern3_3927_51485)"/>
+</g>
+<defs>
+<pattern id="pattern0_3927_51485" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_3927_51485" transform="matrix(0.00195312 0 0 0.00202546 0 -0.0185185)"/>
+</pattern>
+<pattern id="pattern1_3927_51485" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_3927_51485" transform="scale(0.00195312)"/>
+</pattern>
+<pattern id="pattern2_3927_51485" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image2_3927_51485" transform="scale(0.00195312)"/>
+</pattern>
+<pattern id="pattern3_3927_51485" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image3_3927_51485" transform="scale(0.00195312)"/>
+</pattern>
+<radialGradient id="paint0_radial_3927_51485" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(430 484.5) rotate(-152.054) scale(1484.06 1099.86)">
+<stop stop-color="#34A5E4"/>
+<stop offset="0.0968027" stop-color="#51BDDE"/>
+<stop offset="0.25" stop-color="#73EEE7"/>
+<stop offset="0.367151" stop-color="#9DF6F1"/>
+<stop offset="0.5" stop-color="#CDFFFC"/>
+<stop offset="0.75" stop-color="#FFFDFA"/>
+<stop offset="0.875" stop-color="#CDFFFC"/>
+<stop offset="0.96875" stop-color="#CDFFFC"/>
+<stop offset="1" stop-color="#CDFFFC"/>
+</radialGradient>
+<clipPath id="clip0_3927_51485">
+<rect width="393" height="940" fill="white"/>
+</clipPath>
+<image id="image0_3927_51485" width="512" height="512" preserveAspectRatio="none" xlink:href="../fish/2970035.svg"/>
+<image id="image1_3927_51485" width="512" height="512" preserveAspectRatio="none" xlink:href="../fish/5100701.svg"/>
+<image id="image2_3927_51485" width="512" height="512" preserveAspectRatio="none" xlink:href="../fish/fish%201.svg"/>
+<image id="image3_3927_51485" width="512" height="512" preserveAspectRatio="none" xlink:href="../fish/3050620.svg"/>
+</defs>
+</svg>
