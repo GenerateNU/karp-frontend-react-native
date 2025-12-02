@@ -8,9 +8,16 @@ import { Image } from 'expo-image';
 interface ProfileEventCardProps {
   event: EventType;
   onPress: (event: EventType) => void;
+  onCheckIn: (event: EventType) => void;
+  onCheckOut: (event: EventType) => void;
 }
 
-export function ProfileEventCard({ event, onPress }: ProfileEventCardProps) {
+export function ProfileEventCard({
+  event,
+  onPress,
+  onCheckIn,
+  onCheckOut,
+}: ProfileEventCardProps) {
   return (
     <Pressable
       onPress={() => onPress(event)}
@@ -29,6 +36,22 @@ export function ProfileEventCard({ event, onPress }: ProfileEventCardProps) {
         <Text style={styles.eventName} numberOfLines={2}>
           {event.name}
         </Text>
+      </View>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={styles.checkInButton}
+          onPress={() => onCheckIn(event)}
+          hitSlop={10}
+        >
+          <Text style={styles.checkInButtonText}>Check In</Text>
+        </Pressable>
+        <Pressable
+          style={styles.checkOutButton}
+          onPress={() => onCheckOut(event)}
+          hitSlop={10}
+        >
+          <Text style={styles.checkOutButtonText}>Check Out</Text>
+        </Pressable>
       </View>
     </Pressable>
   );
@@ -68,5 +91,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     color: Colors.light.text,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  checkInButton: {
+    backgroundColor: Colors.light.primary,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  checkInButtonText: {
+    fontFamily: Fonts.regular_400,
+    fontSize: 12,
+    color: '#fff',
+  },
+  checkOutButton: {
+    backgroundColor: '#6B7280',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+  },
+  checkOutButtonText: {
+    fontFamily: Fonts.regular_400,
+    fontSize: 12,
+    color: '#fff',
   },
 });

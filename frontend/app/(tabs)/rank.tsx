@@ -135,7 +135,7 @@ export default function LeaderboardScreen() {
         if (user?.entityId) {
           try {
             volunteerData = await volunteerService.getSelf();
-            setCurrentVolunteer(volunteerData);
+            // setCurrentVolunteer(volunteerData);
           } catch (err) {
             console.error('Error fetching current volunteer:', err);
           }
