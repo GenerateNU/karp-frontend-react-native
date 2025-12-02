@@ -44,7 +44,7 @@ export function ItemDetailLayout({
 }: ItemDetailLayoutProps) {
   const router = useRouter();
   // Only show scan button when orderId is provided (from order/[orderId].tsx) AND variant is redeemed (not claimed)
-  const showScanButton = buttonConfig?.variant === 'redeemed' && !!orderId;
+  const showScanButton = buttonConfig.variant === 'redeemed' && !!orderId;
 
   const handleScanPress = () => {
     if (orderId) {
