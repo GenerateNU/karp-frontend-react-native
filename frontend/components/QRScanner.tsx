@@ -190,9 +190,12 @@ export function QRScanner({
         {
           text: 'Try Again',
           onPress: () => {
-            isProcessingRef.current = false;
-            setScanned(false);
-            setIsProcessing(false);
+            // Add a cooldown before allowing another scan attempt
+            setTimeout(() => {
+              isProcessingRef.current = false;
+              setScanned(false);
+              setIsProcessing(false);
+            }, 1000); // 1 second cooldown
           },
         },
       ]);
