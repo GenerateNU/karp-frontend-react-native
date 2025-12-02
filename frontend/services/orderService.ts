@@ -15,11 +15,12 @@ async function createOrder(itemId: string) {
 }
 
 async function scanOrder(orderId: string, itemId: string, qrToken: string) {
-  const response = await api.put(
-    `/order/${orderId}/scan`,
-    { itemId, qrToken },
-    { headers: { 'Content-Type': 'application/json' } }
-  );
+  const response = await api.put(`/order/${orderId}/scan`, null, {
+    params: {
+      item_id: itemId,
+      qr_token: qrToken,
+    },
+  });
   return response.data;
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -36,6 +36,7 @@ export function QRScanner({
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const isProcessingRef = useRef(false);
 
   const actionLabel =
     type === 'check-in'
@@ -45,8 +46,11 @@ export function QRScanner({
         : 'Scan Item';
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
-    if (scanned || isProcessing) return;
+    // Use ref to prevent multiple simultaneous scans (before state updates)
+    if (isProcessingRef.current || scanned || isProcessing) return;
 
+    // Immediately set ref to prevent any other scans
+    isProcessingRef.current = true;
     setScanned(true);
     setIsProcessing(true);
 
@@ -159,10 +163,17 @@ export function QRScanner({
         await orderService.scanOrder(orderId, eventId, qrToken);
       }
 
+      // If item scan was successful, trigger a refresh of order data
+      if (type === 'item') {
+        // Use router events or a callback to refresh order history
+        // The parent component should handle the refresh
+      }
+
       Alert.alert('Success', `${actionLabel} successful!`, [
         {
           text: 'OK',
           onPress: () => {
+            isProcessingRef.current = false;
             setScanned(false);
             setIsProcessing(false);
             if (onSuccess) {
@@ -181,6 +192,7 @@ export function QRScanner({
         {
           text: 'Try Again',
           onPress: () => {
+            isProcessingRef.current = false;
             setScanned(false);
             setIsProcessing(false);
           },
@@ -261,17 +273,19 @@ export function QRScanner({
               <CameraView
                 style={styles.cameraView}
                 facing="back"
-                onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+                onBarcodeScanned={
+                  scanned || isProcessing ? undefined : handleBarCodeScanned
+                }
                 barcodeScannerSettings={{
                   barcodeTypes: ['qr'],
                 }}
               />
               <View style={styles.scannerOverlay}>
                 <View style={styles.scannerFrame}>
-                  <View style={styles.scannerCorner} />
-                  <View style={[styles.scannerCorner, styles.topRight]} />
-                  <View style={[styles.scannerCorner, styles.bottomLeft]} />
-                  <View style={[styles.scannerCorner, styles.bottomRight]} />
+                  <View style={styles.topLeftScannerCorner} />
+                  <View style={styles.topRightScannerCorner} />
+                  <View style={styles.bottomLeftScannerCorner} />
+                  <View style={styles.bottomRightScannerCorner} />
                 </View>
                 {isProcessing && (
                   <View style={styles.processingContainer}>
@@ -381,7 +395,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.5)',
     borderRadius: 20,
   },
-  scannerCorner: {
+  topLeftScannerCorner: {
     position: 'absolute',
     width: 30,
     height: 30,
@@ -393,22 +407,42 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopLeftRadius: 20,
   },
-  topRight: {
+  topRightScannerCorner: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderColor: '#4AA9E8',
+    borderWidth: 3,
     top: -2,
     right: -2,
     left: 'auto',
-    borderLeftWidth: 0,
+    borderTopWidth: 3,
     borderRightWidth: 3,
+    borderBottomWidth: 0,
+    borderLeftWidth: 0,
     borderTopRightRadius: 20,
   },
-  bottomLeft: {
+  bottomLeftScannerCorner: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderColor: '#4AA9E8',
+    borderWidth: 3,
     bottom: -2,
     top: 'auto',
+    left: -2,
     borderTopWidth: 0,
+    borderRightWidth: 0,
     borderBottomWidth: 3,
+    borderLeftWidth: 3,
     borderBottomLeftRadius: 20,
   },
-  bottomRight: {
+  bottomRightScannerCorner: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderColor: '#4AA9E8',
+    borderWidth: 3,
     bottom: -2,
     right: -2,
     top: 'auto',
