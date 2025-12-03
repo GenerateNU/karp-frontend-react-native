@@ -31,7 +31,7 @@ const GRADE_LEVELS = [
 
 export default function BasicInfoScreen() {
   const router = useRouter();
-  const { user, volunteer } = useAuth();
+  const { user, volunteer, fetchUserEntity } = useAuth();
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -47,6 +47,7 @@ export default function BasicInfoScreen() {
     if (volunteer) {
       setFirstName(volunteer.firstName || '');
       setLastName(volunteer.lastName || '');
+      if (volunteer.phone) setPhone(volunteer.phone);
     }
     if (user) {
       setEmail(user.email || '');
@@ -139,7 +140,17 @@ export default function BasicInfoScreen() {
       await volunteerService.updateVolunteer(user.entityId, {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
+        phone: phone.trim() || undefined,
       });
+      // Invalidate current volunteer to refresh any screens using the query
+      queryClient.invalidateQueries({
+        queryKey: ['volunteer', 'me'],
+        exact: true,
+      });
+
+      try {
+        await fetchUserEntity();
+      } catch {}
 
       Alert.alert('Success', 'Profile updated successfully', [
         {

@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import { profileService } from '@/services/profileService';
-import { volunteerService } from '@/services/volunteerService';
 import { ProfileData } from '@/types/api/profile';
 import { Event } from '@/types/api/event';
 import { Volunteer } from '@/types/api/volunteer';
+import { useCurrentVolunteer } from '@/hooks/useCurrentVolunteer';
 
 // temporary logic idk how we're calculating level lol
 function calculateLevel(experience: number): number {
@@ -71,6 +71,11 @@ function calculateTotalHours(completedEvents: Event[]): number {
 
 export function useProfile() {
   const { user } = useAuth();
+  const {
+    data: qVolunteer,
+    isLoading: volunteerLoading,
+    refetch: refetchVolunteer,
+  } = useCurrentVolunteer();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [volunteer, setVolunteer] = useState<Volunteer | null>(null);
@@ -82,41 +87,41 @@ export function useProfile() {
       setLoading(false);
       return;
     }
-
     try {
       if (isRefresh) {
         setRefreshing(true);
       } else {
         setLoading(true);
       }
-
-      const [volunteerData, eventsData, pastEventsData] = await Promise.all([
-        volunteerService.getSelf(),
+      // Ensure we have latest volunteer (React Query)
+      const [vResult, eventsData, pastEventsData] = await Promise.all([
+        refetchVolunteer(),
         profileService.getUpcomingEvents(user.entityId),
         profileService.getPastEvents(user.entityId),
       ]);
 
-      setVolunteer(volunteerData);
+      const v = vResult.data ?? qVolunteer ?? null;
+      setVolunteer(v);
       setUpcomingEvents(eventsData);
 
-      if (!volunteerData) {
+      if (!v) {
         setProfileData(null);
         return;
       }
 
-      const levelData = calculateLevelProgress(volunteerData.experience);
+      const levelData = calculateLevelProgress(v.experience);
       const totalHours = calculateTotalHours(pastEventsData);
 
       const stats = {
         totalHours,
         level: levelData.level,
         levelProgress: levelData.progress,
-        experiencePoints: volunteerData?.experience,
+        experiencePoints: v.experience,
         nextLevelXP: levelData.nextLevelXP,
       };
 
       setProfileData({
-        volunteer: volunteerData,
+        volunteer: v,
         upcomingEvents: eventsData,
         stats,
       });
@@ -134,8 +139,23 @@ export function useProfile() {
   };
 
   useEffect(() => {
-    loadProfileData();
-  }, [user?.entityId]);
+    // When user or volunteer changes, rebuild profile
+    if (!user?.entityId) {
+      setLoading(false);
+      return;
+    }
+    // If volunteer query is still loading, wait
+    if (volunteerLoading) return;
+    // Build with current data (events will be fetched)
+    loadProfileData(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    user?.entityId,
+    qVolunteer?.id,
+    qVolunteer?.firstName,
+    qVolunteer?.lastName,
+    qVolunteer?.experience,
+  ]);
 
   return {
     profileData,

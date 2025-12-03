@@ -8,6 +8,7 @@ import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
+import { useCurrentVolunteer } from '@/hooks/useCurrentVolunteer';
 
 interface SettingsItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -34,14 +35,13 @@ function SettingsItem({ icon, title, subtitle, onPress }: SettingsItemProps) {
 export default function SettingsScreen() {
   const router = useRouter();
   const { user, volunteer } = useAuth();
+  const { data: qVolunteer } = useCurrentVolunteer();
+  const v = qVolunteer ?? volunteer;
 
-  const displayName =
-    user && volunteer
-      ? `${volunteer.firstName} ${volunteer.lastName}`
-      : 'John Doe';
+  const displayName = user && v ? `${v.firstName} ${v.lastName}` : 'John Doe';
 
-  const firstName = volunteer?.firstName || 'John';
-  const lastName = volunteer?.lastName || 'Doe';
+  const firstName = v?.firstName || 'John';
+  const lastName = v?.lastName || 'Doe';
 
   return (
     <>
@@ -58,7 +58,7 @@ export default function SettingsScreen() {
               firstName={firstName}
               lastName={lastName}
               size={112}
-              volunteerId={volunteer?.id}
+              volunteerId={v?.id}
             />
             <Text style={styles.profileName}>{displayName}</Text>
           </View>

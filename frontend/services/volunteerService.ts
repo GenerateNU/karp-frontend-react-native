@@ -46,6 +46,7 @@ async function updateVolunteer(
     firstName?: string;
     lastName?: string;
     age?: number;
+    phone?: string;
     coins?: number;
     preferences?: string[];
     isActive?: boolean;
