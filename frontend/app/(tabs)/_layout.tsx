@@ -17,8 +17,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      // eslint-disable-next-line
-      screenOptions={({ route }) => ({
+      screenOptions={() => ({
         tabBarActiveTintColor: '#1D0F48', // indigo-950
         tabBarInactiveTintColor: '#1D0F48', // indigo-950
         headerShown: false,

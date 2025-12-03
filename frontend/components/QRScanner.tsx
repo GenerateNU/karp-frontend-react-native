@@ -34,8 +34,8 @@ export function QRScanner({
 }: QRScannerProps) {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
-  const [scanned, setScanned] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [scanned, setScanned] = useState(false);
   const isProcessingRef = useRef(false);
 
   const actionLabel =
@@ -174,16 +174,12 @@ export function QRScanner({
             isProcessingRef.current = false;
             setScanned(false);
             setIsProcessing(false);
-            if (onSuccess) {
-              onSuccess();
-            } else {
-              router.back();
-            }
+            if (onSuccess) onSuccess();
+            else router.back();
           },
         },
       ]);
     } catch (error) {
-      console.error(`${actionLabel} error:`, error);
       const message =
         error instanceof Error ? error.message : `${actionLabel} failed`;
       Alert.alert(`${actionLabel} Failed`, message, [
@@ -214,11 +210,8 @@ export function QRScanner({
   };
 
   const handleCancel = () => {
-    if (onCancel) {
-      onCancel();
-    } else {
-      router.back();
-    }
+    if (onCancel) onCancel();
+    else router.back();
   };
 
   if (!permission) {
@@ -288,6 +281,7 @@ export function QRScanner({
                   <View style={styles.bottomLeftScannerCorner} />
                   <View style={styles.bottomRightScannerCorner} />
                 </View>
+
                 {isProcessing && (
                   <View style={styles.processingContainer}>
                     <ActivityIndicator size="large" color="#fff" />
@@ -304,22 +298,10 @@ export function QRScanner({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
+  safeArea: { flex: 1 },
+  header: { paddingHorizontal: 20, paddingTop: 10 },
+  backButton: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   backText: {
     fontFamily: Fonts.regular_400,
     fontSize: 16,
@@ -342,10 +324,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
@@ -370,15 +349,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
   },
-  cameraContainer: {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-  },
-  cameraView: {
-    width: '100%',
-    height: '100%',
-  },
+  cameraContainer: { width: '100%', height: '100%', position: 'relative' },
+  cameraView: { width: '100%', height: '100%' },
   scannerOverlay: {
     position: 'absolute',
     top: 0,
@@ -454,10 +426,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 3,
     borderBottomRightRadius: 20,
   },
-  processingContainer: {
-    marginTop: 30,
-    alignItems: 'center',
-  },
+  processingContainer: { marginTop: 30, alignItems: 'center' },
   processingText: {
     fontFamily: Fonts.regular_400,
     fontSize: 16,
@@ -467,9 +436,5 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  loadingContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
