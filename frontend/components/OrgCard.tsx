@@ -21,12 +21,16 @@ export function OrgCard({ organization, onPress }: OrgCardProps) {
           organization.id
         );
         setImagePreSignedUrl(url);
-      } catch {
-        // ignore if not found
+      } catch (err) {
+        console.error('Failed to fetch image:', err);
       }
     }
-    fetchImageUrl();
-  }, [organization.id]);
+
+    if (organization.imageS3Key) {
+      console.log('organization key!');
+      fetchImageUrl();
+    }
+  }, [organization.id, organization.imageS3Key]);
 
   return (
     <Pressable
