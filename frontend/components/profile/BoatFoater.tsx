@@ -8,7 +8,6 @@ const FOOTER_HEIGHT = 100;
 export { FOOTER_HEIGHT };
 
 export function BoatFooter() {
-  const insets = useSafeAreaInsets();
   let tabBarHeight = 0;
 
   try {
