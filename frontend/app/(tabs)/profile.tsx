@@ -19,6 +19,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { useAuth } from '@/context/AuthContext';
+import { BoatFooter } from '@/components/profile/BoatFoater';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -131,7 +132,6 @@ export default function ProfileScreen() {
               ))}
             </>
           )}
-
           <Pressable
             onPress={() => router.push('/profile/events/past')}
             style={styles.seePastButton}
@@ -139,6 +139,7 @@ export default function ProfileScreen() {
             <Text style={styles.seePastText}>See past events</Text>
           </Pressable>
         </View>
+        <BoatFooter />
       </ScrollView>
     </SafeAreaView>
   );
@@ -227,7 +228,8 @@ const styles = StyleSheet.create({
   },
   seePastButton: {
     marginTop: 10,
-    paddingVertical: 12,
+    paddingVertical: 5,
+    paddingBottom: 100,
     alignItems: 'flex-end',
     width: '95%',
     alignSelf: 'center',
