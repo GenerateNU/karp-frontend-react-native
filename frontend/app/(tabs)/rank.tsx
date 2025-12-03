@@ -16,6 +16,7 @@ import { volunteerService } from '@/services/volunteerService';
 import { useVolunteerProfileImage } from '@/hooks/useVolunteerProfileImage';
 import { useAuth } from '@/context/AuthContext';
 import { Volunteer } from '@/types/api/volunteer';
+import { useProfile } from '@/hooks/useProfile';
 
 interface LeaderboardEntry {
   rank: number;
@@ -24,26 +25,6 @@ interface LeaderboardEntry {
   level: number;
   isCurrentUser?: boolean;
   volunteer: Volunteer;
-}
-
-// Calculate level from experience (same logic as useProfile)
-function calculateLevel(experience: number): number {
-  if (experience < 100) return 1;
-
-  let level = 1;
-  let totalXPNeeded = 0;
-
-  while (totalXPNeeded <= experience) {
-    const xpForNextLevel = level * 100 + (level - 1) * 50;
-    totalXPNeeded += xpForNextLevel;
-    if (totalXPNeeded <= experience) {
-      level++;
-    } else {
-      break;
-    }
-  }
-
-  return level;
 }
 
 function getVolunteerName(volunteer: Volunteer): string {
@@ -127,6 +108,7 @@ function Avatar({ volunteerId, size }: AvatarProps) {
 export default function LeaderboardScreen() {
   const { user } = useAuth();
   const router = useRouter();
+  const profile = useProfile();
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
@@ -160,8 +142,7 @@ export default function LeaderboardScreen() {
             rank: index + 1,
             name: getVolunteerName(volunteer),
             experience: volunteer.experience,
-            level:
-              volunteer.currentLevel ?? calculateLevel(volunteer.experience),
+            level: volunteer.currentLevel,
             isCurrentUser: volunteerData?.id === volunteer.id,
             volunteer,
           })
@@ -177,7 +158,7 @@ export default function LeaderboardScreen() {
     };
 
     fetchLeaderboard();
-  }, [user?.entityId]);
+  }, [user?.entityId, profile.volunteer?.experience]);
 
   if (loading) {
     return (

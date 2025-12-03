@@ -7,7 +7,7 @@ import { Event } from '@/types/api/event';
 import { Volunteer } from '@/types/api/volunteer';
 import { useCurrentVolunteer } from '@/hooks/useCurrentVolunteer';
 
-// TODO: abstrac to backend asw
+// TODO: abstract to backend asw
 function calculateTotalHours(completedEvents: Event[]): number {
   return completedEvents.reduce((sum, event) => {
     const start = new Date(event.startDateTime);
