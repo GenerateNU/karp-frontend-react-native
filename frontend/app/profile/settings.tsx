@@ -34,7 +34,7 @@ function SettingsItem({ icon, title, subtitle, onPress }: SettingsItemProps) {
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { user, volunteer } = useAuth();
+  const { user, volunteer, signOut } = useAuth();
   const { data: qVolunteer } = useCurrentVolunteer();
   const v = qVolunteer ?? volunteer;
 
@@ -100,6 +100,25 @@ export default function SettingsScreen() {
               }}
             />
           </View>
+
+          <Pressable
+            style={styles.signOutButton}
+            onPress={async () => {
+              try {
+                await signOut();
+              } finally {
+                router.replace('/login');
+              }
+            }}
+          >
+            <Ionicons
+              name="log-out-outline"
+              size={20}
+              color="#DC2626"
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.signOutButtonText}>Sign out</Text>
+          </Pressable>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -177,5 +196,24 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: Colors.light.textSecondary,
     fontWeight: '500',
+  },
+  signOutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 48,
+    marginTop: 24,
+    backgroundColor: Colors.light.eggshellWhite,
+    borderWidth: 1,
+    borderColor: Colors.light.cardBorder,
+    borderRadius: 8,
+    alignSelf: 'center',
+  },
+  signOutButtonText: {
+    fontFamily: Fonts.regular_400,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#DC2626',
   },
 });
