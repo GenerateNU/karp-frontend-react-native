@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { volunteerService } from '@/services/volunteerService';
+import { useVolunteerProfileImage } from '@/hooks/useVolunteerProfileImage';
 import { useAuth } from '@/context/AuthContext';
 import { Volunteer } from '@/types/api/volunteer';
 
@@ -84,6 +85,7 @@ function getFishImageForVolunteer(volunteerId: string) {
 
 function Avatar({ volunteerId, size }: AvatarProps) {
   const fishImage = getFishImageForVolunteer(volunteerId);
+  const { data: imageUrl } = useVolunteerProfileImage(volunteerId);
 
   return (
     <View
@@ -99,14 +101,25 @@ function Avatar({ volunteerId, size }: AvatarProps) {
         },
       ]}
     >
-      <Image
-        source={fishImage}
-        style={{
-          width: size,
-          height: size,
-        }}
-        resizeMode="cover"
-      />
+      {imageUrl ? (
+        <Image
+          source={{ uri: imageUrl }}
+          style={{
+            width: size,
+            height: size,
+          }}
+          resizeMode="cover"
+        />
+      ) : (
+        <Image
+          source={fishImage}
+          style={{
+            width: size,
+            height: size,
+          }}
+          resizeMode="cover"
+        />
+      )}
     </View>
   );
 }

@@ -44,20 +44,22 @@ export default function StoreScreen() {
     try {
       setLoading(true);
       const response = await itemService.getAllItems();
+
       const mapped: ShopItem[] = (Array.isArray(response) ? response : []).map(
         (raw: {
           id: string;
           name?: string;
-          vendor_name?: string;
-          vendor_id?: string;
+          vendorName?: string;
+          vendorId?: string;
           price?: number;
           imageS3Key?: string;
         }) => ({
           id: raw.id,
           name: raw.name ?? 'Unnamed',
-          store: raw.vendor_name ?? raw.vendor_id ?? 'Unknown',
+          store: raw.vendorName ?? raw.vendorId ?? 'Unknown',
           coins: raw.price ?? 0,
           imageS3Key: raw.imageS3Key || undefined,
+          vendorId: raw.vendorId,
         })
       );
       setItems(mapped);
@@ -232,6 +234,7 @@ export default function StoreScreen() {
                     index={index}
                     count={popularItems.length}
                     imageS3Key={item.imageS3Key}
+                    vendorId={item.vendorId}
                     onPress={handlePress}
                   />
                 )}
@@ -272,6 +275,7 @@ export default function StoreScreen() {
                     index={index}
                     count={sweetItems.length}
                     imageS3Key={item.imageS3Key}
+                    vendorId={item.vendorId}
                     onPress={handlePress}
                   />
                 )}
@@ -312,6 +316,7 @@ export default function StoreScreen() {
                     index={index}
                     count={spreeItems.length}
                     imageS3Key={item.imageS3Key}
+                    vendorId={item.vendorId}
                     onPress={handlePress}
                   />
                 )}

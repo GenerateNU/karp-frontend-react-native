@@ -12,6 +12,27 @@ async function getSelf(): Promise<Volunteer | null> {
   return response.data;
 }
 
+async function getVolunteerProfilePictureUrl(
+  volunteerId: string
+): Promise<string | null> {
+  try {
+    const response = await api.get(`/volunteer/${volunteerId}/profile-picture`);
+    return response.data?.url ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function getProfilePictureUploadUrl(
+  filename: string,
+  filetype: string
+): Promise<{ uploadUrl: string; fileUrl: string }> {
+  const response = await api.get(`/volunteer/me/profile-picture/upload-url`, {
+    params: { filename, filetype },
+  });
+  return response.data;
+}
+
 async function createVolunteer(
   volunteer: CreateVolunteerRequest
 ): Promise<Volunteer> {
@@ -25,6 +46,7 @@ async function updateVolunteer(
     firstName?: string;
     lastName?: string;
     age?: number;
+    phone?: string;
     coins?: number;
     preferences?: string[];
     isActive?: boolean;
@@ -52,4 +74,6 @@ export const volunteerService = {
   updateVolunteer,
   deleteVolunteer,
   getTopVolunteers,
+  getVolunteerProfilePictureUrl,
+  getProfilePictureUploadUrl,
 };

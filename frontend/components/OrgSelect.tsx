@@ -65,7 +65,6 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
   }, [visible, organization?.id]);
 
   useEffect(() => {
-    let isMounted = true;
     async function fetchImage() {
       if (!organization?.id) return;
       try {
@@ -73,15 +72,12 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
           'organization',
           organization.id
         );
-        if (isMounted) setImagePreSignedUrl(url);
+        setImagePreSignedUrl(url);
       } catch {
         // ignore if not found
       }
     }
     if (visible) fetchImage();
-    return () => {
-      isMounted = false;
-    };
   }, [visible, organization?.id]);
 
   const markedDates = useMemo(() => {

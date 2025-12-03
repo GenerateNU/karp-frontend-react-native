@@ -154,6 +154,7 @@ export default function UserProfileScreen() {
           <ProfileAvatar
             firstName={volunteer.firstName}
             lastName={volunteer.lastName}
+            volunteerId={volunteer.id}
           />
           <Text style={styles.name}>
             {volunteer.firstName} {volunteer.lastName}

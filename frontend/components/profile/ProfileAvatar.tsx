@@ -1,14 +1,18 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import { useVolunteerProfileImage } from '@/hooks/useVolunteerProfileImage';
 
 interface ProfileAvatarProps {
   firstName: string;
   lastName: string;
   size?: number;
+  volunteerId?: string;
 }
 
-export function ProfileAvatar({ size = 112 }: ProfileAvatarProps) {
+export function ProfileAvatar({ size = 112, volunteerId }: ProfileAvatarProps) {
+  const { data: imageUrl } = useVolunteerProfileImage(volunteerId);
+
   return (
     <View
       style={[
@@ -20,7 +24,15 @@ export function ProfileAvatar({ size = 112 }: ProfileAvatarProps) {
           backgroundColor: Colors.light.background,
         },
       ]}
-    />
+    >
+      {imageUrl ? (
+        <Image
+          source={{ uri: imageUrl }}
+          style={{ width: size, height: size, borderRadius: size / 2 }}
+          resizeMode="cover"
+        />
+      ) : null}
+    </View>
   );
 }
 

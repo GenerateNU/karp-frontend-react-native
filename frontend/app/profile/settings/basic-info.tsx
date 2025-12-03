@@ -12,6 +12,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import { useQueryClient } from '@tanstack/react-query';
 import { BackHeader } from '@/components/common/BackHeader';
 import { useAuth } from '@/context/AuthContext';
 import { volunteerService } from '@/services/volunteerService';
@@ -29,8 +31,10 @@ const GRADE_LEVELS = [
 
 export default function BasicInfoScreen() {
   const router = useRouter();
-  const { user, volunteer } = useAuth();
+  const { user, volunteer, fetchUserEntity } = useAuth();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [showGradeDropdown, setShowGradeDropdown] = useState(false);
 
   const [firstName, setFirstName] = useState('');
@@ -43,11 +47,82 @@ export default function BasicInfoScreen() {
     if (volunteer) {
       setFirstName(volunteer.firstName || '');
       setLastName(volunteer.lastName || '');
+      if (volunteer.phone) setPhone(volunteer.phone);
     }
     if (user) {
       setEmail(user.email || '');
     }
   }, [volunteer, user]);
+
+  const handlePickProfilePhoto = async () => {
+    try {
+      setUploadingImage(true);
+      // Request media library permissions
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permission required',
+          'We need access to your photos to set a profile picture.'
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.9,
+      });
+
+      if (result.canceled || !result.assets || result.assets.length === 0) {
+        return;
+      }
+
+      const asset = result.assets[0];
+      const uri = asset.uri;
+      const filetype = asset.mimeType || 'image/jpeg';
+      const filenameFromUri = uri.split('/').pop() || 'profile.jpg';
+      const filename = asset.fileName || filenameFromUri;
+
+      // Get a presigned upload URL from backend (also stores S3 key)
+      const { uploadUrl } = await volunteerService.getProfilePictureUploadUrl(
+        filename,
+        filetype
+      );
+
+      // Read file and upload to S3 using the presigned URL
+      const fileResponse = await fetch(uri);
+      const blob = await fileResponse.blob();
+
+      const putResponse = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': filetype,
+        },
+        body: blob,
+      });
+
+      if (!putResponse.ok) {
+        throw new Error(`Upload failed with status ${putResponse.status}`);
+      }
+
+      // Invalidate profile image queries so UIs refresh
+      if (user?.entityId) {
+        queryClient.invalidateQueries({
+          queryKey: ['volunteerProfileImage', user.entityId],
+          exact: true,
+        });
+      }
+
+      Alert.alert('Success', 'Profile photo updated.');
+    } catch (err) {
+      console.error('Error uploading profile photo:', err);
+      Alert.alert('Error', 'Failed to upload profile photo. Please try again.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
@@ -65,7 +140,17 @@ export default function BasicInfoScreen() {
       await volunteerService.updateVolunteer(user.entityId, {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
+        phone: phone.trim() || undefined,
       });
+      // Invalidate current volunteer to refresh any screens using the query
+      queryClient.invalidateQueries({
+        queryKey: ['volunteer', 'me'],
+        exact: true,
+      });
+
+      try {
+        await fetchUserEntity();
+      } catch {}
 
       Alert.alert('Success', 'Profile updated successfully', [
         {
@@ -177,10 +262,14 @@ export default function BasicInfoScreen() {
             <View style={styles.photoContainer}>
               <Pressable
                 style={styles.browseButton}
-                disabled
-                onPress={() => {}}
+                disabled={uploadingImage}
+                onPress={handlePickProfilePhoto}
               >
-                <Text style={styles.browseButtonText}>Browse images</Text>
+                {uploadingImage ? (
+                  <ActivityIndicator color={Colors.light.textSecondary} />
+                ) : (
+                  <Text style={styles.browseButtonText}>Browse images</Text>
+                )}
               </Pressable>
             </View>
             <Text style={styles.helperText}></Text>

@@ -30,6 +30,7 @@ export interface Volunteer {
   id: string;
   firstName: string;
   lastName: string;
+  phone?: string;
   coins: number;
   preferredName?: string;
   birthDate: string;
