@@ -23,6 +23,16 @@ async function getVolunteerProfilePictureUrl(
   }
 }
 
+async function getProfilePictureUploadUrl(
+  filename: string,
+  filetype: string
+): Promise<{ uploadUrl: string; fileUrl: string }> {
+  const response = await api.get(`/volunteer/me/profile-picture/upload-url`, {
+    params: { filename, filetype },
+  });
+  return response.data;
+}
+
 async function createVolunteer(
   volunteer: CreateVolunteerRequest
 ): Promise<Volunteer> {
@@ -64,4 +74,5 @@ export const volunteerService = {
   deleteVolunteer,
   getTopVolunteers,
   getVolunteerProfilePictureUrl,
+  getProfilePictureUploadUrl,
 };
