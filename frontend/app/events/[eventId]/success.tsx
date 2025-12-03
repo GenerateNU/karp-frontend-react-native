@@ -4,19 +4,19 @@ import { Button } from '@/components/common/Button';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Fonts } from '@/constants/Fonts';
 import { Calendar } from '@/components/Calendar';
 import * as CalendarExpo from 'expo-calendar';
 import React, { useState, useEffect } from 'react';
 import { eventService } from '@/services/eventService';
 import { Event } from '@/types/api/event';
-import { BackHeader } from '@/components/common/BackHeader';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function EventSuccessPage() {
   const { selectedDate, selectedTime, duration, eventId } =
     useLocalSearchParams();
+  const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -100,7 +100,6 @@ export default function EventSuccessPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <ScrollView>
-          <BackHeader />
           <ThemedView style={styles.content}>
             <View>
               <ThemedText style={styles.successMessage}>
@@ -125,6 +124,13 @@ export default function EventSuccessPage() {
               textStyle={styles.addToCalendarTextStyle}
               text="Add to Calendar"
               onPress={addToCalendar}
+            />
+
+            <Button
+              buttonsStyle={styles.homeButton}
+              textStyle={styles.homeButtonText}
+              text="Back to Home"
+              onPress={() => router.replace('/')}
             />
 
             <View style={styles.calendarSection}>
@@ -166,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   shareButton: {
-    marginBottom: 65,
+    marginBottom: 20,
     alignSelf: 'center',
   },
   shareButtonText: {
@@ -182,5 +188,12 @@ const styles = StyleSheet.create({
   calendarSection: {
     flex: 1,
     marginTop: 20,
+  },
+  homeButton: {
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  homeButtonText: {
+    fontFamily: Fonts.light_300,
   },
 });

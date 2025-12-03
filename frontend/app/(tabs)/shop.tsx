@@ -20,7 +20,6 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
-import { useProfile } from '@/hooks/useProfile';
 
 export interface ItemFilters {
   priceRange: { min: number; max: number };
@@ -40,7 +39,6 @@ export default function StoreScreen() {
 
   const router = useRouter();
   const { volunteer, token } = useAuth();
-  const { profileData } = useProfile();
 
   const loadItems = useCallback(async () => {
     try {
