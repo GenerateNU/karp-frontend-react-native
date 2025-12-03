@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,6 +8,7 @@ import { Event } from '@/types/api/event';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { imageService } from '@/services/imageService';
+import { orgService } from '@/services/organizationService';
 
 interface Props extends Event {
   onSelectTime?: (time: string) => void;
@@ -18,6 +19,7 @@ export default function EventInfoTable({
   id,
   name,
   organization,
+  organizationId,
   address,
   description,
   startDateTime,
@@ -30,6 +32,7 @@ export default function EventInfoTable({
   const [imagePreSignedUrl, setImagePreSignedUrl] = React.useState<
     string | null
   >(null);
+  const [orgName, setOrgName] = useState<string>(organization ?? '');
 
   useEffect(() => {
     async function fetchImageUrl() {
@@ -45,6 +48,26 @@ export default function EventInfoTable({
       fetchImageUrl();
     }
   }, [id, imageS3Key]);
+
+  useEffect(() => {
+    async function loadOrganizer() {
+      try {
+        if (organization) {
+          setOrgName(organization);
+          return;
+        }
+        if (!organizationId) {
+          setOrgName('');
+          return;
+        }
+        const org = await orgService.getOrganizationById(organizationId);
+        setOrgName(org?.name ?? '');
+      } catch {
+        setOrgName('');
+      }
+    }
+    loadOrganizer();
+  }, [organization, organizationId]);
 
   const dateFormatted = start
     ? start.toLocaleString(undefined, {
@@ -112,7 +135,7 @@ export default function EventInfoTable({
               </View>
               <Text style={styles.organizationText}>Organizer:</Text>
               <Text style={[styles.organizationText, styles.spacing]}>
-                {organization}
+                {orgName}
               </Text>
               <Text style={styles.dateText}>Date: {dateFormatted}</Text>
               <Text style={[styles.organizationText, styles.spacing]}>

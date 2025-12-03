@@ -23,8 +23,8 @@ async function getAllOrganizations(
 
 async function getOrganizationById(id: string): Promise<Organization | null> {
   const endpoint = `organization/${id}`;
-  const { data: event } = await api.get(endpoint);
-  return event;
+  const { data: organization } = await api.get(endpoint);
+  return organization;
 }
 
 // async function searchEvents(

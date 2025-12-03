@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Event as EventType } from '@/types/api/event';
 import { Fonts } from '@/constants/Fonts';
 import { Colors } from '@/constants/Colors';
 import { Image } from 'expo-image';
+import { orgService } from '@/services/organizationService';
 
 interface ProfileEventCardProps {
   event: EventType;
@@ -18,6 +19,30 @@ export function ProfileEventCard({
   onCheckIn,
   onCheckOut,
 }: ProfileEventCardProps) {
+  const [organizerName, setOrganizerName] = useState<string>('');
+
+  useEffect(() => {
+    async function loadOrganizer() {
+      try {
+        // Prefer existing name if present on the event
+        if (event.organization) {
+          setOrganizerName(event.organization);
+          return;
+        }
+        if (!event.organizationId) {
+          setOrganizerName('');
+          return;
+        }
+        const org = await orgService.getOrganizationById(event.organizationId);
+        setOrganizerName(org?.name ?? '');
+      } catch (e) {
+        console.log(e);
+        // Silently ignore; ensure empty organizer name on error
+        setOrganizerName('');
+      }
+    }
+    loadOrganizer();
+  }, [event.organization, event.organizationId]);
   return (
     <Pressable
       onPress={() => onPress(event)}
@@ -31,7 +56,7 @@ export function ProfileEventCard({
       />
       <View style={styles.eventInfo}>
         <Text style={styles.organizationName} numberOfLines={1}>
-          Pumpkin Fields of Northeastern
+          {organizerName}
         </Text>
         <Text style={styles.eventName} numberOfLines={2}>
           {event.name}
