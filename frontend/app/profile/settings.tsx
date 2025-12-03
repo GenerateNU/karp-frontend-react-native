@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   settingsItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 460,
+    width: '100%',
     height: 84,
     backgroundColor: Colors.light.eggshellWhite,
     borderWidth: 1,

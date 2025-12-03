@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     height: 88,
     paddingTop: 26,
     paddingHorizontal: 32,
-    paddingBottom: 19,
+    paddingBottom: 26,
     backgroundColor: Colors.light.eggshellWhite,
     borderWidth: 1,
     borderColor: Colors.light.text,

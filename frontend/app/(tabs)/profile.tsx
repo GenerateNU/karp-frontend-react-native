@@ -91,7 +91,7 @@ export default function ProfileScreen() {
           <Text style={styles.name}>
             {volunteer.firstName} {volunteer.lastName}
           </Text>
-          <Text style={styles.levelLabel}>Level {stats.level}</Text>
+          <Text style={styles.levelLabel}>Level {volunteer.currentLevel}</Text>
         </View>
 
         <FishTank
@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
     gap: 18,
     marginTop: 20,
     marginBottom: 26,
+    width: '100%',
   },
   eventsSection: {
     paddingBottom: 24,

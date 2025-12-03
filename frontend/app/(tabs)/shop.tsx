@@ -156,7 +156,7 @@ export default function StoreScreen() {
                   fontFamily: Fonts.medium_500,
                 }}
               >
-                Level {profileData?.stats.level ?? 0}
+                Level {volunteer?.currentLevel ?? 0}
               </ThemedText>
 
               <ThemedText
