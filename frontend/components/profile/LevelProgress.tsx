@@ -12,7 +12,7 @@ interface LevelProgressProps {
 export function LevelProgress({
   level,
   progress,
-  motivationalText = 'some motivating text idk some motivating text idk',
+  motivationalText = 'Level up by completing more activities!',
 }: LevelProgressProps) {
   return (
     <View style={styles.container}>
@@ -32,7 +32,7 @@ export function LevelProgress({
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
+    width: '100%',
     height: 88,
     paddingTop: 26,
     paddingHorizontal: 32,
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.light.text,
     borderRadius: 8,
-    alignSelf: 'center',
+    alignSelf: 'stretch',
     marginVertical: 12,
   },
   motivationalText: {

@@ -7,15 +7,20 @@ interface StatCardProps {
   title: string;
   value: string;
   onPress?: () => void;
+  fullWidth?: boolean;
 }
 
-export function StatCard({ title, value, onPress }: StatCardProps) {
+export function StatCard({ title, value, onPress, fullWidth }: StatCardProps) {
   const Component = onPress ? Pressable : View;
 
   return (
     <Component
       onPress={onPress}
-      style={[styles.card, onPress && styles.pressable]}
+      style={[
+        styles.card,
+        fullWidth && styles.fullWidth,
+        onPress && styles.pressable,
+      ]}
     >
       <Text style={styles.value}>{value}</Text>
       <Text style={styles.title}>{title}</Text>
@@ -36,6 +41,9 @@ const styles = StyleSheet.create({
     paddingRight: 24,
     justifyContent: 'center',
     alignItems: 'flex-start',
+  },
+  fullWidth: {
+    width: '100%',
   },
   pressable: {
     opacity: 1,

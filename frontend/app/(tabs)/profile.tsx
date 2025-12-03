@@ -100,23 +100,13 @@ export default function ProfileScreen() {
           refreshKey={refreshing ? Date.now() : undefined}
         />
 
-        <LevelProgress
-          level={stats.level}
-          progress={stats.levelProgress}
-          motivationalText="some motivating text idk some motivating text idk"
-        />
+        <LevelProgress level={stats.level} progress={stats.levelProgress} />
 
         <View style={styles.statsContainer}>
           <StatCard
             title="Hours Spent Volunteering"
             value={`${Math.round(stats.totalHours)} hours`}
-          />
-          <StatCard
-            title="My Documents"
-            value=" "
-            onPress={() => {
-              alert('Documents will be here lol');
-            }}
+            fullWidth
           />
         </View>
 
@@ -207,10 +197,10 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   statsContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
-    gap: 18,
+    alignItems: 'stretch',
+    gap: 0,
     marginTop: 20,
     marginBottom: 26,
     width: '100%',
