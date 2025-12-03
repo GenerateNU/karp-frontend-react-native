@@ -14,23 +14,23 @@ export function OrgCard({ organization, onPress }: OrgCardProps) {
   );
 
   useEffect(() => {
-    let isMounted = true;
     async function fetchImageUrl() {
       try {
         const url = await imageService.getImageUrl(
           'organization',
           organization.id
         );
-        if (isMounted) setImagePreSignedUrl(url);
-      } catch {
-        // ignore if not found
+        setImagePreSignedUrl(url);
+      } catch (err) {
+        console.error('Failed to fetch image:', err);
       }
     }
-    fetchImageUrl();
-    return () => {
-      isMounted = false;
-    };
-  }, [organization.id]);
+
+    if (organization.imageS3Key) {
+      console.log('organization key!');
+      fetchImageUrl();
+    }
+  }, [organization.id, organization.imageS3Key]);
 
   return (
     <Pressable

@@ -12,7 +12,7 @@ export interface Organization {
   location: Location | null;
   description?: string;
   status: OrgStatus;
-  imageUrl?: string;
+  imageS3Key: string;
 }
 
 export interface OrgFilters {
