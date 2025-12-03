@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect, Stack, useRouter } from 'expo-router';
 import {
   View,
   Text,
@@ -9,7 +10,6 @@ import {
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { orderService } from '@/services/orderService';
 import { itemService } from '@/services/itemService';
@@ -141,6 +141,13 @@ export default function OrderHistoryScreen() {
     applyStatusFilter(allOrders, statusFilter);
   }, [statusFilter, allOrders]);
 
+  // Refresh order history when screen comes into focus (e.g., after scanning)
+  useFocusEffect(
+    useCallback(() => {
+      loadOrderHistory(true);
+    }, [loadOrderHistory])
+  );
+
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
       case OrderStatus.COMPLETED:
@@ -222,6 +229,7 @@ export default function OrderHistoryScreen() {
                 vendorId: order.item?.vendorId || '',
                 vendorName: order.vendorName || '',
                 imageUrl: order.imageUrl || '',
+                orderStatus: order.orderStatus,
               },
             });
           }}

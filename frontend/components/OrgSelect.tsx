@@ -13,6 +13,7 @@ import { Organization } from '@/types/api/organization';
 import { Calendar } from '@/components/Calendar';
 import { eventService } from '@/services/eventService';
 import { Event } from '@/types/api/event';
+import { imageService } from '@/services/imageService';
 
 interface OrgSelectProps {
   visible: boolean;
@@ -25,6 +26,9 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
   const [eventsLoading, setEventsLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
+  );
+  const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
+    null
   );
 
   useEffect(() => {
@@ -58,6 +62,26 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
     };
 
     if (visible) fetchOrgEvents();
+  }, [visible, organization?.id]);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchImage() {
+      if (!organization?.id) return;
+      try {
+        const url = await imageService.getImageUrl(
+          'organization',
+          organization.id
+        );
+        if (isMounted) setImagePreSignedUrl(url);
+      } catch {
+        // ignore if not found
+      }
+    }
+    if (visible) fetchImage();
+    return () => {
+      isMounted = false;
+    };
   }, [visible, organization?.id]);
 
   const markedDates = useMemo(() => {
@@ -120,15 +144,13 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
         <ScrollView className="flex-1">
           <View className="border-b border-gray-200 px-5 pb-3 pt-4">
             <View className="mb-3 h-80 overflow-hidden rounded-xl bg-gray-100">
-              <Image
-                source={{
-                  uri:
-                    organization.imageUrl ||
-                    'https://www.pointsoflight.org/wp-content/uploads/2021/03/AdobeStock_289737123-scaled.jpeg',
-                }}
-                className="h-full w-full"
-                resizeMode="cover"
-              />
+              {imagePreSignedUrl ? (
+                <Image
+                  source={{ uri: imagePreSignedUrl }}
+                  className="h-full w-full"
+                  resizeMode="cover"
+                />
+              ) : null}
             </View>
             <View className="flex-row items-center justify-between">
               <Text

@@ -15,54 +15,165 @@ import { ImageBackground } from 'expo-image';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { checkIn, checkOut } from '@/services/registrationService';
+import { orderService } from '@/services/orderService';
 
-export type QRScannerType = 'check-in' | 'checkout';
+export type QRScannerType = 'check-in' | 'checkout' | 'item';
 
 interface QRScannerProps {
   type: QRScannerType;
+  orderId?: string; // Required when type is 'item'
   onSuccess?: () => void;
   onCancel?: () => void;
 }
 
-export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
+export function QRScanner({
+  type,
+  orderId,
+  onSuccess,
+  onCancel,
+}: QRScannerProps) {
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [cameraActive, setCameraActive] = useState(true);
+  const [scanned, setScanned] = useState(false);
+  const isProcessingRef = useRef(false);
 
-  const scannedRef = useRef(false); // to prevent multiple scans
-
-  const actionLabel = type === 'check-in' ? 'Check-in' : 'Check-out';
+  const actionLabel =
+    type === 'check-in'
+      ? 'Check-in'
+      : type === 'checkout'
+        ? 'Check-out'
+        : 'Scan Item';
 
   const handleBarCodeScanned = async ({ data }: { data: string }) => {
-    if (scannedRef.current || isProcessing) return; // prevent multiple calls
-    scannedRef.current = true; // block re-entry immediately
+    // Use ref to prevent multiple simultaneous scans (before state updates)
+    if (isProcessingRef.current || scanned || isProcessing) return;
+
+    // Immediately set ref to prevent any other scans
+    isProcessingRef.current = true;
+    setScanned(true);
     setIsProcessing(true);
-    setCameraActive(false);
 
     try {
-      let parsed: any = JSON.parse(data);
-      if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+      // Parse QR code data - expecting JSON format with event_id and qr_token
+      let eventId: string = '';
+      let qrToken: string = '';
+      let parsed: any;
 
-      const eventId = parsed.event_id || parsed.eventId;
-      const qrToken = parsed.qr_token || parsed.qrToken;
+      try {
+        // Try parsing the data directly first
+        parsed = JSON.parse(data);
 
-      if (!eventId || !qrToken) throw new Error('Invalid QR Code.');
-
-      if (parsed.expires_at && new Date(parsed.expires_at) < new Date()) {
-        throw new Error('This QR code has expired. Please request a new one.');
+        // If the result is still a string, it's double-encoded - parse again
+        if (typeof parsed === 'string') {
+          try {
+            parsed = JSON.parse(parsed);
+          } catch (secondParseError) {
+            console.warn(
+              'Second JSON parse failed, using first parse result:',
+              {
+                firstParse: parsed,
+                secondParseError,
+              }
+            );
+          }
+        }
+      } catch (parseError) {
+        console.error('QR code parsing error:', {
+          data,
+          parseError,
+        });
+        const expectedFormat =
+          type === 'item'
+            ? 'Expected JSON with item_id and qr_token.'
+            : 'Expected JSON with event_id and qr_token.';
+        throw new Error(`Invalid QR code format. ${expectedFormat}`);
       }
 
-      if (type === 'check-in') await checkIn(eventId, qrToken);
-      else await checkOut(eventId, qrToken);
+      // For item scanning, we need item_id and qr_token from QR code, plus orderId from props
+      // For check-in/checkout, we need both event_id and qr_token
+      if (type === 'item') {
+        const itemIdFromQR = parsed.item_id || parsed.itemId || '';
+        qrToken = parsed.qr_token || parsed.qrToken || '';
+
+        if (
+          !itemIdFromQR ||
+          typeof itemIdFromQR !== 'string' ||
+          itemIdFromQR.trim().length === 0
+        ) {
+          console.error('Invalid item_id:', { itemIdFromQR, parsed });
+          throw new Error('QR code missing or invalid item_id');
+        }
+
+        if (
+          !qrToken ||
+          typeof qrToken !== 'string' ||
+          qrToken.trim().length === 0
+        ) {
+          console.error('Invalid qr_token:', { qrToken, parsed });
+          throw new Error('QR code missing or invalid qr_token');
+        }
+
+        // Store itemId for later use after expiration check
+        eventId = itemIdFromQR; // Reuse eventId variable to store itemId for item scanning
+      } else {
+        eventId = parsed.event_id || parsed.eventId || '';
+        qrToken = parsed.qr_token || parsed.qrToken || '';
+
+        if (
+          !eventId ||
+          typeof eventId !== 'string' ||
+          eventId.trim().length === 0
+        ) {
+          console.error('Invalid event_id:', { eventId, parsed });
+          throw new Error('QR code missing or invalid event_id');
+        }
+
+        if (
+          !qrToken ||
+          typeof qrToken !== 'string' ||
+          qrToken.trim().length === 0
+        ) {
+          console.error('Invalid qr_token:', { qrToken, parsed });
+          throw new Error('QR code missing or invalid qr_token');
+        }
+      }
+
+      // Optional: Check if QR code has expired
+      if (parsed.expires_at) {
+        const expiresAt = new Date(parsed.expires_at);
+        const now = new Date();
+        if (expiresAt < now) {
+          throw new Error(
+            'This QR code has expired. Please request a new one.'
+          );
+        }
+      }
+
+      // Call the appropriate function based on type
+      if (type === 'check-in') {
+        await checkIn(eventId, qrToken);
+      } else if (type === 'checkout') {
+        await checkOut(eventId, qrToken);
+      } else if (type === 'item') {
+        // For item scanning, eventId contains itemId from QR code
+        if (!orderId) {
+          throw new Error('Order ID is required for item scanning');
+        }
+        await orderService.scanOrder(orderId, eventId, qrToken);
+      }
+
+      // If item scan was successful, trigger a refresh of order data
+      if (type === 'item') {
+      }
 
       Alert.alert('Success', `${actionLabel} successful!`, [
         {
           text: 'OK',
           onPress: () => {
-            scannedRef.current = false;
+            isProcessingRef.current = false;
+            setScanned(false);
             setIsProcessing(false);
-            setCameraActive(true);
             if (onSuccess) onSuccess();
             else router.back();
           },
@@ -75,9 +186,12 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
         {
           text: 'Try Again',
           onPress: () => {
-            scannedRef.current = false; // reset immediately
-            setIsProcessing(false);
-            setCameraActive(true);
+            // Add a cooldown before allowing another scan attempt
+            setTimeout(() => {
+              isProcessingRef.current = false;
+              setScanned(false);
+              setIsProcessing(false);
+            }, 1000); // 1 second cooldown
           },
         },
       ]);
@@ -113,7 +227,9 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
   const backgroundImage =
     type === 'check-in'
       ? require('../assets/images/swimming-bg-checkin.png')
-      : require('../assets/images/swimming-bg-checkout.png');
+      : type === 'checkout'
+        ? require('../assets/images/swimming-bg-checkout.png')
+        : require('../assets/images/swimming-bg-checkin.png'); // We can make a item bg later
 
   return (
     <ImageBackground
@@ -148,23 +264,22 @@ export function QRScanner({ type, onSuccess, onCancel }: QRScannerProps) {
             </>
           ) : (
             <View style={styles.cameraContainer}>
-              {cameraActive ? (
-                <CameraView
-                  style={styles.cameraView}
-                  facing="back"
-                  onBarcodeScanned={handleBarCodeScanned}
-                  barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-                />
-              ) : (
-                <View style={styles.cameraView} />
-              )}
-
+              <CameraView
+                style={styles.cameraView}
+                facing="back"
+                onBarcodeScanned={
+                  scanned || isProcessing ? undefined : handleBarCodeScanned
+                }
+                barcodeScannerSettings={{
+                  barcodeTypes: ['qr'],
+                }}
+              />
               <View style={styles.scannerOverlay}>
                 <View style={styles.scannerFrame}>
-                  <View style={styles.scannerCorner} />
-                  <View style={[styles.scannerCorner, styles.topRight]} />
-                  <View style={[styles.scannerCorner, styles.bottomLeft]} />
-                  <View style={[styles.scannerCorner, styles.bottomRight]} />
+                  <View style={styles.topLeftScannerCorner} />
+                  <View style={styles.topRightScannerCorner} />
+                  <View style={styles.bottomLeftScannerCorner} />
+                  <View style={styles.bottomRightScannerCorner} />
                 </View>
 
                 {isProcessing && (
@@ -253,7 +368,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.5)',
     borderRadius: 20,
   },
-  scannerCorner: {
+  topLeftScannerCorner: {
     position: 'absolute',
     width: 30,
     height: 30,
@@ -265,22 +380,42 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderTopLeftRadius: 20,
   },
-  topRight: {
+  topRightScannerCorner: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderColor: '#4AA9E8',
+    borderWidth: 3,
     top: -2,
     right: -2,
     left: 'auto',
-    borderLeftWidth: 0,
+    borderTopWidth: 3,
     borderRightWidth: 3,
+    borderBottomWidth: 0,
+    borderLeftWidth: 0,
     borderTopRightRadius: 20,
   },
-  bottomLeft: {
+  bottomLeftScannerCorner: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderColor: '#4AA9E8',
+    borderWidth: 3,
     bottom: -2,
     top: 'auto',
+    left: -2,
     borderTopWidth: 0,
+    borderRightWidth: 0,
     borderBottomWidth: 3,
+    borderLeftWidth: 3,
     borderBottomLeftRadius: 20,
   },
-  bottomRight: {
+  bottomRightScannerCorner: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    borderColor: '#4AA9E8',
+    borderWidth: 3,
     bottom: -2,
     right: -2,
     top: 'auto',

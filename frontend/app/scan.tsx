@@ -2,12 +2,19 @@ import React from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { QRScanner, QRScannerType } from '@/components/QRScanner';
 
-export default function CheckInScreen() {
-  const { type } = useLocalSearchParams<{ type?: string }>();
+export default function ScanScreen() {
+  const { type, orderId } = useLocalSearchParams<{
+    type?: string;
+    orderId?: string;
+  }>();
 
-  // Default to 'check-in' if no type is provided
-  const scannerType: QRScannerType =
-    type === 'checkout' ? 'checkout' : 'check-in';
+  // Determine scanner type
+  let scannerType: QRScannerType = 'check-in';
+  if (type === 'checkout') {
+    scannerType = 'checkout';
+  } else if (type === 'item') {
+    scannerType = 'item';
+  }
 
-  return <QRScanner type={scannerType} />;
+  return <QRScanner type={scannerType} orderId={orderId} />;
 }

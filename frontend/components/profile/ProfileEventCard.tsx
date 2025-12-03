@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   checkOutButton: {
-    backgroundColor: '#6B7280',
+    backgroundColor: '#ff0000aa',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
   checkOutButtonText: {
     fontFamily: Fonts.regular_400,
     fontSize: 12,
-    color: '#fff',
+    color: Colors.light.white,
   },
 });
