@@ -59,7 +59,7 @@ export function ProfileEventCard({
 
 const styles = StyleSheet.create({
   card: {
-    width: 460,
+    width: '100%',
     height: 104,
     flexDirection: 'row',
     backgroundColor: Colors.light.eggshellWhite,
