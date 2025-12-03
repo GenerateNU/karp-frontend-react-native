@@ -6,6 +6,7 @@ import { Fonts } from '@/constants/Fonts';
 import { Image } from 'expo-image';
 import { imageService } from '@/services/imageService';
 import { Colors } from '@/constants/Colors';
+import { vendorService } from '@/services/vendorService';
 
 export interface CarouselItemProps {
   id: string;
@@ -14,6 +15,7 @@ export interface CarouselItemProps {
   index: number;
   count: number;
   imageS3Key?: string;
+  vendorId?: string;
   onPress: (id: string) => void;
 }
 
@@ -24,11 +26,13 @@ const CarouselItem: React.FC<CarouselItemProps> = ({
   index,
   count,
   imageS3Key,
+  vendorId,
   onPress,
 }) => {
   const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
     null
   );
+  const [vendorName, setVendorName] = useState<string>('Unknown');
 
   useEffect(() => {
     async function fetchImageUrl() {
@@ -45,6 +49,21 @@ const CarouselItem: React.FC<CarouselItemProps> = ({
       fetchImageUrl();
     }
   }, [id, imageS3Key]);
+
+  useEffect(() => {
+    async function fetchVendor() {
+      if (!vendorId) return;
+      try {
+        const vendor = await vendorService.getVendorById(vendorId);
+        if (vendor) {
+          setVendorName(vendor.name);
+        }
+      } catch {
+        // ignore
+      }
+    }
+    fetchVendor();
+  }, [vendorId]);
 
   return (
     <TouchableOpacity
@@ -111,7 +130,7 @@ const CarouselItem: React.FC<CarouselItemProps> = ({
               fontFamily: Fonts.regular_400,
             }}
           >
-            Store
+            {vendorName}
           </ThemedText>
           <ThemedText
             type="default"

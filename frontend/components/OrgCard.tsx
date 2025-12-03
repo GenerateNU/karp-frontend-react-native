@@ -14,22 +14,18 @@ export function OrgCard({ organization, onPress }: OrgCardProps) {
   );
 
   useEffect(() => {
-    let isMounted = true;
     async function fetchImageUrl() {
       try {
         const url = await imageService.getImageUrl(
           'organization',
           organization.id
         );
-        if (isMounted) setImagePreSignedUrl(url);
+        setImagePreSignedUrl(url);
       } catch {
         // ignore if not found
       }
     }
     fetchImageUrl();
-    return () => {
-      isMounted = false;
-    };
   }, [organization.id]);
 
   return (

@@ -35,4 +35,5 @@ export interface ShopItem {
   store: string;
   coins: number;
   imageS3Key?: string;
+  vendorId?: string;
 }
