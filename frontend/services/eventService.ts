@@ -43,10 +43,12 @@ async function searchEvents(
     params.lat = locationFilter.latitude;
     params.lng = locationFilter.longitude;
     params.distance_km = locationFilter.radiusKm;
+    params.sort_by = 'distance';
     console.log('Filtering events by location:', {
       lat: params.lat,
       lng: params.lng,
       distance_km: params.distance_km,
+      sort_by: params.sort_by,
     });
   }
 
