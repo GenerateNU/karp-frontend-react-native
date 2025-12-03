@@ -41,7 +41,7 @@ export interface Volunteer {
   experience: number;
   location: Location;
   hours?: number;
-  currentLevel?: number;
+  currentLevel: number;
 }
 
 export interface Location {

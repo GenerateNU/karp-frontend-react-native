@@ -6,7 +6,6 @@ export interface ProfileStats {
   level: number;
   levelProgress: number;
   experiencePoints: number;
-  nextLevelXP: number;
 }
 
 export interface ProfileData {

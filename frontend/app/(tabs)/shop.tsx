@@ -15,11 +15,14 @@ import { Fonts } from '@/constants/Fonts';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
+import { useProfile } from '@/hooks/useProfile';
 import { itemService } from '@/services/itemService';
+import { volunteerService } from '@/services/volunteerService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
+import { Volunteer } from '@/types/api/volunteer';
 
 export interface ItemFilters {
   priceRange: { min: number; max: number };
@@ -32,13 +35,17 @@ export default function StoreScreen() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const profile = useProfile();
   const [filters, setFilters] = useState<ItemFilters>({
     priceRange: { min: 0, max: 10000 },
     category: '',
   });
+  const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(
+    null
+  );
 
   const router = useRouter();
-  const { volunteer, token } = useAuth();
+  const { user, token } = useAuth();
 
   const loadItems = useCallback(async () => {
     try {
@@ -71,8 +78,22 @@ export default function StoreScreen() {
   }, [token]);
 
   useEffect(() => {
-    loadItems();
-  }, [loadItems]);
+    // Fetch current volunteer if user is available (same approach as profile page)
+    const fetchVolunteer = async () => {
+      let volunteerData: Volunteer | null = null;
+      if (user?.entityId) {
+        try {
+          volunteerData = await volunteerService.getSelf();
+          setCurrentVolunteer(volunteerData);
+        } catch (err) {
+          console.error('Error fetching current volunteer:', err);
+        }
+      }
+
+      await loadItems();
+    };
+    fetchVolunteer();
+  }, [loadItems, profile.volunteer?.experience]);
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
@@ -112,6 +133,12 @@ export default function StoreScreen() {
       setRefreshing(false);
     }
   }, [loadItems]);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     refreshProfile();  // pulls latest XP, coins, level
+  //   }, [])
+  // );
 
   if (loading) {
     return <LoadingScreen text="Loading items..." />;
@@ -156,7 +183,7 @@ export default function StoreScreen() {
                   fontFamily: Fonts.medium_500,
                 }}
               >
-                Level {volunteer?.currentLevel ?? 0}
+                Level {currentVolunteer?.currentLevel ?? 0}
               </ThemedText>
 
               <ThemedText
@@ -167,7 +194,7 @@ export default function StoreScreen() {
                   fontFamily: Fonts.medium_500,
                 }}
               >
-                {volunteer?.coins ?? 0} coins
+                {currentVolunteer?.coins ?? 0} coins
               </ThemedText>
 
               <TouchableOpacity

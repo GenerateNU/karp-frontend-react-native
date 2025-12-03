@@ -26,8 +26,14 @@ async function getVolunteerAchievements(
   return response.data;
 }
 
+async function getLevelProgress(): Promise<number | null> {
+  const response = await api.get(`/volunteer/level-progress`);
+  return response.data;
+}
+
 export const profileService = {
   getUpcomingEvents,
   getPastEvents,
   getVolunteerAchievements,
+  getLevelProgress,
 };
