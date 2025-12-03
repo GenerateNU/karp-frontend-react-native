@@ -12,6 +12,17 @@ async function getSelf(): Promise<Volunteer | null> {
   return response.data;
 }
 
+async function getVolunteerProfilePictureUrl(
+  volunteerId: string
+): Promise<string | null> {
+  try {
+    const response = await api.get(`/volunteer/${volunteerId}/profile-picture`);
+    return response.data?.url ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function createVolunteer(
   volunteer: CreateVolunteerRequest
 ): Promise<Volunteer> {
@@ -52,4 +63,5 @@ export const volunteerService = {
   updateVolunteer,
   deleteVolunteer,
   getTopVolunteers,
+  getVolunteerProfilePictureUrl,
 };

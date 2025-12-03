@@ -58,6 +58,7 @@ export default function SettingsScreen() {
               firstName={firstName}
               lastName={lastName}
               size={112}
+              volunteerId={volunteer?.id}
             />
             <Text style={styles.profileName}>{displayName}</Text>
           </View>

@@ -84,6 +84,16 @@ function getFishImageForVolunteer(volunteerId: string) {
 
 function Avatar({ volunteerId, size }: AvatarProps) {
   const fishImage = getFishImageForVolunteer(volunteerId);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      const url =
+        await volunteerService.getVolunteerProfilePictureUrl(volunteerId);
+      setImageUrl(url);
+    };
+    load();
+  }, [volunteerId]);
 
   return (
     <View
@@ -99,14 +109,25 @@ function Avatar({ volunteerId, size }: AvatarProps) {
         },
       ]}
     >
-      <Image
-        source={fishImage}
-        style={{
-          width: size,
-          height: size,
-        }}
-        resizeMode="cover"
-      />
+      {imageUrl ? (
+        <Image
+          source={{ uri: imageUrl }}
+          style={{
+            width: size,
+            height: size,
+          }}
+          resizeMode="cover"
+        />
+      ) : (
+        <Image
+          source={fishImage}
+          style={{
+            width: size,
+            height: size,
+          }}
+          resizeMode="cover"
+        />
+      )}
     </View>
   );
 }
