@@ -137,11 +137,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    width: 360,
+    width: '90%',
+    maxWidth: 420,
     maxHeight: '80%',
+    minHeight: 200,
     backgroundColor: Colors.light.eggshellWhite,
     borderRadius: 16,
     padding: 24,
+    overflow: 'hidden',
   },
   title: {
     fontFamily: Fonts.regular_400,
@@ -188,16 +191,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   loadingContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: 200,
   },
   emptyContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 200,
+    minHeight: 180,
     padding: 20,
   },
   emptyText: {
