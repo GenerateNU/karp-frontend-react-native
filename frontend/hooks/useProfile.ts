@@ -7,58 +7,7 @@ import { Event } from '@/types/api/event';
 import { Volunteer } from '@/types/api/volunteer';
 import { useCurrentVolunteer } from '@/hooks/useCurrentVolunteer';
 
-// temporary logic idk how we're calculating level lol
-function calculateLevel(experience: number): number {
-  if (experience < 100) return 1;
-
-  let level = 1;
-  let totalXPNeeded = 0;
-
-  while (totalXPNeeded <= experience) {
-    const xpForNextLevel = level * 100 + (level - 1) * 50;
-    totalXPNeeded += xpForNextLevel;
-    if (totalXPNeeded <= experience) {
-      level++;
-    } else {
-      break;
-    }
-  }
-
-  return level;
-}
-
-function getXPForLevel(level: number): number {
-  let totalXP = 0;
-  for (let i = 1; i < level; i++) {
-    totalXP += i * 100 + (i - 1) * 50;
-  }
-  return totalXP;
-}
-
-function getXPForNextLevel(currentLevel: number): number {
-  return currentLevel * 100 + (currentLevel - 1) * 50;
-}
-
-function calculateLevelProgress(experience: number): {
-  level: number;
-  progress: number; // 0-100
-  currentLevelXP: number;
-  nextLevelXP: number;
-} {
-  const level = calculateLevel(experience);
-  const xpForCurrentLevel = getXPForLevel(level);
-  const xpForNextLevel = getXPForNextLevel(level);
-  const currentLevelXP = experience - xpForCurrentLevel;
-  const progress = (currentLevelXP / xpForNextLevel) * 100;
-
-  return {
-    level,
-    progress: Math.min(Math.max(progress, 0), 100),
-    currentLevelXP,
-    nextLevelXP: xpForNextLevel,
-  };
-}
-
+// TODO: abstrac to backend asw
 function calculateTotalHours(completedEvents: Event[]): number {
   return completedEvents.reduce((sum, event) => {
     const start = new Date(event.startDateTime);
@@ -109,15 +58,14 @@ export function useProfile() {
         return;
       }
 
-      const levelData = calculateLevelProgress(v.experience);
+      const levelProgress = await profileService.getLevelProgress();
       const totalHours = calculateTotalHours(pastEventsData);
 
       const stats = {
         totalHours,
-        level: levelData.level,
-        levelProgress: levelData.progress,
+        level: v.currentLevel,
+        levelProgress: levelProgress ?? 0, // meh
         experiencePoints: v.experience,
-        nextLevelXP: levelData.nextLevelXP,
       };
 
       setProfileData({
