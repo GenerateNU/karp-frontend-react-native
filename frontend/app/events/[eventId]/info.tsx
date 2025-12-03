@@ -9,17 +9,20 @@ import EventInfoTable from '@/components/ui/EventInfoFull';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
+import { RegistrationStatus } from '@/types/api/registration';
 import { eventService } from '@/services/eventService';
+import { getEventsByVolunteer } from '@/services/registrationService';
 import { BackHeader } from '@/components/common/BackHeader';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
   const router = useRouter();
-  const { isAuthenticated, isGuest, clearGuestMode } = useAuth();
+  const { isAuthenticated, isGuest, clearGuestMode, volunteer } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
+  const [isRegistered, setIsRegistered] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated && !isGuest) {
@@ -41,6 +44,22 @@ export default function EventSignUpPage() {
 
     fetchEventDetails();
   }, [eventId, isAuthenticated, router]);
+
+  useEffect(() => {
+    const checkRegistration = async () => {
+      try {
+        if (!volunteer?.id || !eventId) return;
+        const events = await getEventsByVolunteer(
+          volunteer.id,
+          RegistrationStatus.UPCOMING
+        );
+        setIsRegistered(events.some(e => e.id === (eventId as string)));
+      } catch {
+        setIsRegistered(false);
+      }
+    };
+    checkRegistration();
+  }, [volunteer?.id, eventId]);
 
   const handleSignUp = async () => {
     if (isGuest) {
@@ -74,12 +93,18 @@ export default function EventSignUpPage() {
             <EventInfoTable {...event!} />
 
             <View style={styles.signUpSection}>
-              <Button
-                text="SIGN UP"
-                onPress={handleSignUp}
-                loading={false}
-                disabled={false}
-              />
+              {!isRegistered ? (
+                <Button
+                  text="SIGN UP"
+                  onPress={handleSignUp}
+                  loading={false}
+                  disabled={false}
+                />
+              ) : (
+                <ThemedText style={styles.alreadySignedUpText}>
+                  You are already signed up for this event.
+                </ThemedText>
+              )}
 
               {message ? (
                 <View style={styles.messageBox}>
@@ -127,5 +152,8 @@ const styles = StyleSheet.create({
   signUpLink: {
     color: Colors.light.text,
     textDecorationLine: 'underline',
+  },
+  alreadySignedUpText: {
+    color: Colors.light.text,
   },
 });

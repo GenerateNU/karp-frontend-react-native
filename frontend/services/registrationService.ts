@@ -1,11 +1,22 @@
 import api from '@/api';
-import { Registration } from '@/types/api/registration';
+import { Event } from '@/types/api/event';
+import { Registration, RegistrationStatus } from '@/types/api/registration';
 
 export async function createRegistration(
   eventId: string
 ): Promise<Registration> {
   const response = await api.post('/registration/new', { event_id: eventId });
   console.log(response.data);
+  return response.data;
+}
+
+export async function getEventsByVolunteer(
+  volunteerId: string,
+  status?: RegistrationStatus
+): Promise<Event[]> {
+  const response = await api.get(`/registration/events/${volunteerId}`, {
+    params: { registration_status: status },
+  });
   return response.data;
 }
 
