@@ -1,17 +1,19 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/HapticTab';
+import { useAuth } from '@/context/AuthContext';
 
 export default function TabLayout() {
+  const { isAuthenticated, isGuest } = useAuth();
   const insets = useSafeAreaInsets();
 
-  // if (!isAuthenticated && !isGuest) {
-  //   return <Redirect href="/login" />;
-  // }
+  if (!isAuthenticated && !isGuest) {
+    return <Redirect href="/login" />;
+  }
 
   return (
     <Tabs
