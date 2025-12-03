@@ -83,15 +83,6 @@ export default function SettingsScreen() {
             />
 
             <SettingsItem
-              icon="document-text-outline"
-              title="Documents"
-              subtitle="Update your password"
-              onPress={() => {
-                alert('Documents will go here lol');
-              }}
-            />
-
-            <SettingsItem
               icon="trash-outline"
               title="Delete account"
               subtitle="Delete your account"
