@@ -22,6 +22,7 @@ import { LocationProvider } from '@/context/LocationContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Keep the splash screen visible while we load resources
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
@@ -64,9 +65,17 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    async function hideSplash() {
+      if (loaded) {
+        try {
+          await SplashScreen.hideAsync();
+        } catch (error) {
+          // Ignore splash screen errors - they're non-critical
+          console.warn('Splash screen error (non-critical):', error);
+        }
+      }
     }
+    hideSplash();
   }, [loaded]);
 
   if (!loaded) {
