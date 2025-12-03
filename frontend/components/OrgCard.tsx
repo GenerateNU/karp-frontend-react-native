@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import { Organization } from '@/types/api/organization';
+import { imageService } from '@/services/imageService';
 
 interface OrgCardProps {
   organization: Organization;
@@ -8,6 +9,29 @@ interface OrgCardProps {
 }
 
 export function OrgCard({ organization, onPress }: OrgCardProps) {
+  const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchImageUrl() {
+      try {
+        const url = await imageService.getImageUrl(
+          'organization',
+          organization.id
+        );
+        if (isMounted) setImagePreSignedUrl(url);
+      } catch {
+        // ignore if not found
+      }
+    }
+    fetchImageUrl();
+    return () => {
+      isMounted = false;
+    };
+  }, [organization.id]);
+
   return (
     <Pressable
       className="mx-4 my-2 overflow-hidden rounded-xl bg-white shadow-sm"
@@ -15,12 +39,12 @@ export function OrgCard({ organization, onPress }: OrgCardProps) {
       android_ripple={{ color: '#f0f0f0' }}
     >
       <View className="h-40 bg-gray-100">
-        <Image
-          source={{
-            uri: 'https://www.pointsoflight.org/wp-content/uploads/2021/03/AdobeStock_289737123-scaled.jpeg',
-          }}
-          className="h-full w-full"
-        />
+        {imagePreSignedUrl ? (
+          <Image
+            source={{ uri: imagePreSignedUrl }}
+            className="h-full w-full"
+          />
+        ) : null}
       </View>
 
       <View className="p-4">
