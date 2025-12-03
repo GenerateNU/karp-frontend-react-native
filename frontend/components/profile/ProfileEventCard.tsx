@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.light.cardBorder,
     padding: 10,
-    alignSelf: 'center',
     marginVertical: 6,
     alignItems: 'center',
     gap: 10,
@@ -109,7 +108,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   checkOutButton: {
-    backgroundColor: '#6B7280',
+    backgroundColor: '#ff0000aa',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
@@ -117,6 +116,6 @@ const styles = StyleSheet.create({
   checkOutButtonText: {
     fontFamily: Fonts.regular_400,
     fontSize: 12,
-    color: '#fff',
+    color: Colors.light.white,
   },
 });

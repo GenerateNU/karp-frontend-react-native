@@ -12,7 +12,7 @@ import { Fonts } from '@/constants/Fonts';
 export default function ItemDetailScreen() {
   const { itemId } = useLocalSearchParams<{ itemId: string }>();
 
-  const { item, userCoins, hasOrdered, loading, orderLoading, placeOrder } =
+  const { item, userCoins, loading, orderLoading, placeOrder } =
     useItemDetail(itemId);
 
   const hasEnoughCoins = userCoins >= (item?.price ?? 30);
@@ -66,20 +66,12 @@ export default function ItemDetailScreen() {
       vendorName={vendorName}
       description={item.description || ''}
       instructionsText="Go to store and show them this page to redeem item!"
-      buttonConfig={
-        hasOrdered
-          ? {
-              text: 'REDEEMED',
-              onPress: () => {},
-              variant: 'redeemed',
-            }
-          : {
-              text: `${item.price} coins`,
-              onPress: placeOrder,
-              loading: orderLoading,
-              disabled: !hasEnoughCoins,
-            }
-      }
+      buttonConfig={{
+        text: `${item.price} coins`,
+        onPress: placeOrder,
+        loading: orderLoading,
+        disabled: !hasEnoughCoins,
+      }}
     />
   );
 }

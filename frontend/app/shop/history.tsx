@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
 import {
   View,
   Text,
@@ -141,6 +142,13 @@ export default function OrderHistoryScreen() {
     applyStatusFilter(allOrders, statusFilter);
   }, [statusFilter, allOrders]);
 
+  // Refresh order history when screen comes into focus (e.g., after scanning)
+  useFocusEffect(
+    useCallback(() => {
+      loadOrderHistory(true);
+    }, [loadOrderHistory])
+  );
+
   const getStatusColor = (status: OrderStatus) => {
     switch (status) {
       case OrderStatus.COMPLETED:
@@ -222,6 +230,7 @@ export default function OrderHistoryScreen() {
                 vendorId: order.item?.vendorId || '',
                 vendorName: order.vendorName || '',
                 imageUrl: order.imageUrl || '',
+                orderStatus: order.orderStatus,
               },
             });
           }}

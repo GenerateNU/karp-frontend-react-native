@@ -13,6 +13,9 @@ export function useItemDetail(itemId: string) {
   const [item, setItem] = useState<Item | null>(null);
   const [userCoins, setUserCoins] = useState(0);
   const [hasOrdered, setHasOrdered] = useState(false);
+  const [orderStatus, setOrderStatus] = useState<Order['orderStatus'] | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [orderLoading, setOrderLoading] = useState(false);
 
@@ -37,11 +40,12 @@ export function useItemDetail(itemId: string) {
           setUserCoins(0);
         }
 
-        const alreadyOrdered = orders.some(
+        const userOrder = orders.find(
           (order: Order) =>
             order.itemId === itemId && order.orderStatus !== 'cancelled'
         );
-        setHasOrdered(alreadyOrdered);
+        setHasOrdered(!!userOrder);
+        setOrderStatus(userOrder?.orderStatus || null);
       } catch (error) {
         Alert.alert('Error', `Failed to load item details: ${error}`);
         console.log(error);
@@ -83,6 +87,7 @@ export function useItemDetail(itemId: string) {
     item,
     userCoins,
     hasOrdered,
+    orderStatus,
     loading,
     orderLoading,
     placeOrder,

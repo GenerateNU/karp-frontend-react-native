@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.cardBorder,
     paddingVertical: 12,
     paddingLeft: 14,
-    paddingRight: 31,
+    paddingRight: 24,
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
