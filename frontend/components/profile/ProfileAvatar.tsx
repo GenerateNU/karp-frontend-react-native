@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { volunteerService } from '@/services/volunteerService';
+import { useVolunteerProfileImage } from '@/hooks/useVolunteerProfileImage';
 
 interface ProfileAvatarProps {
   firstName: string;
@@ -11,20 +11,7 @@ interface ProfileAvatarProps {
 }
 
 export function ProfileAvatar({ size = 112, volunteerId }: ProfileAvatarProps) {
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      if (!volunteerId) {
-        setImageUrl(null);
-        return;
-      }
-      const url =
-        await volunteerService.getVolunteerProfilePictureUrl(volunteerId);
-      setImageUrl(url);
-    };
-    loadImage();
-  }, [volunteerId]);
+  const { data: imageUrl } = useVolunteerProfileImage(volunteerId);
 
   return (
     <View

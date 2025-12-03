@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useQueryClient } from '@tanstack/react-query';
 import { BackHeader } from '@/components/common/BackHeader';
 import { useAuth } from '@/context/AuthContext';
 import { volunteerService } from '@/services/volunteerService';
@@ -31,6 +32,7 @@ const GRADE_LEVELS = [
 export default function BasicInfoScreen() {
   const router = useRouter();
   const { user, volunteer } = useAuth();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showGradeDropdown, setShowGradeDropdown] = useState(false);
@@ -102,6 +104,14 @@ export default function BasicInfoScreen() {
 
       if (!putResponse.ok) {
         throw new Error(`Upload failed with status ${putResponse.status}`);
+      }
+
+      // Invalidate profile image queries so UIs refresh
+      if (user?.entityId) {
+        queryClient.invalidateQueries({
+          queryKey: ['volunteerProfileImage', user.entityId],
+          exact: true,
+        });
       }
 
       Alert.alert('Success', 'Profile photo updated.');
