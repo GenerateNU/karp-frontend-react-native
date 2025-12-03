@@ -81,7 +81,7 @@ export function MyFishModal({
           style={styles.modalContent}
           onPress={e => e.stopPropagation()}
         >
-          <Text style={styles.title}>My Fish</Text>
+          <Text style={styles.title}>Fish Collection</Text>
 
           {isLoading ? (
             <View style={styles.loadingContainer}>
