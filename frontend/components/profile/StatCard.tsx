@@ -25,7 +25,7 @@ export function StatCard({ title, value, onPress }: StatCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    width: 182,
+    width: '45%',
     height: 88,
     backgroundColor: Colors.light.eggshellWhite,
     borderRadius: 8,
