@@ -6,6 +6,7 @@ import { ProfileData } from '@/types/api/profile';
 import { Event } from '@/types/api/event';
 import { Volunteer } from '@/types/api/volunteer';
 import { useCurrentVolunteer } from '@/hooks/useCurrentVolunteer';
+import { useUpcomingEvents } from '@/hooks/useUpcomingEvents';
 
 // temporary logic idk how we're calculating level lol
 function calculateLevel(experience: number): number {
@@ -76,6 +77,8 @@ export function useProfile() {
     isLoading: volunteerLoading,
     refetch: refetchVolunteer,
   } = useCurrentVolunteer();
+  const { data: qUpcomingEvents, refetch: refetchUpcomingEvents } =
+    useUpcomingEvents(user?.entityId);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [volunteer, setVolunteer] = useState<Volunteer | null>(null);
@@ -93,16 +96,17 @@ export function useProfile() {
       } else {
         setLoading(true);
       }
-      // Ensure we have latest volunteer (React Query)
-      const [vResult, eventsData, pastEventsData] = await Promise.all([
+      // Ensure we have latest volunteer and upcoming events (React Query)
+      const [vResult, uResult, pastEventsData] = await Promise.all([
         refetchVolunteer(),
-        profileService.getUpcomingEvents(user.entityId),
+        refetchUpcomingEvents(),
         profileService.getPastEvents(user.entityId),
       ]);
 
       const v = vResult.data ?? qVolunteer ?? null;
       setVolunteer(v);
-      setUpcomingEvents(eventsData);
+      const upcoming = uResult.data ?? qUpcomingEvents ?? [];
+      setUpcomingEvents(upcoming);
 
       if (!v) {
         setProfileData(null);
@@ -122,7 +126,7 @@ export function useProfile() {
 
       setProfileData({
         volunteer: v,
-        upcomingEvents: eventsData,
+        upcomingEvents: upcoming,
         stats,
       });
     } catch (error) {
@@ -155,6 +159,7 @@ export function useProfile() {
     qVolunteer?.firstName,
     qVolunteer?.lastName,
     qVolunteer?.experience,
+    qUpcomingEvents?.length,
   ]);
 
   return {

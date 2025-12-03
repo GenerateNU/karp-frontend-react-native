@@ -11,7 +11,12 @@ import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { RegistrationStatus } from '@/types/api/registration';
 import { eventService } from '@/services/eventService';
-import { getEventsByVolunteer } from '@/services/registrationService';
+import {
+  getEventsByVolunteer,
+  getEventRegistrations,
+  unregister as unregisterRegistration,
+} from '@/services/registrationService';
+import { useQueryClient } from '@tanstack/react-query';
 import { BackHeader } from '@/components/common/BackHeader';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
@@ -19,10 +24,12 @@ export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
   const router = useRouter();
   const { isAuthenticated, isGuest, clearGuestMode, volunteer } = useAuth();
+  const queryClient = useQueryClient();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
   const [isRegistered, setIsRegistered] = useState(false);
+  const [unregistering, setUnregistering] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated && !isGuest) {
@@ -80,6 +87,33 @@ export default function EventSignUpPage() {
     router.push('/login');
   };
 
+  const handleUnregister = async () => {
+    if (!event?.id || !volunteer?.id) return;
+    try {
+      setUnregistering(true);
+      const registrations = await getEventRegistrations(event.id);
+      const myRegistration = registrations.find(
+        r => r.volunteerId === volunteer.id
+      );
+      if (!myRegistration) {
+        setMessage("We couldn't find your registration for this event.");
+        return;
+      }
+      await unregisterRegistration(myRegistration.id);
+      setIsRegistered(false);
+      setMessage('You have been unregistered from this event.');
+      // Invalidate upcoming events for this volunteer, so profile refreshes
+      await queryClient.invalidateQueries({
+        queryKey: ['registration', 'events', volunteer.id, 'upcoming'],
+      });
+    } catch (err) {
+      console.log(err);
+      setMessage('Failed to unregister. Please try again.');
+    } finally {
+      setUnregistering(false);
+    }
+  };
+
   if (loading) {
     return <LoadingScreen text="Loading event info details..." />;
   }
@@ -101,9 +135,12 @@ export default function EventSignUpPage() {
                   disabled={false}
                 />
               ) : (
-                <ThemedText style={styles.alreadySignedUpText}>
-                  You are already signed up for this event.
-                </ThemedText>
+                <Button
+                  text="UNREGISTER"
+                  onPress={handleUnregister}
+                  loading={unregistering}
+                  disabled={unregistering}
+                />
               )}
 
               {message ? (
@@ -152,8 +189,5 @@ const styles = StyleSheet.create({
   signUpLink: {
     color: Colors.light.text,
     textDecorationLine: 'underline',
-  },
-  alreadySignedUpText: {
-    color: Colors.light.text,
   },
 });

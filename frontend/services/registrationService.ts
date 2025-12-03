@@ -10,6 +10,13 @@ export async function createRegistration(
   return response.data;
 }
 
+export async function getEventRegistrations(
+  eventId: string
+): Promise<Registration[]> {
+  const response = await api.get(`/registration/event-volunteers/${eventId}`);
+  return response.data;
+}
+
 export async function getEventsByVolunteer(
   volunteerId: string,
   status?: RegistrationStatus
@@ -33,4 +40,11 @@ export async function checkOut(
   await api.put(`/registration/${eventId}/check-out`, null, {
     params: { qr_token: qrToken },
   });
+}
+
+export async function unregister(
+  registrationId: string
+): Promise<Registration> {
+  const response = await api.put(`/registration/unregister/${registrationId}`);
+  return response.data;
 }
