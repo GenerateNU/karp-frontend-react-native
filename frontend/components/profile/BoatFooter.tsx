@@ -1,26 +1,12 @@
-import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const FOOTER_HEIGHT = 100;
 export { FOOTER_HEIGHT };
 
 export function BoatFooter() {
-  let tabBarHeight = 0;
-
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    tabBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    console.log(e);
-    tabBarHeight = 0;
-  }
-
-  const bottomOffset = tabBarHeight - 150;
-
   return (
-    <View style={[styles.container, { bottom: bottomOffset }]}>
+    <View style={[styles.container, { bottom: -150 }]}>
       <Image
         source={require('@/assets/images/boat-footer.png')}
         style={styles.image}

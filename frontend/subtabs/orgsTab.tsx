@@ -18,7 +18,6 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { OrgSelect } from '@/components/OrgSelect';
 import { useLocation } from '@/context/LocationContext';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 export default function OrgsScreen() {
   const { locationFilter } = useLocation();
@@ -33,15 +32,6 @@ export default function OrgsScreen() {
   //   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
   // const router = useRouter();
   // const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  let tabBarHeight = 0;
-
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    tabBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    console.log(e);
-    tabBarHeight = 80;
-  }
 
   const loadOrganizations = useCallback(
     async (searchQuery?: string, filters?: OrgFilters) => {
@@ -147,7 +137,7 @@ export default function OrgsScreen() {
               />
             }
             ListEmptyComponent={renderEmptyState}
-            contentContainerStyle={{ paddingBottom: tabBarHeight }}
+            contentContainerStyle={{ paddingBottom: 80 }}
           />
         )}
       </View>

@@ -25,7 +25,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLocation } from '@/context/LocationContext';
 import { useAuth } from '@/context/AuthContext';
 import { useEventFilters } from '@/context/EventFiltersContext';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Colors } from '@/constants/Colors';
 
 const SORT_LABELS: Record<EventSortOption, string> = {
@@ -45,15 +44,6 @@ export default function EventsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  let tabBarHeight = 0;
-
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    tabBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    console.log(e);
-    tabBarHeight = 75;
-  }
 
   const loadEvents = useCallback(
     async (searchQuery?: string, filters?: EventFilters) => {
@@ -267,7 +257,7 @@ export default function EventsScreen() {
                 />
               }
               ListEmptyComponent={renderEmptyState}
-              contentContainerStyle={{ paddingBottom: tabBarHeight }}
+              contentContainerStyle={{ paddingBottom: 75 }}
             />
           )}
         </>

@@ -32,7 +32,6 @@ import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
 import { Volunteer } from '@/types/api/volunteer';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 type SearchCategory = 'items' | 'vendors';
 
@@ -62,15 +61,6 @@ export default function StoreScreen() {
   const router = useRouter();
   const { user } = useAuth();
   const { locationFilter, clearLocationFilter } = useLocation();
-  let tabBarHeight = 0;
-
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    tabBarHeight = useBottomTabBarHeight();
-  } catch (e) {
-    console.log(e);
-    tabBarHeight = 110;
-  }
 
   const mapItemsWithVendors = useCallback(
     (itemsResponse: any[], vendorsResponse: Vendor[]): ShopItem[] => {
@@ -355,7 +345,7 @@ export default function StoreScreen() {
           lightColor={Colors.light.transparent}
           darkColor={Colors.light.transparent}
           className="flex-1 px-4"
-          style={{ paddingBottom: tabBarHeight }}
+          style={{ paddingBottom: 110 }}
         >
           <SearchInputWithFilter
             value={searchText}
