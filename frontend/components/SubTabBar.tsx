@@ -8,25 +8,26 @@ interface SubTabBarProps {
 
 export default function SubTabBar({ activeTab, onChange }: SubTabBarProps) {
   return (
-    <View className="flex-row justify-around bg-white p-3 shadow">
-      <Pressable onPress={() => onChange('events')}>
-        <Text
-          className={`text-base font-semibold ${
-            activeTab === 'events' ? 'text-blue-600' : 'text-gray-500'
-          }`}
+    <View className="inline-flex flex-row items-center justify-center self-stretch">
+      <Pressable
+        className="relative h-14 w-1/2"
+        onPress={() => onChange('events')}
+      >
+        <View
+          className={`absolute left-0 top-0 h-14 w-full items-center justify-center rounded-tl-[10px] rounded-tr-[10px] border-b border-indigo-950 ${activeTab === 'events' ? 'bg-sky-300' : 'bg-white'}`}
         >
-          Events
-        </Text>
+          <Text className="text-base font-bold text-indigo-950">Events</Text>
+        </View>
       </Pressable>
-
-      <Pressable onPress={() => onChange('orgs')}>
-        <Text
-          className={`text-base font-semibold ${
-            activeTab === 'orgs' ? 'text-blue-600' : 'text-gray-500'
-          }`}
+      <Pressable
+        className="relative h-14 w-1/2"
+        onPress={() => onChange('orgs')}
+      >
+        <View
+          className={`absolute left-0 top-0 h-14 w-full items-center justify-center rounded-tl-[10px] rounded-tr-[10px] border-b border-indigo-950 ${activeTab === 'orgs' ? 'bg-sky-300' : 'bg-white'}`}
         >
-          Orgs
-        </Text>
+          <Text className="text-base font-bold text-indigo-950">Orgs</Text>
+        </View>
       </Pressable>
     </View>
   );
