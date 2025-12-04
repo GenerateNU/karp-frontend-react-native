@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { Image } from 'expo-image';
 import { imageService } from '@/services/imageService';
 import { orgService } from '@/services/organizationService';
-import { Ionicons } from '@expo/vector-icons';
 
 interface Props extends Event {
   registeredCount?: number;
-  onShare?: () => void;
   showCancelButton?: boolean;
   onCancelSignUp?: () => void;
   cancelLoading?: boolean;
@@ -28,7 +25,6 @@ export default function EventInfoTable({
   registeredCount = 0,
   imageS3Key,
   coins,
-  onShare,
   showCancelButton = false,
   onCancelSignUp,
   cancelLoading = false,
@@ -122,9 +118,6 @@ export default function EventInfoTable({
       {/* Title Row */}
       <View style={styles.titleRow}>
         <Text style={styles.title}>{name}</Text>
-        <Pressable style={styles.shareButton} onPress={onShare}>
-          <Ionicons name="share-outline" size={24} color="#1D0F48" />
-        </Pressable>
       </View>
 
       {/* Coins Badge + Cancel Button Row */}
@@ -214,9 +207,6 @@ const styles = StyleSheet.create({
     lineHeight: 60,
     color: '#1D0F48',
   },
-  shareButton: {
-    padding: 8,
-  },
   coinsRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -261,13 +251,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#1D0F48',
-  },
-  slotsValue: {
-    fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '400',
-    color: '#1D0F48',
-    marginTop: 2,
   },
   descriptionSection: {
     paddingHorizontal: 24,
