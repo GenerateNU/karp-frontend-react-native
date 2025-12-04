@@ -100,6 +100,7 @@ export default function LoginScreen() {
             onPress={handleSubmit}
             text={isLoading ? 'Signing in…' : 'Sign In'}
             style={styles.signUpFlowButton}
+            textStyle={styles.signInButtonText}
             disabled={isLoading}
           />
 
@@ -188,6 +189,9 @@ const styles = StyleSheet.create({
   },
   signUpFlowButton: {
     width: '100%',
+  },
+  signInButtonText: {
+    fontFamily: Fonts.bold_700,
   },
   forgotPasswordContainer: {
     alignSelf: 'flex-end',
