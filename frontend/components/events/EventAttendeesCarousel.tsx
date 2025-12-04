@@ -1,18 +1,15 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { useEventVolunteers } from '@/hooks/useEventVolunteers';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
 import { Colors } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
 import { useRouter } from 'expo-router';
 
 interface EventAttendeesCarouselProps {
   eventId: string;
 }
 
-export function EventAttendeesCarousel({
-  eventId,
-}: EventAttendeesCarouselProps) {
+export function EventAttendeesCarousel({ eventId }: EventAttendeesCarouselProps) {
   const router = useRouter();
   const { volunteers, loading } = useEventVolunteers(eventId);
 
@@ -20,7 +17,9 @@ export function EventAttendeesCarousel({
     return (
       <View style={styles.container}>
         <Text style={styles.title}>See who is attending:</Text>
-        <Text style={styles.loadingText}>Loading...</Text>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="small" color="#1D0F48" />
+        </View>
       </View>
     );
   }
@@ -28,31 +27,33 @@ export function EventAttendeesCarousel({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>See who is attending:</Text>
-      <ScrollView
-        horizontal
+      <ScrollView 
+        horizontal 
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {volunteers.map(item => (
+        {volunteers.map((item) => (
           <Pressable
             key={item.registration.id}
-            style={styles.attendeeCard}
+            style={[styles.attendeeCard, { marginRight: 20 }]}
             onPress={() => {
               if (item.volunteer?.id) {
                 router.push(`/profile/${item.volunteer.id}`);
               }
             }}
           >
-            <ProfileAvatar
-              firstName={item.volunteer?.firstName || 'Unknown'}
-              lastName={item.volunteer?.lastName || 'User'}
-              size={64}
-              volunteerId={item.volunteer?.id}
-            />
-            <Text style={styles.attendeeName} numberOfLines={2}>
-              {item.volunteer
+            <View style={styles.avatarContainer}>
+              <ProfileAvatar
+                firstName={item.volunteer?.firstName || 'Unknown'}
+                lastName={item.volunteer?.lastName || 'User'}
+                size={56}
+                volunteerId={item.volunteer?.id}
+              />
+            </View>
+            <Text style={styles.attendeeName} numberOfLines={2} ellipsizeMode="tail">
+              {item.volunteer 
                 ? `${item.volunteer.firstName} ${item.volunteer.lastName}`
-                : 'Unknown'}
+                : 'John Doe'}
             </Text>
           </Pressable>
         ))}
@@ -62,34 +63,56 @@ export function EventAttendeesCarousel({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginVertical: 16,
-  },
-  title: {
-    fontFamily: Fonts.regular_400,
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 12,
-  },
-  scrollContent: {
-    paddingRight: 16,
-    gap: 12,
-  },
-  attendeeCard: {
-    alignItems: 'center',
-    width: 80,
-  },
-  attendeeName: {
-    fontFamily: Fonts.light_300,
-    fontSize: 12,
-    color: Colors.light.text,
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  loadingText: {
-    fontFamily: Fonts.light_300,
-    fontSize: 14,
-    color: Colors.light.textSecondary,
-  },
+    container: {
+        marginBottom: 24,
+    },
+    title: {
+        fontFamily: 'Inter',
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#1D0F48',
+        marginBottom: 16,
+    },
+    loadingContainer: {
+        height: 160,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    scrollContent: {
+        paddingRight: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    attendeeCard: {
+        width: 100,
+        height: 128,
+        backgroundColor: '#FFEAC7',
+        borderRadius: 8,
+        paddingTop: 12,
+        paddingHorizontal: 8,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
+    avatarContainer: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 8,
+        backgroundColor: 'transparent',
+    },
+    attendeeName: {
+        fontFamily: 'Inter',
+        fontSize: 14,
+        fontWeight: '400',
+        color: '#000000',
+        textAlign: 'center',
+        lineHeight: 16,
+        width: '100%',
+        paddingHorizontal: 4,
+        flexWrap: 'wrap',
+        flexShrink: 1,
+    },
 });
