@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
     backgroundColor: 'transparent',
+    pointerEvents: 'none',
     zIndex: 1,
   },
   image: {
