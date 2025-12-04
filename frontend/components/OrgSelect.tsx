@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState , useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,17 @@ import {
   ScrollView,
   Image,
   Share,
+  FlatList,
 } from 'react-native';
+import { PageBackground } from './common/PageBackground';
 import { Ionicons } from '@expo/vector-icons';
 import { Organization } from '@/types/api/organization';
 import { Calendar } from '@/components/Calendar';
 import { eventService } from '@/services/eventService';
 import { Event } from '@/types/api/event';
 import { imageService } from '@/services/imageService';
+import { useRouter } from 'expo-router';
+import { EventCard } from './EventCard';
 
 interface OrgSelectProps {
   visible: boolean;
@@ -22,6 +26,7 @@ interface OrgSelectProps {
 }
 
 function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
+  const router = useRouter();
   const [orgEvents, setOrgEvents] = useState<Event[]>([]);
   const [eventsLoading, setEventsLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -30,6 +35,8 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
   const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
     null
   );
+
+  const [showFullCalendar, setShowFullCalendar] = useState(false); // ⭐ ADDED
 
   useEffect(() => {
     const fetchOrgEvents = async () => {
@@ -40,7 +47,6 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
           organization.id
         );
         setOrgEvents(events || []);
-        // Initialize selectedDate to today if it has events, else first event date
         const todayKey = new Date().toISOString().slice(0, 10);
         const hasToday = (events || []).some(
           ev =>
@@ -73,9 +79,7 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
           organization.id
         );
         setImagePreSignedUrl(url);
-      } catch {
-        // ignore if not found
-      }
+      } catch {}
     }
     if (visible) fetchImage();
   }, [visible, organization?.id]);
@@ -99,25 +103,30 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
     );
   }, [orgEvents, selectedDate]);
 
+  const handleEventPress = useCallback((event: Event) => {
+    console.log('Event pressed:', event);
+    console.log('Navigating to event details for ID:', event.id);
+    onClose();
+    setShowFullCalendar(false);
+    router.push(`/events/${event.id}/info`);
+  }, []);
+
+  const renderEvent = ({ item }: { item: Event }) => (
+    console.log('Rendering event:', item),
+    (<EventCard event={item} onPress={handleEventPress} />)
+  );
+
   const handleShare = async () => {
     try {
-      const shareContent = {
+      await Share.share({
         message: `Check out ${organization?.name}! ${organization?.description || ''}`,
         title: organization?.name,
         url: 'https://www.google.com/search?q=' + organization?.name,
-      };
-
-      await Share.share(shareContent);
+      });
     } catch (error) {
       console.error('Error sharing:', error);
     }
   };
-
-  const formatTime = (iso: string) =>
-    new Date(iso).toLocaleTimeString([], {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
 
   const formatDateHeading = (key: string) =>
     new Date(key + 'T00:00:00').toLocaleDateString([], {
@@ -136,172 +145,181 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View className="flex-1 bg-white">
-        <ScrollView className="flex-1">
-          <View className="border-b border-gray-200 px-5 pb-3 pt-4">
-            <View className="mb-3 h-80 overflow-hidden rounded-xl bg-gray-100">
-              {imagePreSignedUrl ? (
-                <Image
-                  source={{ uri: imagePreSignedUrl }}
-                  className="h-full w-full"
-                  resizeMode="cover"
+      <PageBackground type="fishes" style={{ flex: 1 }} contentPosition="top">
+        {/* full calendar of events */}
+        {showFullCalendar ? (
+          <View className="flex-1 px-5 pt-5">
+            <Pressable
+              className="mb-4 flex-row items-center"
+              onPress={() => setShowFullCalendar(false)}
+            >
+              <Ionicons name="arrow-back" size={24} />
+              <Text className="ml-2 text-lg font-medium">Back</Text>
+            </Pressable>
+
+            <Text className="font-ubuntu mb-4 text-center text-3xl font-bold text-gray-900">
+              Event Dates:
+            </Text>
+
+            <Calendar
+              onDayPress={d => setSelectedDate(d.dateString)}
+              markedDates={markedDates}
+            />
+
+            <View className="mt-6 flex-1 border-t border-gray-200 pt-4">
+              <Text className="mb-3 text-xl font-semibold text-gray-900">
+                {formatDateHeading(selectedDate)}
+              </Text>
+
+              {eventsLoading ? (
+                <Text className="text-base text-gray-600">Loading events…</Text>
+              ) : filteredEvents.length === 0 ? (
+                <Text className="text-base text-gray-600">
+                  No events on this day.
+                </Text>
+              ) : (
+                <FlatList
+                  data={filteredEvents}
+                  keyExtractor={ev => ev.id.toString()}
+                  style={{ flexGrow: 1 }}
+                  nestedScrollEnabled
+                  contentContainerStyle={{ paddingBottom: 16 }}
+                  renderItem={renderEvent}
                 />
-              ) : null}
-            </View>
-            <View className="flex-row items-center justify-between">
-              <Text
-                numberOfLines={2}
-                style={{
-                  color: '#1D0F48',
-                  fontFamily: 'Ubuntu',
-                  fontSize: 48,
-                  fontWeight: '700',
-                  lineHeight: 60,
-                }}
-              >
-                {organization.name}
-              </Text>
-              <Pressable
-                className="rounded-lg border border-gray-300 p-2"
-                onPress={handleShare}
-              >
-                <Ionicons name="share-outline" size={20} color="#4B5563" />
-              </Pressable>
+              )}
             </View>
           </View>
+        ) : (
+          /* Org info */
+          <>
+            <ScrollView className="flex-1">
+              <View className="border-b border-gray-200 px-5 pb-3 pt-4">
+                <View className="mb-3 h-80 overflow-hidden rounded-xl bg-gray-100">
+                  {imagePreSignedUrl ? (
+                    <Image
+                      source={{ uri: imagePreSignedUrl }}
+                      className="h-full w-full"
+                      resizeMode="cover"
+                    />
+                  ) : null}
+                </View>
 
-          <View className="px-5">
-            <View className="mt-5">
-              <Text
-                style={{
-                  marginBottom: 8, // mb-2
-                  fontSize: 18, // text-[18px]
-                  lineHeight: 19, // leading-[19px]
-                  fontWeight: '700', // font-bold
-                  color: '#1D0F48', // text-font-color
-                  fontFamily: 'Inter', // font-inter
-                }}
-              >
-                About Us:
-              </Text>
-              <Text
-                style={{
-                  marginBottom: 8, // mb-2
-                  fontSize: 16, // text-[18px]
-                  lineHeight: 19, // leading-[19px]
-                  color: '#1D0F48', // text-font-color
-                  fontFamily: 'Inter', // font-inter
-                }}
-              >
-                {organization.description || 'No description provided.'}
-              </Text>
-            </View>
-
-            {(organization as any).website ? (
-              <View className="mt-4">
-                <Text className="text-base font-medium text-gray-900">
-                  Website: {(organization as any).website}
-                </Text>
-              </View>
-            ) : null}
-
-            <View className="mt-4">
-              {(organization as any).pointOfContact ? (
-                <Text className="mb-1 text-base font-medium text-gray-900">
-                  Point of Contact: {(organization as any).pointOfContact}
-                </Text>
-              ) : null}
-              <Text
-                style={{
-                  marginBottom: 8, // mb-2
-                  fontSize: 18, // text-[18px]
-                  lineHeight: 19, // leading-[19px]
-                  fontWeight: '700', // font-bold
-                  color: '#1D0F48', // text-font-color
-                  fontFamily: 'Inter', // font-inter
-                }}
-              >
-                Location:
-              </Text>
-              <Text
-                style={{
-                  marginBottom: 8, // mb-2
-                  fontSize: 16, // text-[18px]
-                  lineHeight: 19, // leading-[19px]
-                  color: '#1D0F48', // text-font-color
-                  fontFamily: 'Inter', // font-inter
-                }}
-              >
-                {organization.address}
-              </Text>
-            </View>
-
-            <View className="mt-8">
-              <Text className="mb-3 text-xl font-bold text-gray-900">
-                Upcoming Events:
-              </Text>
-              <Calendar
-                onDayPress={d => setSelectedDate(d.dateString)}
-                markedDates={markedDates}
-              />
-
-              <View className="mt-6 border-t border-gray-200 pt-4">
-                <Text className="mb-3 text-lg font-semibold text-gray-900">
-                  {formatDateHeading(selectedDate)}
-                </Text>
-                {eventsLoading ? (
-                  <Text className="text-base text-gray-600">
-                    Loading events…
+                <View className="flex-row items-center justify-between">
+                  <Text
+                    numberOfLines={2}
+                    style={{
+                      color: '#1D0F48',
+                      fontFamily: 'Ubuntu',
+                      fontSize: 48,
+                      fontWeight: '700',
+                      lineHeight: 60,
+                    }}
+                  >
+                    {organization.name}
                   </Text>
-                ) : filteredEvents.length === 0 ? (
-                  <Text className="text-base text-gray-600">
-                    No events on this day for this organization.
-                  </Text>
-                ) : (
-                  filteredEvents.map(ev => (
-                    <View
-                      key={ev.id}
-                      className="mb-4 flex-row items-start gap-3"
-                    >
-                      <View className="h-8 w-16 rounded-md bg-gray-300" />
-                      <View className="flex-1">
-                        <Text className="text-base font-medium text-gray-900">
-                          {ev.name}
-                        </Text>
-                        <Text className="mt-2 text-xs text-gray-600">
-                          Times:
-                        </Text>
-                        <View className="mt-1 flex-row flex-wrap gap-2">
-                          {[
-                            `${formatTime(ev.startDateTime)}`,
-                            `${formatTime(ev.endDateTime)}`,
-                          ].map((t, idx) => (
-                            <View
-                              key={`${ev.id}-${idx}`}
-                              className="rounded-md border border-gray-300 px-3 py-1"
-                            >
-                              <Text className="text-xs text-gray-700">{t}</Text>
-                            </View>
-                          ))}
-                        </View>
-                      </View>
-                    </View>
-                  ))
-                )}
-              </View>
-            </View>
-          </View>
-        </ScrollView>
 
+                  <Pressable
+                    className="rounded-lg border border-gray-300 p-2"
+                    onPress={handleShare}
+                  >
+                    <Ionicons name="share-outline" size={20} color="#4B5563" />
+                  </Pressable>
+                </View>
+              </View>
+
+              <View className="px-5">
+                <View className="mt-5">
+                  <Text
+                    style={{
+                      marginBottom: 8,
+                      fontSize: 18,
+                      lineHeight: 19,
+                      fontWeight: '700',
+                      color: '#1D0F48',
+                      fontFamily: 'Inter',
+                    }}
+                  >
+                    About Us:
+                  </Text>
+                  <Text
+                    style={{
+                      marginBottom: 8,
+                      fontSize: 16,
+                      lineHeight: 19,
+                      color: '#1D0F48',
+                      fontFamily: 'Inter',
+                    }}
+                  >
+                    {organization.description || 'No description provided.'}
+                  </Text>
+                </View>
+
+                {(organization as any).website ? (
+                  <View className="mt-4">
+                    <Text className="text-base font-medium text-gray-900">
+                      Website: {(organization as any).website}
+                    </Text>
+                  </View>
+                ) : null}
+
+                <View className="mt-4">
+                  {(organization as any).pointOfContact ? (
+                    <Text className="mb-1 text-base font-medium text-gray-900">
+                      Point of Contact: {(organization as any).pointOfContact}
+                    </Text>
+                  ) : null}
+
+                  <Text
+                    style={{
+                      marginBottom: 8,
+                      fontSize: 18,
+                      lineHeight: 19,
+                      fontWeight: '700',
+                      color: '#1D0F48',
+                      fontFamily: 'Inter',
+                    }}
+                  >
+                    Location:
+                  </Text>
+                  <Text
+                    style={{
+                      marginBottom: 8,
+                      fontSize: 16,
+                      lineHeight: 19,
+                      color: '#1D0F48',
+                      fontFamily: 'Inter',
+                    }}
+                  >
+                    {organization.address}
+                  </Text>
+                </View>
+
+                <View className="mt-8">
+                  <Pressable
+                    className="rounded-lg bg-blue-600 px-4 py-3"
+                    onPress={() => setShowFullCalendar(true)}
+                  >
+                    <Text className="text-center font-semibold text-white">
+                      Events Calendar
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </ScrollView>
+          </>
+        )}
         <View className="border-t border-gray-200 px-5 py-4">
           <Pressable
             className="items-center rounded-lg bg-gray-900 py-3"
-            onPress={onClose}
+            onPress={() => {
+              onClose();
+              setShowFullCalendar(false);
+            }}
           >
             <Text className="text-base font-semibold text-white">Close</Text>
           </Pressable>
         </View>
-      </View>
+      </PageBackground>
     </Modal>
   );
 }

@@ -89,11 +89,6 @@ export default function EventsScreen() {
     console.log('Event pressed:', event);
     console.log('Navigating to event details for ID:', event.id);
     router.push(`/events/${event.id}/info`);
-    // Alert.alert(
-    //   event.name,
-    //   `Status: ${event.status}\n\nStart: ${new Date(event.start_date_time).toLocaleString()}\nEnd: ${new Date(event.end_date_time).toLocaleString()}\nLocation: ${event.location || event.address}\nMax Volunteers: ${event.max_volunteers}\nCoins: ${event.coins}`,
-    //   [{ text: 'OK' }]
-    // );
   }, []);
 
   useEffect(() => {
@@ -119,41 +114,6 @@ export default function EventsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="px-4 pb-2 pt-4">
-        {/* <View className="mb-4 flex-row rounded-lg bg-gray-100 p-1">
-          <Pressable
-            className={`flex-1 items-center rounded-md px-4 py-2 ${
-              activeTab === 'events' ? 'bg-white shadow-sm' : ''
-            }`}
-            onPress={() => setActiveTab('events')}
-          >
-            <Text
-              className={`text-base font-medium ${
-                activeTab === 'events'
-                  ? 'font-semibold text-gray-900'
-                  : 'text-gray-600'
-              }`}
-            >
-              Events
-            </Text>
-          </Pressable>
-          <Pressable
-            className={`flex-1 items-center rounded-md px-4 py-2 ${
-              activeTab === 'orgs' ? 'bg-white shadow-sm' : ''
-            }`}
-            onPress={() => setActiveTab('orgs')}
-          >
-            <Text
-              className={`text-base font-medium ${
-                activeTab === 'orgs'
-                  ? 'font-semibold text-gray-900'
-                  : 'text-gray-600'
-              }`}
-            >
-              Orgs
-            </Text>
-          </Pressable>
-        </View> */}
-
         <View className="mb-2">
           <View className="flex-row items-center rounded-lg bg-gray-50 px-3 py-2">
             <Ionicons

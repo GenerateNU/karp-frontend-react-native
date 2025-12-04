@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { Fonts } from '@/constants/Fonts';
 import { Image } from 'expo-image';
 import { imageService } from '@/services/imageService';
