@@ -45,7 +45,15 @@ export default function EventsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const tabBarHeight = useBottomTabBarHeight();
+  let tabBarHeight = 0;
+
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    tabBarHeight = useBottomTabBarHeight();
+  } catch (e) {
+    console.log(e);
+    tabBarHeight = 75;
+  }
 
   const loadEvents = useCallback(
     async (searchQuery?: string, filters?: EventFilters) => {
@@ -259,7 +267,7 @@ export default function EventsScreen() {
                 />
               }
               ListEmptyComponent={renderEmptyState}
-              contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
+              contentContainerStyle={{ paddingBottom: tabBarHeight }}
             />
           )}
         </>

@@ -33,7 +33,15 @@ export default function OrgsScreen() {
   //   const [activeTab, setActiveTab] = useState<'events' | 'orgs'>('events');
   // const router = useRouter();
   // const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const tabBarHeight = useBottomTabBarHeight();
+  let tabBarHeight = 0;
+
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    tabBarHeight = useBottomTabBarHeight();
+  } catch (e) {
+    console.log(e);
+    tabBarHeight = 80;
+  }
 
   const loadOrganizations = useCallback(
     async (searchQuery?: string, filters?: OrgFilters) => {

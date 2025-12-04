@@ -17,7 +17,7 @@ export function BoatFooter() {
     tabBarHeight = 0;
   }
 
-  const bottomOffset = tabBarHeight - 250;
+  const bottomOffset = tabBarHeight - 150;
 
   return (
     <View style={[styles.container, { bottom: bottomOffset }]}>
