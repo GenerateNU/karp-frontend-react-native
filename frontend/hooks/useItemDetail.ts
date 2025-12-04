@@ -28,7 +28,7 @@ export function useItemDetail(itemId: string) {
 
       try {
         const [itemData, volunteerData, orders] = await Promise.all([
-          itemService.getItem(itemId),
+          itemService.getItem(itemId, token),
           volunteerService.getVolunteer(user.entityId),
           orderService.getVolunteerOrders(user.entityId),
         ]);
@@ -63,7 +63,7 @@ export function useItemDetail(itemId: string) {
     if (userCoins < item.price) {
       Alert.alert(
         'Insufficient Funds',
-        'Not enough coins? Sign up for more events'
+        'Not enough koins? Sign up for more events'
       );
       return;
     }

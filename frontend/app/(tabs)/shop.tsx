@@ -1,12 +1,19 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   FlatList,
   Alert,
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
+import { debounce, trim, toLower } from 'lodash';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import CarouselItem from '@/components/items/CarouselItem';
@@ -19,11 +26,14 @@ import { useProfile } from '@/hooks/useProfile';
 import { useLocation } from '@/context/LocationContext';
 import { itemService } from '@/services/itemService';
 import { volunteerService } from '@/services/volunteerService';
+import { vendorService, Vendor } from '@/services/vendorService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
 import { Volunteer } from '@/types/api/volunteer';
+
+type SearchCategory = 'items' | 'vendors';
 
 export interface ItemFilters {
   priceRange: { min: number; max: number };
@@ -32,6 +42,9 @@ export interface ItemFilters {
 
 export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
+  const [debouncedSearchText, setDebouncedSearchText] = useState('');
+  const [selectedCategory, setSelectedCategory] =
+    useState<SearchCategory>('items');
   const [items, setItems] = useState<ShopItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -49,22 +62,14 @@ export default function StoreScreen() {
   const { user } = useAuth();
   const { locationFilter, clearLocationFilter } = useLocation();
 
-  const loadItems = useCallback(async () => {
-    try {
-      setLoading(true);
-      const filters = searchText ? { search_text: searchText } : undefined;
-
-      // Debug logging
-      console.log('Loading items with filters:', {
-        searchText,
-        locationFilter,
-        filters,
+  const mapItemsWithVendors = useCallback(
+    (itemsResponse: any[], vendorsResponse: Vendor[]): ShopItem[] => {
+      const vendorMap = new Map<string, string>();
+      vendorsResponse.forEach((vendor: Vendor) => {
+        vendorMap.set(vendor.id, vendor.name);
       });
 
-      const response = await itemService.getAllItems(filters, locationFilter);
-      console.log('Items response:', response);
-
-      const mapped: ShopItem[] = (Array.isArray(response) ? response : []).map(
+      return (Array.isArray(itemsResponse) ? itemsResponse : []).map(
         (raw: {
           id: string;
           name?: string;
@@ -72,15 +77,80 @@ export default function StoreScreen() {
           vendorId?: string;
           price?: number;
           imageS3Key?: string;
-        }) => ({
-          id: raw.id,
-          name: raw.name ?? 'Unnamed',
-          store: raw.vendorName ?? raw.vendorId ?? 'Unknown',
-          coins: raw.price ?? 0,
-          imageS3Key: raw.imageS3Key || undefined,
-          vendorId: raw.vendorId,
-        })
+        }) => {
+          // Get vendor name from the map, fallback to raw.vendorName, then vendorId, then 'Unknown'
+          const vendorName =
+            raw.vendorId && vendorMap.has(raw.vendorId)
+              ? vendorMap.get(raw.vendorId)!
+              : (raw.vendorName ?? raw.vendorId ?? 'Unknown');
+
+          return {
+            id: raw.id,
+            name: raw.name ?? 'Unnamed',
+            store: vendorName,
+            coins: raw.price ?? 0,
+            imageS3Key: raw.imageS3Key || undefined,
+            vendorId: raw.vendorId,
+          };
+        }
       );
+    },
+    []
+  );
+
+  // Load items with search (background, no loading state to prevent reload)
+  const loadItemsWithSearch = useCallback(
+    async (searchQuery: string, category: SearchCategory) => {
+      try {
+        // Build search filter - use vendor_search for vendors, search_text for items
+        const apiFilters =
+          category === 'vendors'
+            ? { vendor_search: searchQuery }
+            : { search_text: searchQuery };
+
+        const [itemsResponse, vendorsResponse] = await Promise.all([
+          itemService.getAllItems(apiFilters, locationFilter),
+          vendorService.getAllVendors(),
+        ]);
+
+        const mapped = mapItemsWithVendors(itemsResponse, vendorsResponse);
+        setItems(mapped);
+        console.log('Filtered items loaded:', mapped.length);
+      } catch (e) {
+        console.error('Error loading filtered items:', e);
+        // Don't show alert for search errors, just log
+      }
+    },
+    [locationFilter, mapItemsWithVendors]
+  );
+
+  // Load all items without search (background, no loading state)
+  const loadAllItems = useCallback(async () => {
+    try {
+      const [itemsResponse, vendorsResponse] = await Promise.all([
+        itemService.getAllItems(undefined, locationFilter),
+        vendorService.getAllVendors(),
+      ]);
+
+      const mapped = mapItemsWithVendors(itemsResponse, vendorsResponse);
+      setItems(mapped);
+      console.log('All items loaded:', mapped.length);
+    } catch (e) {
+      console.error('Error loading items:', e);
+      // Don't show alert for background loads, just log
+    }
+  }, [locationFilter, mapItemsWithVendors]);
+
+  // Initial load and refresh (shows loading state)
+  const loadItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [itemsResponse, vendorsResponse] = await Promise.all([
+        itemService.getAllItems(undefined, locationFilter),
+        vendorService.getAllVendors(),
+      ]);
+
+      const mapped = mapItemsWithVendors(itemsResponse, vendorsResponse);
       setItems(mapped);
       console.log('Mapped items:', mapped.length, 'items loaded');
     } catch (e) {
@@ -93,10 +163,41 @@ export default function StoreScreen() {
     } finally {
       setLoading(false);
     }
-  }, [locationFilter, searchText]);
+  }, [locationFilter, mapItemsWithVendors]);
+
+  // Debounce search text for smooth filtering (600ms delay)
+  const debouncedSetSearch = useRef(
+    debounce((text: string) => {
+      setDebouncedSearchText(text);
+    }, 600)
+  ).current;
+
+  // Update debounced search when searchText changes
+  useEffect(() => {
+    debouncedSetSearch(searchText);
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [searchText, debouncedSetSearch]);
+
+  // Load items from API when debounced search text changes (background, no reload)
+  useEffect(() => {
+    if (debouncedSearchText.trim()) {
+      loadItemsWithSearch(debouncedSearchText, selectedCategory);
+    } else {
+      loadAllItems();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearchText]);
 
   useEffect(() => {
-    // Fetch current volunteer if user is available (same approach as profile page)
+    if (debouncedSearchText.trim()) {
+      loadItemsWithSearch(debouncedSearchText, selectedCategory);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory]);
+
+  useEffect(() => {
     const fetchVolunteer = async () => {
       let volunteerData: Volunteer | null = null;
       if (user?.entityId) {
@@ -115,11 +216,6 @@ export default function StoreScreen() {
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
-      // Search filter
-      const matchesSearch = item.name
-        .toLowerCase()
-        .includes(searchText.toLowerCase());
-
       // Price range filter
       const matchesPrice =
         item.coins >= filters.priceRange.min &&
@@ -130,12 +226,16 @@ export default function StoreScreen() {
         !filters.category ||
         item.name.toLowerCase().includes(filters.category.toLowerCase());
 
-      return matchesSearch && matchesPrice && matchesCategory;
+      return matchesPrice && matchesCategory;
     });
-  }, [items, searchText, filters]);
+  }, [items, filters]);
 
   const handlePress = (itemId: string) => {
     router.push(`/shop/${itemId}`);
+  };
+
+  const handleCategoryChange = (category: SearchCategory) => {
+    setSelectedCategory(category);
   };
 
   const handleApplyFilters = (newFilters: ItemFilters) => {
@@ -212,7 +312,7 @@ export default function StoreScreen() {
                   fontFamily: Fonts.medium_500,
                 }}
               >
-                {currentVolunteer?.coins ?? 0} coins
+                {currentVolunteer?.coins ?? 0} koins
               </ThemedText>
 
               <TouchableOpacity
@@ -250,6 +350,9 @@ export default function StoreScreen() {
             value={searchText}
             onChangeText={setSearchText}
             onFilterPress={() => setDrawerOpen(true)}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            onCategoryChange={handleCategoryChange}
           />
 
           {locationFilter && (

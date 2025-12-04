@@ -3,6 +3,7 @@ import { LocationFilter } from '@/types/api/location';
 
 export interface ItemFilters {
   search_text?: string;
+  vendor_search?: string;
   status?: string;
 }
 
@@ -20,6 +21,10 @@ async function getAllItems(
 
   if (filters?.search_text) {
     params.search_text = filters.search_text;
+  }
+
+  if (filters?.vendor_search) {
+    params.vendor_search = filters.vendor_search;
   }
 
   if (filters?.status) {
