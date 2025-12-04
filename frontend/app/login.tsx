@@ -56,6 +56,7 @@ export default function LoginScreen() {
         <View style={styles.logoContainer}>
           <Image
             source={require('@/assets/images/logo.svg')}
+            contentFit="contain"
             style={styles.logo}
           />
         </View>
@@ -127,11 +128,11 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: -20,
+    marginBottom: 0,
   },
   logo: {
-    width: 225,
-    height: 225,
+    width: 260,
+    height: 160,
   },
   header: {
     marginBottom: 24,

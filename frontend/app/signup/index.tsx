@@ -73,6 +73,7 @@ function SignUpCredentials() {
       <View style={styles.logoContainer}>
         <Image
           source={require('@/assets/images/logo.svg')}
+          contentFit="contain"
           style={styles.logo}
         />
       </View>
