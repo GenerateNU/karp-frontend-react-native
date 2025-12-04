@@ -18,10 +18,8 @@ interface ProfileEventCardProps {
 export function ProfileEventCard({
   event,
   onPress,
-  onCheckIn,
-  onCheckOut,
 }: ProfileEventCardProps) {
-  const [organizerName, setOrganizerName] = useState<string>('');
+  const [_, setOrganizerName] = useState<string>('');
   const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
     null
   );

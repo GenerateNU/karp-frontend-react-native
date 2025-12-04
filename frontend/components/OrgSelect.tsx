@@ -150,8 +150,14 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
             </View>
             <View className="flex-row items-center justify-between">
               <Text
-                className="text-3xl font-extrabold text-gray-900"
                 numberOfLines={2}
+                style={{
+                  color: '#1D0F48',
+                  fontFamily: 'Ubuntu',
+                  fontSize: 48,
+                  fontWeight: '700',
+                  lineHeight: 60,
+                }}
               >
                 {organization.name}
               </Text>
@@ -166,10 +172,27 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
 
           <View className="px-5">
             <View className="mt-5">
-              <Text className="mb-2 text-lg font-semibold text-gray-900">
+              <Text
+                style={{
+                  marginBottom: 8, // mb-2
+                  fontSize: 18, // text-[18px]
+                  lineHeight: 19, // leading-[19px]
+                  fontWeight: '700', // font-bold
+                  color: '#1D0F48', // text-font-color
+                  fontFamily: 'Inter', // font-inter
+                }}
+              >
                 About Us:
               </Text>
-              <Text className="text-base leading-6 text-gray-700">
+              <Text
+                style={{
+                  marginBottom: 8, // mb-2
+                  fontSize: 16, // text-[18px]
+                  lineHeight: 19, // leading-[19px]
+                  color: '#1D0F48', // text-font-color
+                  fontFamily: 'Inter', // font-inter
+                }}
+              >
                 {organization.description || 'No description provided.'}
               </Text>
             </View>
@@ -188,8 +211,28 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
                   Point of Contact: {(organization as any).pointOfContact}
                 </Text>
               ) : null}
-              <Text className="text-base font-medium text-gray-900">
-                Location: {organization.address}
+              <Text
+                style={{
+                  marginBottom: 8, // mb-2
+                  fontSize: 18, // text-[18px]
+                  lineHeight: 19, // leading-[19px]
+                  fontWeight: '700', // font-bold
+                  color: '#1D0F48', // text-font-color
+                  fontFamily: 'Inter', // font-inter
+                }}
+              >
+                Location:
+              </Text>
+              <Text
+                style={{
+                  marginBottom: 8, // mb-2
+                  fontSize: 16, // text-[18px]
+                  lineHeight: 19, // leading-[19px]
+                  color: '#1D0F48', // text-font-color
+                  fontFamily: 'Inter', // font-inter
+                }}
+              >
+                {organization.address}
               </Text>
             </View>
 
