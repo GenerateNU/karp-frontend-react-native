@@ -53,9 +53,16 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <View style={styles.container}>
+        <Image
+          source={require('@/assets/images/waves-bg.png')}
+          style={styles.headerWaves}
+          contentFit="cover"
+          pointerEvents="none"
+        />
         <View style={styles.logoContainer}>
           <Image
             source={require('@/assets/images/logo.svg')}
+            contentFit="contain"
             style={styles.logo}
           />
         </View>
@@ -67,9 +74,11 @@ export default function LoginScreen() {
           <SignUpFlowInput
             value={username}
             onChangeText={setUsername}
-            placeholder="Username"
+            placeholder="Email"
+            keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
+            style={styles.inputOverride}
           />
 
           <SignUpFlowInput
@@ -77,6 +86,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             placeholder="Password"
             secureTextEntry
+            style={styles.inputOverride}
           />
 
           <TouchableOpacity
@@ -121,30 +131,44 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.transparent,
     paddingHorizontal: 50,
-    paddingTop: 50,
+    paddingTop: '25%',
     paddingBottom: 25,
     justifyContent: 'flex-start',
   },
+  headerWaves: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 150,
+    opacity: 0.95,
+  },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: -20,
+    marginBottom: 0,
   },
   logo: {
-    width: 225,
-    height: 225,
+    width: 260,
+    height: 160,
   },
   header: {
+    marginTop: 20,
     marginBottom: 24,
     alignItems: 'center',
   },
   title: {
     fontSize: 28,
-    color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
-    alignSelf: 'flex-start',
+    color: Colors.light.primaryText,
+    fontFamily: 'Ubuntu',
+    textAlign: 'center',
   },
   form: {
     gap: 20,
+  },
+  inputOverride: {
+    height: 44,
+    borderRadius: 10,
+    borderColor: Colors.light.primaryText,
   },
   signUpContainer: {
     flexDirection: 'row',

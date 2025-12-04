@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSignUp } from '@/context/SignUpContext';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
 import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
 import { SignUpFlowInput } from '@/components/signup/SignUpFlowInput';
 
@@ -73,6 +72,7 @@ function SignUpCredentials() {
       <View style={styles.logoContainer}>
         <Image
           source={require('@/assets/images/logo.svg')}
+          contentFit="contain"
           style={styles.logo}
         />
       </View>
@@ -167,10 +167,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
+    marginTop: 20,
     fontSize: 28,
-    color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
-    alignSelf: 'flex-start',
+    color: Colors.light.primaryText,
+    fontFamily: 'Ubuntu',
+    textAlign: 'center',
   },
   form: {
     gap: 20,

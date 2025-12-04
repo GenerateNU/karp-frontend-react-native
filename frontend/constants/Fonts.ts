@@ -3,4 +3,5 @@ export const Fonts = {
   light_300: 'Inter_300Light',
   medium_500: 'Inter_500Medium',
   bold_700: 'Ubuntu_700Bold',
+  bold_700_inter: 'Inter_700Bold',
 };

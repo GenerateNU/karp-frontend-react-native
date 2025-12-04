@@ -18,7 +18,9 @@ interface ProfileEventCardProps {
 export function ProfileEventCard({
   event,
   onPress,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onCheckIn,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onCheckOut,
 }: ProfileEventCardProps) {
   const [organizerName, setOrganizerName] = useState<string>('');

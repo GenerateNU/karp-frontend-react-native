@@ -58,7 +58,6 @@ function SignUpQualifications() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>What qualifications do you have?</Text>
-        <Text style={styles.subtitle}>(optional - select all that apply)</Text>
       </View>
 
       <ScrollView
@@ -129,17 +128,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 16,
+    fontSize: 24,
     color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
+    fontFamily: Fonts.bold_700,
     textAlign: 'center',
     marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 12,
-    fontFamily: Fonts.light_300,
-    color: Colors.light.icon,
-    textAlign: 'center',
   },
   scrollView: {
     flex: 1,
