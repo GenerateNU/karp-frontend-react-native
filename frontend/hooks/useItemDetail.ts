@@ -28,7 +28,7 @@ export function useItemDetail(itemId: string) {
 
       try {
         const [itemData, volunteerData, orders] = await Promise.all([
-          itemService.getItem(itemId),
+          itemService.getItem(itemId, token),
           volunteerService.getVolunteer(user.entityId),
           orderService.getVolunteerOrders(user.entityId),
         ]);

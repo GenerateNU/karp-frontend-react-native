@@ -61,7 +61,7 @@ export default function StoreScreen() {
       const response = await itemService.getAllItems(filters, locationFilter);
 
       const [itemsResponse, vendorsResponse] = await Promise.all([
-        itemService.getAllItems(filters, locationFilter);
+        itemService.getAllItems(filters, locationFilter),
         vendorService.getAllVendors(),
       ]);
 
