@@ -25,7 +25,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { profileData, upcomingEvents, loading, refreshing, handleRefresh } =
     useProfile();
-  const { isGuest, clearGuestMode } = useAuth();
+  const { isGuest, clearGuestMode, user } = useAuth();
 
   const handleSignIn = () => {
     clearGuestMode();
@@ -92,7 +92,7 @@ export default function ProfileScreen() {
           <Text style={styles.name}>
             {volunteer.firstName} {volunteer.lastName}
           </Text>
-          <Text style={styles.levelLabel}>Level {volunteer.currentLevel}</Text>
+          <Text style={styles.levelLabel}>@{user?.username || ''}</Text>
         </View>
 
         <FishTank
@@ -191,8 +191,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   levelLabel: {
-    fontFamily: Fonts.light_300,
-    fontSize: 10,
+    fontFamily: Fonts.regular_400,
+    fontSize: 18,
     color: Colors.light.textSecondary,
     marginTop: 6,
   },
