@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { LocationFilter, Location } from '@/types/api/location';
@@ -29,6 +30,7 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
   const [userLocation, setUserLocation] = useState<Location | undefined>(
     undefined
   );
+  const hasInitializedFilter = useRef(false);
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -49,9 +51,29 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     getUserLocation();
   }, []);
 
+  useEffect(() => {
+    if (userLocation && !hasInitializedFilter.current) {
+      hasInitializedFilter.current = true;
+      setLocationFilter({
+        latitude: userLocation.coordinates[1],
+        longitude: userLocation.coordinates[0],
+        radiusKm: DEFAULT_LOCATION.radiusKm,
+      });
+    }
+  }, [userLocation]);
+
   const clearLocationFilter = useCallback(() => {
+    hasInitializedFilter.current = false;
     setLocationFilter(undefined);
-  }, []);
+    if (userLocation) {
+      setLocationFilter({
+        latitude: userLocation.coordinates[1],
+        longitude: userLocation.coordinates[0],
+        radiusKm: DEFAULT_LOCATION.radiusKm,
+      });
+      hasInitializedFilter.current = true;
+    }
+  }, [userLocation]);
 
   const value = useMemo<LocationContextValue>(
     () => ({
