@@ -3,6 +3,7 @@ import { View, StyleSheet, Pressable, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
+import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { RegistrationStatus } from '@/types/api/registration';
 import { eventService } from '@/services/eventService';
@@ -18,9 +19,8 @@ import EventInfoTable from '@/components/ui/EventInfoFull';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function EventInfoPage() {
-  const { eventId, source } = useLocalSearchParams<{
+  const { eventId } = useLocalSearchParams<{
     eventId: string;
-    source?: 'feed' | 'profile';
   }>();
   const router = useRouter();
   const { isAuthenticated, isGuest, clearGuestMode, volunteer } = useAuth();
@@ -33,7 +33,7 @@ export default function EventInfoPage() {
   const [unregistering, setUnregistering] = useState(false);
   const [registeredCount, setRegisteredCount] = useState(0);
 
-  const isProfileView = source === 'profile';
+  const showRegisteredView = isRegistered;
 
   useEffect(() => {
     if (!isAuthenticated && !isGuest) {
@@ -143,40 +143,28 @@ export default function EventInfoPage() {
           <EventInfoTable 
             {...event} 
             registeredCount={registeredCount}
+            showCancelButton={showRegisteredView}
+            onCancelSignUp={handleUnregister}
+            cancelLoading={unregistering}
           />
 
-          {/* Cancel Sign Up Button (only in profile view) */}
-          {isProfileView && (
-            <View style={styles.cancelButtonContainer}>
-              <Pressable
-                style={styles.cancelButton}
-                onPress={handleUnregister}
-                disabled={unregistering}
-              >
-                <Text style={styles.cancelButtonText}>
-                  {unregistering ? 'Cancelling...' : 'Cancel Sign Up'}
-                </Text>
-              </Pressable>
-            </View>
-          )}
-
           {/* Conditional rendering based on source */}
-          {isProfileView ? (
+          {showRegisteredView ? (
             <View style={styles.profileViewSection}>
               <EventAttendeesCarousel eventId={eventId as string} />
 
               <View style={styles.checkInOutButtons}>
                 <Pressable
-                  style={styles.checkInButton}
+                  style={styles.checkInOutButton}
                   onPress={() => router.push('/scan?type=check-in')}
                 >
-                  <Text style={styles.checkInButtonText}>Check In</Text>
+                  <Text style={styles.checkInOutButtonText}>Check In</Text>
                 </Pressable>
                 <Pressable
-                  style={styles.checkOutButton}
+                  style={styles.checkInOutButton}
                   onPress={() => router.push('/scan?type=checkout')}
                 >
-                  <Text style={styles.checkOutButtonText}>Check Out</Text>
+                  <Text style={styles.checkInOutButtonText}>Check Out</Text>
                 </Pressable>
               </View>
             </View>
@@ -231,25 +219,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#1D0F48',
   },
-  cancelButtonContainer: {
-    paddingHorizontal: 24,
-    marginTop: 12,
-    alignItems: 'flex-end',
-  },
-  cancelButton: {
-    backgroundColor: '#FFF',
-    borderWidth: 1,
-    borderColor: '#FF4444',
-    borderRadius: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-  },
-  cancelButtonText: {
-    fontFamily: 'Inter',
-    fontSize: 14,
-    fontWeight: '400',
-    color: '#FF4444',
-  },
   profileViewSection: {
     marginTop: 24,
     paddingHorizontal: 24,
@@ -259,31 +228,18 @@ const styles = StyleSheet.create({
     gap: 12,
     marginTop: 16,
   },
-  checkInButton: {
+  checkInOutButton: {
     flex: 1,
-    backgroundColor: '#90D0CD',
-    borderRadius: 8,
+    backgroundColor: '#74C0EB',
+    borderRadius: 16.333,
     paddingVertical: 16,
     alignItems: 'center',
   },
-  checkInButtonText: {
+  checkInOutButtonText: {
     fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#1D0F48',
-  },
-  checkOutButton: {
-    flex: 1,
-    backgroundColor: '#FF6B6B',
-    borderRadius: 8,
-    paddingVertical: 16,
-    alignItems: 'center',
-  },
-  checkOutButtonText: {
-    fontFamily: 'Inter',
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFF',
   },
   signUpSection: {
     marginTop: 32,
