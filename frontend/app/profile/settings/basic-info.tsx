@@ -19,6 +19,7 @@ import { useAuth } from '@/context/AuthContext';
 import { volunteerService } from '@/services/volunteerService';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
+import { BoatFooter } from '@/components/profile/BoatFooter';
 
 const GRADE_LEVELS = [
   '9th Grade',
@@ -287,6 +288,7 @@ export default function BasicInfoScreen() {
             )}
           </Pressable>
         </ScrollView>
+        <BoatFooter />
       </SafeAreaView>
     </>
   );

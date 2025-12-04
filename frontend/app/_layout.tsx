@@ -3,12 +3,13 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import {
-  useFonts,
-  JosefinSans_400Regular,
-  JosefinSans_300Light,
-  JosefinSans_500Medium,
-} from '@expo-google-fonts/josefin-sans';
+  Inter_400Regular,
+  Inter_300Light,
+  Inter_500Medium,
+} from '@expo-google-fonts/inter';
+import { Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -58,9 +59,10 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    JosefinSans_400Regular,
-    JosefinSans_300Light,
-    JosefinSans_500Medium,
+    Inter_400Regular,
+    Inter_300Light,
+    Inter_500Medium,
+    Ubuntu_700Bold,
   });
 
   useEffect(() => {
