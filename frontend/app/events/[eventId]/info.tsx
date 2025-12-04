@@ -91,29 +91,13 @@ export default function EventInfoPage() {
   };
 
   const handleUnregister = async () => {
-    if (!event?.id || !volunteer?.id) return;
-    try {
-      setUnregistering(true);
-      const registrations = await getEventRegistrations(event.id);
-      const myRegistration = registrations.find(
-        r => r.volunteerId === volunteer.id
-      );
-      if (!myRegistration) {
-        setMessage("We couldn't find your registration for this event.");
-        return;
-      }
-      await unregisterRegistration(myRegistration.id);
-      setIsRegistered(false);
-      setMessage('You have been unregistered from this event.');
-      await queryClient.invalidateQueries({
-        queryKey: ['registration', 'events', volunteer.id, 'upcoming'],
-      });
-    } catch (err) {
-      console.log(err);
-      setMessage('Failed to unregister. Please try again.');
-    } finally {
-      setUnregistering(false);
-    }
+    if (!event?.id) return;
+    router.push({
+      pathname: '/events/[eventId]/cancel',
+      params: {
+        eventId: event.id,
+      },
+    });
   };
 
   if (loading) {
