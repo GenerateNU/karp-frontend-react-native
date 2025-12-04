@@ -10,19 +10,8 @@ export function SignUpProgress() {
   const router = useRouter();
 
   const handleBack = () => {
-    const routeMap: Record<number, string> = {
-      1: '/signup',
-      2: '/signup',
-      3: '/signup/personal',
-      4: '/signup/birthday',
-      5: '/signup/preferences',
-      6: '/signup/qualifications',
-    };
-
-    const previousRoute = routeMap[currentStep];
-    if (previousRoute) {
-      router.push(previousRoute as RelativePathString);
-    }
+    // Pop the current screen to ensure native "back" animation (slide from left)
+    router.back();
   };
 
   return (
