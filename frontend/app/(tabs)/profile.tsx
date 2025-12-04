@@ -19,12 +19,13 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { useAuth } from '@/context/AuthContext';
+import { BoatFooter } from '@/components/profile/BoatFooter';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { profileData, upcomingEvents, loading, refreshing, handleRefresh } =
     useProfile();
-  const { isGuest, clearGuestMode } = useAuth();
+  const { isGuest, clearGuestMode, user } = useAuth();
 
   const handleSignIn = () => {
     clearGuestMode();
@@ -91,7 +92,7 @@ export default function ProfileScreen() {
           <Text style={styles.name}>
             {volunteer.firstName} {volunteer.lastName}
           </Text>
-          <Text style={styles.levelLabel}>Level {volunteer.currentLevel}</Text>
+          <Text style={styles.levelLabel}>@{user?.username || ''}</Text>
         </View>
 
         <FishTank
@@ -103,8 +104,8 @@ export default function ProfileScreen() {
 
         <View style={styles.statsContainer}>
           <StatCard
-            title="Hours Spent Volunteering"
-            value={`${Math.round(stats.totalHours)} hours`}
+            title="Total Hours Spent Volunteering"
+            value={`${Math.round(stats.totalHours) === 1 ? '1 Hour' : `${Math.round(stats.totalHours)} Hours`}`}
             fullWidth
           />
         </View>
@@ -131,7 +132,6 @@ export default function ProfileScreen() {
               ))}
             </>
           )}
-
           <Pressable
             onPress={() => router.push('/profile/events/past')}
             style={styles.seePastButton}
@@ -139,6 +139,7 @@ export default function ProfileScreen() {
             <Text style={styles.seePastText}>See past events</Text>
           </Pressable>
         </View>
+        <BoatFooter />
       </ScrollView>
     </SafeAreaView>
   );
@@ -190,8 +191,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   levelLabel: {
-    fontFamily: Fonts.light_300,
-    fontSize: 10,
+    fontFamily: Fonts.regular_400,
+    fontSize: 18,
     color: Colors.light.textSecondary,
     marginTop: 6,
   },
@@ -227,7 +228,8 @@ const styles = StyleSheet.create({
   },
   seePastButton: {
     marginTop: 10,
-    paddingVertical: 12,
+    paddingTop: 5,
+    paddingBottom: 100,
     alignItems: 'flex-end',
     width: '95%',
     alignSelf: 'center',

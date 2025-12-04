@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   fishTankImage: {
-    width: 268,
-    height: 190,
+    width: 460,
+    height: 280,
   },
 });
