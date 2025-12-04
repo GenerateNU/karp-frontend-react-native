@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, Image } from 'react-native';
+import { FeedCard } from '@/components/FeedCard';
 import { Organization } from '@/types/api/organization';
 import { imageService } from '@/services/imageService';
 
@@ -33,35 +33,10 @@ export function OrgCard({ organization, onPress }: OrgCardProps) {
   }, [organization.id, organization.imageS3Key]);
 
   return (
-    <Pressable
-      className="mx-4 my-2 overflow-hidden rounded-xl bg-white shadow-sm"
-      onPress={() => onPress?.(organization)}
-      android_ripple={{ color: '#f0f0f0' }}
-    >
-      <View className="h-40 bg-gray-100">
-        {imagePreSignedUrl ? (
-          <Image
-            source={{ uri: imagePreSignedUrl }}
-            className="h-full w-full"
-          />
-        ) : null}
-      </View>
-
-      <View className="p-4">
-        <Text
-          className="mb-1 text-lg font-semibold text-gray-900"
-          numberOfLines={2}
-        >
-          {organization.name}
-        </Text>
-
-        <View className="mt-1">
-          <Text className="text-xs text-gray-600">
-            Description:{' '}
-            {organization.description || 'No description available.'}
-          </Text>
-        </View>
-      </View>
-    </Pressable>
+    <FeedCard
+      feedItem={organization}
+      onPressOrg={onPress}
+      imgUrl={imagePreSignedUrl}
+    />
   );
 }
