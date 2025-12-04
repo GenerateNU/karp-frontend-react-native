@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
 import { Event } from '@/types/api/event';
 import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { imageService } from '@/services/imageService';
 import { orgService } from '@/services/organizationService';
+import { Ionicons } from '@expo/vector-icons';
 
 interface Props extends Event {
-  onSelectTime?: (time: string) => void;
-  selectedTime?: string;
   registeredCount?: number;
+  onShare?: () => void;
 }
 
 export default function EventInfoTable({
@@ -28,42 +24,35 @@ export default function EventInfoTable({
   maxVolunteers,
   registeredCount = 0,
   imageS3Key,
+  coins,
+  onShare,
 }: Props) {
+  const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(null);
+  const [orgName, setOrgName] = useState<string>(organization ?? '');
+
   const start = startDateTime ? new Date(startDateTime) : null;
   const end = endDateTime ? new Date(endDateTime) : null;
-  const startDate = start
-    ? start.toLocaleString(undefined, {
-        month: 'short',
+
+  const dateFormatted = start
+    ? start.toLocaleDateString(undefined, {
+        month: 'numeric',
         day: 'numeric',
         year: 'numeric',
       })
     : '';
-  const startTime = start
-    ? start.toLocaleString(undefined, {
-        hour: 'numeric',
-        minute: '2-digit',
-      })
-    : '';
-  const endDate = end
-    ? end.toLocaleString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
-    : '';
-  const endTime = end
-    ? end.toLocaleString(undefined, {
-        hour: 'numeric',
-        minute: '2-digit',
-      })
-    : '';
+
+  const timeFormatted =
+    start && end
+      ? `${start.toLocaleTimeString(undefined, {
+          hour: 'numeric',
+          minute: '2-digit',
+        })} - ${end.toLocaleTimeString(undefined, {
+          hour: 'numeric',
+          minute: '2-digit',
+        })}`
+      : '';
 
   const spotsRemaining = maxVolunteers - registeredCount;
-
-  const [imagePreSignedUrl, setImagePreSignedUrl] = React.useState<
-    string | null
-  >(null);
-  const [orgName, setOrgName] = useState<string>(organization ?? '');
 
   useEffect(() => {
     async function fetchImageUrl() {
@@ -101,150 +90,167 @@ export default function EventInfoTable({
   }, [organization, organizationId]);
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: Colors.light.background }}
-      edges={['left', 'right', 'bottom']}
-    >
-      <ScrollView style={styles.scrollContainer}>
-        <ThemedView style={styles.container}>
-          {imagePreSignedUrl ? (
-            <Image
-              source={{
-                uri: imagePreSignedUrl,
-              }}
-              style={styles.imagePlaceholder}
-              contentFit="cover"
-            />
-          ) : (
-            <View style={styles.imagePlaceholder} />
-          )}
-          <View style={styles.topRow}>
-            <View style={styles.infoColumn}>
-              <View style={styles.nameRow}>
-                <ThemedText style={styles.title}>{name}</ThemedText>
-                <Image
-                  source={require('../../assets/images/share.png')}
-                  style={styles.shareIcon}
-                  contentFit="contain"
-                />
-              </View>
+    <View style={styles.container}>
+      {/* Event Image */}
+      {imagePreSignedUrl ? (
+        <Image
+          source={{ uri: imagePreSignedUrl }}
+          style={styles.eventImage}
+          contentFit="cover"
+        />
+      ) : (
+        <View style={[styles.eventImage, styles.imagePlaceholder]} />
+      )}
 
-              <View style={styles.detail}>
-                <Text style={styles.detailText}>More information: </Text>
-                <Text style={[styles.detailText, styles.spacing]}>
-                  {description}
-                </Text>
-                <Text style={styles.detailText}>Address: </Text>
-                <Text style={[styles.detailText, styles.spacing]}>
-                  {address}
-                </Text>
-              </View>
-              <Text style={styles.organizationText}>Organizer:</Text>
-              <Text style={[styles.organizationText, styles.spacing]}>
-                {orgName}
-              </Text>
-              <Text style={styles.spotsText}>
-                Spots Remaining: {spotsRemaining} / {maxVolunteers}
-              </Text>
-              <Text style={styles.dateText}>
-                Start: {startDate} at {startTime}{' '}
-              </Text>
-              <Text style={styles.dateText}>
-                End: {endDate} at {endTime}{' '}
-              </Text>
-            </View>
-          </View>
-        </ThemedView>
-      </ScrollView>
-    </SafeAreaView>
+      {/* Title Row */}
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>{name}</Text>
+        <Pressable style={styles.shareButton} onPress={onShare}>
+          <Ionicons name="share-outline" size={24} color="#1D0F48" />
+        </Pressable>
+      </View>
+
+      {/* Coins Badge */}
+      <View style={styles.coinsRow}>
+        <View style={styles.coinsBadge}>
+          <Image
+            source={require('@/assets/images/karp-coin.svg')}
+            style={styles.coinIcon}
+          />
+          <Text style={styles.coinsText}>{coins} Koins</Text>
+        </View>
+      </View>
+
+      {/* Organizer */}
+      <View style={styles.infoRow}>
+        <Text style={styles.label}>Organizer:</Text>
+        <Text style={styles.value}>{orgName || '[name]'}</Text>
+      </View>
+
+      {/* Slots Remaining */}
+      <View style={styles.infoRow}>
+        <Text style={styles.slotsLabel}>Slots Remaining:</Text>
+        <Text style={styles.slotsValue}>
+          {spotsRemaining}/{maxVolunteers}
+        </Text>
+      </View>
+
+      {/* Description */}
+      <View style={styles.descriptionSection}>
+        <Text style={styles.label}>Description:</Text>
+        <Text style={styles.descriptionText}>
+          {description ||
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ac eros sed eros tincidunt pulvinar sed ac sem.'}
+        </Text>
+      </View>
+
+      {/* Date */}
+      <View style={styles.infoRow}>
+        <Text style={styles.label}>Date:</Text>
+        <Text style={styles.value}>{dateFormatted}</Text>
+      </View>
+
+      {/* Time */}
+      <View style={styles.infoRow}>
+        <Text style={styles.label}>Time:</Text>
+        <Text style={styles.value}>{timeFormatted}</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContainer: {
-    flex: 1,
-  },
   container: {
-    backgroundColor: Colors.light.background,
     width: '100%',
-    gap: 12,
-    alignItems: 'center',
   },
-  shareIcon: {
-    width: 50,
-    height: 50,
-    flexShrink: 0,
-    alignSelf: 'flex-start',
-  },
-  nameRow: {
-    flexDirection: 'row',
+  eventImage: {
     width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  topRow: {
-    flexDirection: 'row',
-    gap: 12,
-    alignItems: 'flex-start',
-    display: 'flex',
-    justifyContent: 'space-between',
+    height: 175,
+    backgroundColor: '#D9D9D9',
   },
   imagePlaceholder: {
-    width: '100%',
-    height: 240,
-    backgroundColor: Colors.light.imagePlaceholder,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: '#E5E5E5',
   },
-  infoColumn: {
-    flex: 1,
-    justifyContent: 'flex-start',
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    gap: 12,
   },
   title: {
-    fontFamily: 'JosefinSans_400Regular',
-    fontSize: 44,
-    fontStyle: 'normal',
+    flex: 1,
+    fontFamily: 'Inter',
+    fontSize: 48,
+    fontWeight: '700',
+    lineHeight: 60,
+    color: '#1D0F48',
+  },
+  shareButton: {
+    padding: 8,
+  },
+  coinsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    marginTop: 12,
+  },
+  coinsBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  coinIcon: {
+    width: 24,
+    height: 24,
+  },
+  coinsText: {
+    fontFamily: 'Inter',
+    fontSize: 18,
     fontWeight: '400',
-    lineHeight: 46,
-    flexShrink: 1,
-    paddingBottom: 22,
-    color: '#000000',
+    color: '#1D0F48',
   },
-  organizationText: {
-    color: Colors.light.text,
-    fontFamily: Fonts.light_300,
-    fontSize: 22,
-    marginBottom: 4,
+  infoRow: {
+    paddingHorizontal: 24,
+    marginTop: 12,
   },
-  spacing: {
-    marginBottom: 8,
+  label: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1D0F48',
   },
-  detail: {
-    width: '100%',
-  },
-  detailText: {
-    color: Colors.light.text,
-    fontFamily: Fonts.light_300,
+  value: {
+    fontFamily: 'Inter',
     fontSize: 16,
-    lineHeight: 22,
-    marginBottom: 4,
+    fontWeight: '400',
+    color: '#1D0F48',
+    marginTop: 2,
   },
-  dateText: {
-    color: Colors.light.text,
-    fontFamily: Fonts.regular_400,
+  slotsLabel: {
+    fontFamily: 'Inter',
     fontSize: 16,
-    lineHeight: 22,
-    marginBottom: 8,
+    fontWeight: '400',
+    color: '#1D0F48',
   },
-  spotsText: {
-    color: Colors.light.text,
-    fontFamily: Fonts.regular_400,
+  slotsValue: {
+    fontFamily: 'Inter',
     fontSize: 16,
-    lineHeight: 22,
-    marginBottom: 8,
+    fontWeight: '400',
+    color: '#1D0F48',
+    marginTop: 2,
+  },
+  descriptionSection: {
+    paddingHorizontal: 24,
+    marginTop: 16,
+  },
+  descriptionText: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 19,
+    color: '#1D0F48',
+    marginTop: 4,
   },
 });
