@@ -183,22 +183,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#2D2D2D',
   },
-  navButton: {
-    position: 'absolute',
-    right: 12,
-    top: 70, // Positioned in the middle of the image section
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#FFB74D', // Light orange/yellow
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
-  },
   infoSection: {
     flex: 1,
     backgroundColor: '#FFFFFF',

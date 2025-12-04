@@ -98,19 +98,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.white,
-    paddingHorizontal: 50,
     paddingTop: 25,
     paddingBottom: 100,
-    justifyContent: 'center',
   },
   header: {
     marginBottom: 32,
-    alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
+    fontFamily: Fonts.bold_700,
     textAlign: 'center',
   },
   dateContainer: {

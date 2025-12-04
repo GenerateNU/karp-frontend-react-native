@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.white,
-    paddingHorizontal: 20,
     paddingTop: 75,
     paddingBottom: 100,
   },
@@ -117,9 +116,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
+    fontFamily: Fonts.bold_700,
     textAlign: 'center',
     marginBottom: 32,
   },

@@ -102,7 +102,7 @@ export function FeedCard({
             style={{ left: 90 }}
           >
             <Text
-              className="w-44 text-base font-bold text-indigo-950"
+              className="px-1 text-base font-bold text-indigo-950"
               style={{ fontFamily: 'Ubuntu' }}
               numberOfLines={2}
             >
@@ -131,7 +131,7 @@ export function FeedCard({
                 <View className="inline-flex flex-row items-center justify-start gap-2">
                   <Image
                     source={require('../assets/images/clock-icon.png')}
-                    style={{ width: 14, height: 14 }}
+                    style={{ width: 11, height: 11 }}
                     className="ml-1 h-5 w-5"
                   />
                   <Text
@@ -145,7 +145,7 @@ export function FeedCard({
             ) : (
               <>
                 <Text
-                  className="w-44 text-sm font-normal text-indigo-950"
+                  className="px-1 text-sm font-normal text-indigo-950"
                   style={{ fontFamily: 'Inter' }}
                   numberOfLines={2}
                   ellipsizeMode="tail"

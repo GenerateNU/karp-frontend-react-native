@@ -1,12 +1,47 @@
 import api from '@/api';
-import { Event, EventFilters, EventStatus } from '@/types/api/event';
+import { Event, EventFilters } from '@/types/api/event';
 import { LocationFilter } from '@/types/api/location';
 
-async function getAllEvents(filters?: EventFilters): Promise<Event[]> {
-  const { data: events } = await api.get('event/all', {
-    params: filters,
-  });
-  console.log('Actual Events:', events);
+async function getAllEvents(
+  query?: string,
+  filters?: EventFilters,
+  locationFilter?: LocationFilter,
+  volunteerId?: string
+): Promise<Event[]> {
+  const params: Record<string, unknown> = {};
+
+  if (query && query.trim()) {
+    params.q = query.trim();
+  }
+
+  if (
+    locationFilter &&
+    locationFilter.latitude &&
+    locationFilter.longitude &&
+    locationFilter.radiusKm
+  ) {
+    params.lat = locationFilter.latitude;
+    params.lng = locationFilter.longitude;
+    params.location_radius_km = locationFilter.radiusKm;
+  }
+
+  if (filters) {
+    Object.assign(params, filters);
+  }
+
+  if (filters?.sort_by === 'been_before' && volunteerId) {
+    params.volunteer_id = volunteerId;
+  }
+
+  if (!params.sort_by) {
+    params.sort_by = 'distance';
+  }
+
+  const { data: events } = await api
+    .get('event/all', { params })
+    .catch(error => {
+      throw error;
+    });
   return events;
 }
 
@@ -24,46 +59,8 @@ async function getEventsByOrganization(
   return events;
 }
 
-async function searchEvents(
-  query: string,
-  filters?: EventFilters,
-  locationFilter?: LocationFilter
-): Promise<Event[]> {
-  const params: Record<string, unknown> = {
-    q: query,
-    statuses: EventStatus.APPROVED,
-  };
-
-  if (
-    locationFilter &&
-    locationFilter.latitude &&
-    locationFilter.longitude &&
-    locationFilter.radiusKm
-  ) {
-    params.lat = locationFilter.latitude;
-    params.lng = locationFilter.longitude;
-    params.distance_km = locationFilter.radiusKm;
-    params.sort_by = 'distance';
-    console.log('Filtering events by location:', {
-      lat: params.lat,
-      lng: params.lng,
-      distance_km: params.distance_km,
-      sort_by: params.sort_by,
-    });
-  }
-
-  if (filters) {
-    Object.assign(params, filters);
-  }
-
-  const { data: events } = await api.get('event/search', { params });
-  console.log('Fetched events:', events?.length || 0, 'events');
-  return events;
-}
-
 export const eventService = {
   getAllEvents,
   getEventById,
   getEventsByOrganization,
-  searchEvents,
 };

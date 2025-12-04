@@ -10,8 +10,10 @@ export function BoatFooter() {
   let tabBarHeight = 0;
 
   try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     tabBarHeight = useBottomTabBarHeight();
   } catch (e) {
+    console.log(e);
     tabBarHeight = 0;
   }
 

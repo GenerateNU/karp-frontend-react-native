@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Event as EventType } from '@/types/api/event';
 import { Fonts } from '@/constants/Fonts';
 import { Colors } from '@/constants/Colors';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { orgService } from '@/services/organizationService';
 import { imageService } from '@/services/imageService';
 
 interface ProfileEventCardProps {
@@ -15,34 +14,17 @@ interface ProfileEventCardProps {
   onCheckOut: (event: EventType) => void;
 }
 
-export function ProfileEventCard({ event, onPress }: ProfileEventCardProps) {
-  const [_, setOrganizerName] = useState<string>('');
+export function ProfileEventCard({
+  event,
+  onPress,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onCheckIn,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onCheckOut,
+}: ProfileEventCardProps) {
   const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
     null
   );
-
-  useEffect(() => {
-    async function loadOrganizer() {
-      try {
-        // Prefer existing name if present on the event
-        if (event.organization) {
-          setOrganizerName(event.organization);
-          return;
-        }
-        if (!event.organizationId) {
-          setOrganizerName('');
-          return;
-        }
-        const org = await orgService.getOrganizationById(event.organizationId);
-        setOrganizerName(org?.name ?? '');
-      } catch (e) {
-        console.log(e);
-        // Silently ignore; ensure empty organizer name on error
-        setOrganizerName('');
-      }
-    }
-    loadOrganizer();
-  }, [event.organization, event.organizationId]);
 
   useEffect(() => {
     async function fetchImageUrl() {
