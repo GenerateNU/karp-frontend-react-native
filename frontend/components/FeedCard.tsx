@@ -102,7 +102,7 @@ export function FeedCard({
             style={{ left: 90 }}
           >
             <Text
-              className="w-44 text-base font-bold text-indigo-950"
+              className="px-1 text-base font-bold text-indigo-950"
               style={{ fontFamily: 'Ubuntu' }}
               numberOfLines={2}
             >
