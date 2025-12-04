@@ -19,7 +19,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { useAuth } from '@/context/AuthContext';
-import { BoatFooter } from '@/components/profile/BoatFoater';
+import { BoatFooter } from '@/components/profile/BoatFooter';
 
 export default function ProfileScreen() {
   const router = useRouter();
