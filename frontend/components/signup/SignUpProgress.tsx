@@ -6,11 +6,14 @@ import { RelativePathString, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 export function SignUpProgress() {
-  const { currentStep } = useSignUp();
+  const { currentStep, setCurrentStep } = useSignUp();
   const router = useRouter();
 
   const handleBack = () => {
     // Pop the current screen to ensure native "back" animation (slide from left)
+    // Also update the step immediately so the progress bar reflects the change
+    const nextStep = Math.max(1, currentStep - 1);
+    setCurrentStep(nextStep);
     router.back();
   };
 
