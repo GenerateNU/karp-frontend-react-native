@@ -104,7 +104,6 @@ export default function EventInfoTable({
 
   return (
     <View style={styles.container}>
-      {/* Event Image */}
       {imagePreSignedUrl ? (
         <Image
           source={{ uri: imagePreSignedUrl }}
@@ -115,12 +114,10 @@ export default function EventInfoTable({
         <View style={[styles.eventImage, styles.imagePlaceholder]} />
       )}
 
-      {/* Title Row */}
       <View style={styles.titleRow}>
         <Text style={styles.title}>{name}</Text>
       </View>
 
-      {/* Coins Badge + Cancel Button Row */}
       <View style={styles.coinsRow}>
         <View style={styles.coinsBadge}>
           <Image
@@ -143,25 +140,22 @@ export default function EventInfoTable({
         )}
       </View>
 
-      {/* Organizer */}
       <View style={styles.infoRow}>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
         <Text style={styles.label}>Organizer:</Text>
-        <Text style={[styles.value, { marginTop: 0, marginLeft: 8 }]}>{orgName || '[name]'}</Text>
+        <Text style={[styles.value, {  marginLeft: 8 }]}>{orgName || '[name]'}</Text>
           </View>
           {address ? (
-        <Text style={[styles.value, { marginTop: 4 }]}>{address}</Text>
+        <Text style={[styles.value]}>{address}</Text>
           ) : null}
         </View>
       </View>
 
-      {/* Slots Remaining */}
       <View style={styles.infoRow}>
         <Text style={styles.slotsLabel}>Spots Remaining: {spotsRemaining}/{maxVolunteers}</Text>
       </View>
 
-      {/* Description */}
       <View style={styles.descriptionSection}>
         <Text style={styles.label}>Description:</Text>
         <Text style={styles.descriptionText}>
@@ -170,8 +164,8 @@ export default function EventInfoTable({
         </Text>
       </View>
 
-      {/* Date */}
       <View style={styles.infoRow}>
+        <Text style={styles.label}>Date:</Text>
         <Text style={styles.value}>Start: {startDate} at {startTime}</Text>
         <Text style={styles.value}>End: {endDate} at {endTime}</Text>
       </View>
@@ -182,11 +176,14 @@ export default function EventInfoTable({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    paddingHorizontal: 24,
   },
   eventImage: {
     width: '100%',
-    height: 175,
+    height: 168,
     backgroundColor: '#D9D9D9',
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   imagePlaceholder: {
     backgroundColor: '#E5E5E5',
@@ -195,7 +192,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    paddingHorizontal: 24,
     paddingTop: 16,
     gap: 12,
   },
@@ -211,8 +207,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 24,
     marginTop: 12,
+    marginBottom: 30
   },
   coinsBadge: {
     flexDirection: 'row',
@@ -230,7 +226,6 @@ const styles = StyleSheet.create({
     color: '#1D0F48',
   },
   infoRow: {
-    paddingHorizontal: 24,
     marginTop: 12,
   },
   label: {
@@ -238,6 +233,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#1D0F48',
+    marginBottom: 4
   },
   value: {
     fontFamily: 'Inter',
@@ -251,10 +247,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#1D0F48',
+    marginBottom: 25
   },
   descriptionSection: {
-    paddingHorizontal: 24,
-    marginTop: 16,
+    marginBottom: 25,
   },
   descriptionText: {
     fontFamily: 'Inter',
