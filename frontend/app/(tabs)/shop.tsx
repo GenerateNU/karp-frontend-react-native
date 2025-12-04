@@ -233,7 +233,7 @@ export default function StoreScreen() {
                   fontFamily: Fonts.medium_500,
                 }}
               >
-                {currentVolunteer?.coins ?? 0} coins
+                {currentVolunteer?.coins ?? 0} koins
               </ThemedText>
 
               <TouchableOpacity

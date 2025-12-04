@@ -63,7 +63,7 @@ export function useItemDetail(itemId: string) {
     if (userCoins < item.price) {
       Alert.alert(
         'Insufficient Funds',
-        'Not enough coins? Sign up for more events'
+        'Not enough koins? Sign up for more events'
       );
       return;
     }

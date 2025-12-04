@@ -67,7 +67,7 @@ export default function ItemDetailScreen() {
       description={item.description || ''}
       instructionsText="Go to store and show them this page to redeem item!"
       buttonConfig={{
-        text: `${item.price} coins`,
+        text: `${item.price} koins`,
         onPress: placeOrder,
         loading: orderLoading,
         disabled: !hasEnoughCoins,

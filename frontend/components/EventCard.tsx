@@ -117,7 +117,7 @@ export function EventCard({ event, onPress }: EventCardProps) {
 
           <View className="rounded-xl bg-green-100 px-2 py-1">
             <Text className="text-xs font-semibold text-green-800">
-              {numCoins} coins
+              {numCoins} koins
             </Text>
           </View>
         </View>
