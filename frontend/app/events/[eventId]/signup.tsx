@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
@@ -8,7 +8,7 @@ import { Event } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Ionicons } from '@expo/vector-icons';
-import { EventSignUpForm } from '@/components/events/EventSignUpForm';
+import { createRegistration } from '@/services/registrationService';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
@@ -16,6 +16,7 @@ export default function EventSignUpPage() {
   const { isAuthenticated } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -39,6 +40,40 @@ export default function EventSignUpPage() {
 
   if (loading) {
     return <LoadingScreen text="Loading event sign-up details..." />;
+  }
+
+  const handleConfirm = async () => {
+    if (!event?.id) return;
+
+    try {
+      setSubmitting(true);
+      await createRegistration(event.id);
+      router.push({
+        pathname: '/events/[eventId]/success',
+        params: {
+          eventId: event.id,
+        },
+      });
+    } catch (error) {
+      Alert.alert(
+        'Error',
+        'Failed to create registration: ' + (error as Error).message
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingScreen text="Loading event sign-up details..." />;
+  }
+
+  if (!event) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorText}>Event not found</Text>
+      </SafeAreaView>
+    );
   }
 
   const start = event?.startDateTime ? new Date(event.startDateTime) : null;
@@ -74,14 +109,6 @@ export default function EventSignUpPage() {
       })
     : '';
 
-  const dateFormatted = start
-    ? start.toLocaleDateString(undefined, {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })
-    : 'DD/MM/YYYY';
-
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -102,9 +129,17 @@ export default function EventSignUpPage() {
             <Text style={styles.dateValue}>Start: {startDate} at {startTime}</Text>
             <Text style={styles.dateValue}>End: {endDate} at {endTime}</Text>
           </View>
-
-          {/* Sign Up Form */}
-          <EventSignUpForm event={event!} />
+          <Pressable
+            style={[styles.confirmButton, submitting && styles.confirmButtonDisabled]}
+            onPress={handleConfirm}
+            disabled={submitting}
+          >
+            {submitting ? (
+              <ActivityIndicator color="#1D0F48" />
+            ) : (
+              <Text style={styles.confirmButtonText}>Confirm</Text>
+            )}
+          </Pressable>
         </ScrollView>
       </SafeAreaView>
     </>
@@ -156,5 +191,30 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: '#1D0F48',
+  },
+  confirmButton: {
+    backgroundColor: '#74C0EB',
+    borderRadius: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+    alignSelf: 'center',
+    width: 195,
+    height: 45,
+    justifyContent: 'center',
+  },
+  confirmButtonDisabled: {
+    backgroundColor: '#B0B0B0',
+  },
+  confirmButtonText: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#1D0F48',
+  },
+  errorText: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    color: '#FF6B6B',
+    textAlign: 'center',
   },
 });
