@@ -18,11 +18,14 @@ import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { itemService } from '@/services/itemService';
 import { volunteerService } from '@/services/volunteerService';
+import { vendorService, Vendor } from '@/services/vendorService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
 import { Volunteer } from '@/types/api/volunteer';
+
+type SearchCategory = 'items' | 'vendors';
 
 export interface ItemFilters {
   priceRange: { min: number; max: number };
@@ -31,6 +34,8 @@ export interface ItemFilters {
 
 export default function StoreScreen() {
   const [searchText, setSearchText] = useState('');
+  const [selectedCategory, setSelectedCategory] =
+    useState<SearchCategory>('items');
   const [items, setItems] = useState<ShopItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,9 +55,20 @@ export default function StoreScreen() {
   const loadItems = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await itemService.getAllItems();
+      const [itemsResponse, vendorsResponse] = await Promise.all([
+        itemService.getAllItems(),
+        vendorService.getAllVendors(),
+      ]);
 
-      const mapped: ShopItem[] = (Array.isArray(response) ? response : []).map(
+      // Create a map of vendorId -> vendorName for quick lookup
+      const vendorMap = new Map<string, string>();
+      vendorsResponse.forEach((vendor: Vendor) => {
+        vendorMap.set(vendor.id, vendor.name);
+      });
+
+      const mapped: ShopItem[] = (
+        Array.isArray(itemsResponse) ? itemsResponse : []
+      ).map(
         (raw: {
           id: string;
           name?: string;
@@ -60,14 +76,22 @@ export default function StoreScreen() {
           vendorId?: string;
           price?: number;
           imageS3Key?: string;
-        }) => ({
-          id: raw.id,
-          name: raw.name ?? 'Unnamed',
-          store: raw.vendorName ?? raw.vendorId ?? 'Unknown',
-          coins: raw.price ?? 0,
-          imageS3Key: raw.imageS3Key || undefined,
-          vendorId: raw.vendorId,
-        })
+        }) => {
+          // Get vendor name from the map, fallback to raw.vendorName, then vendorId, then 'Unknown'
+          const vendorName =
+            raw.vendorId && vendorMap.has(raw.vendorId)
+              ? vendorMap.get(raw.vendorId)!
+              : (raw.vendorName ?? raw.vendorId ?? 'Unknown');
+
+          return {
+            id: raw.id,
+            name: raw.name ?? 'Unnamed',
+            store: vendorName,
+            coins: raw.price ?? 0,
+            imageS3Key: raw.imageS3Key || undefined,
+            vendorId: raw.vendorId,
+          };
+        }
       );
       setItems(mapped);
     } catch (e) {
@@ -97,10 +121,21 @@ export default function StoreScreen() {
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
-      // Search filter
-      const matchesSearch = item.name
-        .toLowerCase()
-        .includes(searchText.toLowerCase());
+      // Search filter - changes based on selected category
+      let matchesSearch = true;
+      if (searchText) {
+        if (selectedCategory === 'vendors') {
+          // When searching for vendors, filter by vendor name (store field)
+          matchesSearch = item.store
+            .toLowerCase()
+            .includes(searchText.toLowerCase());
+        } else {
+          // When searching for items, filter by item name
+          matchesSearch = item.name
+            .toLowerCase()
+            .includes(searchText.toLowerCase());
+        }
+      }
 
       // Price range filter
       const matchesPrice =
@@ -114,10 +149,14 @@ export default function StoreScreen() {
 
       return matchesSearch && matchesPrice && matchesCategory;
     });
-  }, [items, searchText, filters]);
+  }, [items, searchText, filters, selectedCategory]);
 
   const handlePress = (itemId: string) => {
     router.push(`/shop/${itemId}`);
+  };
+
+  const handleCategoryChange = (category: SearchCategory) => {
+    setSelectedCategory(category);
   };
 
   const handleApplyFilters = (newFilters: ItemFilters) => {
@@ -232,6 +271,9 @@ export default function StoreScreen() {
             value={searchText}
             onChangeText={setSearchText}
             onFilterPress={() => setDrawerOpen(true)}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            onCategoryChange={handleCategoryChange}
           />
 
           <ThemedText

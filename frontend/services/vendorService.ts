@@ -18,6 +18,18 @@ async function getVendorById(vendorId: string): Promise<Vendor | null> {
   }
 }
 
+async function getAllVendors(): Promise<Vendor[]> {
+  try {
+    const response = await api.get(`/vendor/all`);
+    console.log('Fetched all vendors:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch vendors:', error);
+    return [];
+  }
+}
+
 export const vendorService = {
   getVendorById,
+  getAllVendors,
 };
