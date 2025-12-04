@@ -24,6 +24,7 @@ type Props = PropsWithChildren<{
   headerImage?: React.ReactElement;
   headerBackgroundColor: { dark: string; light: string };
   backgroundType?: 'fishes' | 'bubbles' | 'waves' | 'default';
+  contentPosition?: 'top left' | 'top right' | 'top center' | 'bottom left';
   refreshControl?: React.ReactElement<RefreshControlProps>;
 }>;
 
@@ -31,6 +32,7 @@ export default function ParallaxScrollView({
   children,
   headerImage,
   backgroundType = 'default',
+  contentPosition = 'top center',
   refreshControl,
 }: Props) {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -79,7 +81,7 @@ export default function ParallaxScrollView({
             source={backgroundImage}
             style={styles.backgroundImage}
             contentFit="cover"
-            contentPosition="top center"
+            contentPosition={contentPosition}
           >
             <Animated.View
               style={[
@@ -119,7 +121,9 @@ export default function ParallaxScrollView({
             <ThemedView
               style={[
                 styles.content,
-                { backgroundColor: Colors.light.transparent },
+                {
+                  backgroundColor: Colors.light.transparent,
+                },
               ]}
             >
               {children}
