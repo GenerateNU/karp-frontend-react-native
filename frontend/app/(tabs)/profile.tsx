@@ -105,7 +105,7 @@ export default function ProfileScreen() {
         <View style={styles.statsContainer}>
           <StatCard
             title="Total Hours Spent Volunteering"
-            value={`${Math.round(stats.totalHours) == 1 ? '1 Hour' : `${Math.round(stats.totalHours)} Hours`}`}
+            value={`${Math.round(stats.totalHours) === 1 ? '1 Hour' : `${Math.round(stats.totalHours)} Hours`}`}
             fullWidth
           />
         </View>
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   seePastButton: {
     marginTop: 10,
-    paddingVertical: 5,
+    paddingTop: 5,
     paddingBottom: 100,
     alignItems: 'flex-end',
     width: '95%',
