@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   seePastButton: {
     marginTop: 10,
-    paddingVertical: 5,
+    paddingTop: 5,
     paddingBottom: 100,
     alignItems: 'flex-end',
     width: '95%',
