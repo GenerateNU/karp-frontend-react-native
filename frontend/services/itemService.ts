@@ -1,23 +1,15 @@
 import api from '@/api';
 import { LocationFilter } from '@/types/api/location';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
-
 export interface ItemFilters {
   search_text?: string;
   status?: string;
 }
 
-async function getItem(itemId: string, token: string) {
-  const response = await fetch(`${API_BASE_URL}/item/${itemId}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch item');
-  }
-
-  return response.json();
+async function getItem(itemId: string) {
+  const endpoint = `item/${itemId}`;
+  const { data: item } = await api.get(endpoint);
+  return item;
 }
 
 async function getAllItems(
