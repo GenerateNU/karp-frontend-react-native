@@ -7,6 +7,7 @@ import {
   TextStyle,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface SignUpFlowButtonProps {
   onPress: () => void;
@@ -107,7 +108,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   primaryText: {
-    color: Colors.light.white,
+    fontFamily: Fonts.bold_700_inter,
+    color: Colors.light.text,
   },
   secondaryButton: {
     backgroundColor: Colors.light.transparent,
@@ -121,7 +123,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.fishBlue,
   },
   fixedText: {
-    color: Colors.light.white,
+    fontFamily: Fonts.bold_700_inter,
+    color: Colors.light.text,
   },
   disabledButton: {
     backgroundColor: Colors.light.disabledButton,
