@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     color: Colors.light.primaryText,
-    fontFamily: Fonts.medium_500,
+    fontFamily: 'Ubuntu',
     textAlign: 'center',
   },
   form: {
