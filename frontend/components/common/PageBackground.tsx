@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
-import { ImageBackground } from 'expo-image';
+import { ImageBackground , ImageContentPosition } from 'expo-image';
 import { Colors } from '@/constants/Colors';
 
 type BackgroundType = 'fishes' | 'waves' | 'bubbles' | 'default' | string;
@@ -9,6 +9,7 @@ interface PageBackgroundProps {
   type?: BackgroundType;
   children: React.ReactNode;
   style?: ViewStyle;
+  contentPosition?: ImageContentPosition;
 }
 
 const backgroundImages: Record<string, any> = {
@@ -22,6 +23,7 @@ export function PageBackground({
   type = 'default',
   children,
   style,
+  contentPosition = 'top center',
 }: PageBackgroundProps) {
   const backgroundImage = backgroundImages[type];
 
@@ -31,6 +33,7 @@ export function PageBackground({
         source={null}
         style={[styles.container, style]}
         contentFit="cover"
+        contentPosition={contentPosition}
       >
         {children}
       </ImageBackground>
@@ -42,6 +45,7 @@ export function PageBackground({
       source={backgroundImage}
       style={[styles.container, style]}
       contentFit="cover"
+      contentPosition={contentPosition}
     >
       {children}
     </ImageBackground>

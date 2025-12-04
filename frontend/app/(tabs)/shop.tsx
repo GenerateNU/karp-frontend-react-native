@@ -252,12 +252,6 @@ export default function StoreScreen() {
     }
   }, [loadItems]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     refreshProfile();  // pulls latest XP, coins, level
-  //   }, [])
-  // );
-
   if (loading) {
     return <LoadingScreen text="Loading items..." />;
   }
