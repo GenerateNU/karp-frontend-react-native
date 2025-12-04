@@ -10,6 +10,9 @@ import { Ionicons } from '@expo/vector-icons';
 interface Props extends Event {
   registeredCount?: number;
   onShare?: () => void;
+  showCancelButton?: boolean;
+  onCancelSignUp?: () => void;
+  cancelLoading?: boolean;
 }
 
 export default function EventInfoTable({
@@ -26,6 +29,9 @@ export default function EventInfoTable({
   imageS3Key,
   coins,
   onShare,
+  showCancelButton = false,
+  onCancelSignUp,
+  cancelLoading = false,
 }: Props) {
   const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(null);
   const [orgName, setOrgName] = useState<string>(organization ?? '');
@@ -33,24 +39,35 @@ export default function EventInfoTable({
   const start = startDateTime ? new Date(startDateTime) : null;
   const end = endDateTime ? new Date(endDateTime) : null;
 
-  const dateFormatted = start
+  const startDate = start
     ? start.toLocaleDateString(undefined, {
-        month: 'numeric',
+        month: 'long',
         day: 'numeric',
         year: 'numeric',
       })
     : '';
 
-  const timeFormatted =
-    start && end
-      ? `${start.toLocaleTimeString(undefined, {
+    const endDate = end
+      ? end.toLocaleDateString(undefined, {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+      })
+    : '';
+
+    const startTime = start
+      ? start.toLocaleTimeString(undefined, {
           hour: 'numeric',
           minute: '2-digit',
-        })} - ${end.toLocaleTimeString(undefined, {
+      })
+    : '';
+
+    const endTime = end
+      ? end.toLocaleTimeString(undefined, {
           hour: 'numeric',
-          minute: '2-digit',
-        })}`
-      : '';
+          minute: '2-digit'
+      })
+    : '';
 
   const spotsRemaining = maxVolunteers - registeredCount;
 
@@ -110,7 +127,7 @@ export default function EventInfoTable({
         </Pressable>
       </View>
 
-      {/* Coins Badge */}
+      {/* Coins Badge + Cancel Button Row */}
       <View style={styles.coinsRow}>
         <View style={styles.coinsBadge}>
           <Image
@@ -119,20 +136,36 @@ export default function EventInfoTable({
           />
           <Text style={styles.coinsText}>{coins} Koins</Text>
         </View>
+
+        {showCancelButton && (
+          <Pressable
+            style={styles.cancelButton}
+            onPress={onCancelSignUp}
+            disabled={cancelLoading}
+          >
+            <Text style={styles.cancelButtonText}>
+              {cancelLoading ? 'Cancelling...' : 'Cancel Sign Up'}
+            </Text>
+          </Pressable>
+        )}
       </View>
 
       {/* Organizer */}
       <View style={styles.infoRow}>
+        <View>
+          <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
         <Text style={styles.label}>Organizer:</Text>
-        <Text style={styles.value}>{orgName || '[name]'}</Text>
+        <Text style={[styles.value, { marginTop: 0, marginLeft: 8 }]}>{orgName || '[name]'}</Text>
+          </View>
+          {address ? (
+        <Text style={[styles.value, { marginTop: 4 }]}>{address}</Text>
+          ) : null}
+        </View>
       </View>
 
       {/* Slots Remaining */}
       <View style={styles.infoRow}>
-        <Text style={styles.slotsLabel}>Slots Remaining:</Text>
-        <Text style={styles.slotsValue}>
-          {spotsRemaining}/{maxVolunteers}
-        </Text>
+        <Text style={styles.slotsLabel}>Spots Remaining: {spotsRemaining}/{maxVolunteers}</Text>
       </View>
 
       {/* Description */}
@@ -146,14 +179,8 @@ export default function EventInfoTable({
 
       {/* Date */}
       <View style={styles.infoRow}>
-        <Text style={styles.label}>Date:</Text>
-        <Text style={styles.value}>{dateFormatted}</Text>
-      </View>
-
-      {/* Time */}
-      <View style={styles.infoRow}>
-        <Text style={styles.label}>Time:</Text>
-        <Text style={styles.value}>{timeFormatted}</Text>
+        <Text style={styles.value}>Start: {startDate} at {startTime}</Text>
+        <Text style={styles.value}>End: {endDate} at {endTime}</Text>
       </View>
     </View>
   );
@@ -193,6 +220,7 @@ const styles = StyleSheet.create({
   coinsRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 24,
     marginTop: 12,
   },
@@ -252,5 +280,19 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: '#1D0F48',
     marginTop: 4,
+  },
+  cancelButton: {
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#FF6347',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  cancelButtonText: {
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#FF6347',
   },
 });
