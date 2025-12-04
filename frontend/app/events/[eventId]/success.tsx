@@ -133,7 +133,7 @@ export default function EventSuccessPage() {
           {/* Share Event Link - Top Right */}
           <Pressable onPress={handleShare} style={styles.shareButton}>
             <Text style={styles.shareText}>Share Event:</Text>
-            <Ionicons name="share-outline" size={16} color="#1D0F48" />
+            <Ionicons name="share-outline" size={20} color="#1D0F48" />
           </Pressable>
 
           {/* Anchor Icon */}
@@ -163,8 +163,8 @@ export default function EventSuccessPage() {
           </View>
 
           {/* Add to Calendar Button */}
-          <Pressable style={styles.calendarButton} onPress={addToCalendar}>
-            <Text style={styles.calendarButtonText}>Add to Calendar</Text>
+          <Pressable onPress={addToCalendar}>
+            <Text style={styles.calendarLink}>Add to Calendar</Text>
           </Pressable>
 
           {/* Reward Message */}
@@ -207,16 +207,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   shareButton: {
+    position: 'absolute',
+    top: 20,
+    right: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-end',
-    gap: 6,
+    gap: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
+    zIndex: 10,
   },
   shareText: {
     fontFamily: 'Inter',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '400',
     color: '#1D0F48',
     textDecorationLine: 'underline',
@@ -226,6 +229,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   anchorIcon: {
+    marginTop: 31,
     width: 79,
     height: 100,
   },
@@ -235,16 +239,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1D0F48',
     textAlign: 'center',
-    marginBottom: 32,
+    marginBottom: 40,
   },
   infoSection: {
     width: '100%',
+    alignItems: 'center',
     gap: 12,
     marginBottom: 24,
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
   },
   infoLabel: {
@@ -259,22 +265,13 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#1D0F48',
   },
-  calendarButton: {
-    width: '100%',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#1D0F48',
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  calendarButtonText: {
+  calendarLink: {
     fontFamily: 'Inter',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '400',
     color: '#1D0F48',
     textDecorationLine: 'underline',
+    marginBottom: 32,
   },
   rewardMessage: {
     fontFamily: 'Inter',
@@ -283,10 +280,10 @@ const styles = StyleSheet.create({
     color: '#1D0F48',
     textAlign: 'center',
     lineHeight: 24,
-    marginBottom: 24,
+    marginBottom: 32,
   },
   treasureContainer: {
-    marginBottom: 32,
+    marginBottom: 82.24,
   },
   treasureIcon: {
     width: 98,
@@ -294,15 +291,15 @@ const styles = StyleSheet.create({
   },
   seeEventButton: {
     backgroundColor: '#74C0EB',
-    borderRadius: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 40,
+    borderRadius: 16.333,
+    paddingVertical: 13,
+    paddingHorizontal: 33,
     alignItems: 'center',
   },
   seeEventButtonText: {
     fontFamily: 'Inter',
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '700',
     color: '#1D0F48',
   },
   errorText: {
