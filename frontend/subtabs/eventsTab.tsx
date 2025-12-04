@@ -12,7 +12,6 @@ import {
 import { Event, EventFilters } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { EventCard } from '@/components/EventCard';
-// import { FeedCard } from '@/components/FeedCard';
 import { FilterModal } from '@/components/FilterModal';
 import { useRouter } from 'expo-router';
 import { LoadingScreen } from '@/components/LoadingScreen';
