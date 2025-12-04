@@ -8,7 +8,7 @@
     "scheme": "karp",
     "owner": "generate-fall-2025-karp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.generate.karp",
