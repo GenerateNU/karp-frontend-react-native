@@ -64,10 +64,8 @@ export function FeedCard({
         </View>
       )}
 
-      {/* Event Details Section */}
       <View className="mt-6 inline-flex h-24 w-full items-start justify-start gap-5">
         <View className="relative h-24 flex-1">
-          {/* Date Badge - Left Side with Background Image */}
           <View className="absolute left-0 top-0 h-28 w-24 overflow-hidden rounded-[9.86px]">
             {imgUrl ? (
               <Image
@@ -99,12 +97,10 @@ export function FeedCard({
             </View>
           </View>
 
-          {/* Event Info - Right Side */}
           <View
             className="absolute top-0 inline-flex w-52 flex-col items-start justify-center gap-2.5"
             style={{ left: 90 }}
           >
-            {/* Event Name */}
             <Text
               className="w-44 text-base font-bold text-indigo-950"
               style={{ fontFamily: 'Ubuntu' }}
@@ -113,25 +109,25 @@ export function FeedCard({
               {feedItem.name}
             </Text>
 
-            {/* Location */}
-            <View className="inline-flex flex-row items-center justify-start gap-2">
-              <Image
-                source={require('../assets/images/location-icon.png')}
-                style={{ width: 10, height: 14 }}
-                className="ml-1 h-5 w-5"
-              />
-              <Text
-                className="flex-1 text-sm font-normal text-indigo-950"
-                style={{ fontFamily: 'Inter' }}
-                numberOfLines={1}
-              >
-                {feedItem.address}
-              </Text>
-            </View>
+            {feedItem.address && (
+              <View className="inline-flex flex-row items-center justify-start gap-2">
+                <Image
+                  source={require('../assets/images/location-icon.png')}
+                  style={{ width: 10, height: 14 }}
+                  className="ml-1 h-5 w-5"
+                />
+                <Text
+                  className="flex-1 text-sm font-normal text-indigo-950"
+                  style={{ fontFamily: 'Inter' }}
+                  numberOfLines={1}
+                >
+                  {feedItem.address}
+                </Text>
+              </View>
+            )}
 
             {isEventFeed ? (
               <>
-                {/* Time */}
                 <View className="inline-flex flex-row items-center justify-start gap-2">
                   <Image
                     source={require('../assets/images/clock-icon.png')}
@@ -148,7 +144,6 @@ export function FeedCard({
               </>
             ) : (
               <>
-                {/* Description */}
                 <Text
                   className="w-44 text-sm font-normal text-indigo-950"
                   style={{ fontFamily: 'Inter' }}
@@ -163,7 +158,6 @@ export function FeedCard({
         </View>
       </View>
 
-      {/* More Info Button - Bottom */}
       <View className="flex items-end justify-end">
         <Pressable
           className="mt-4 w-24 flex-row items-center justify-center gap-1 rounded-[9.86px] bg-amber-400 px-3 py-2"
