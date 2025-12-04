@@ -13,6 +13,7 @@ import { orgService } from '@/services/organizationService';
 interface Props extends Event {
   onSelectTime?: (time: string) => void;
   selectedTime?: string;
+  registeredCount?: number;
 }
 
 export default function EventInfoTable({
@@ -24,11 +25,41 @@ export default function EventInfoTable({
   description,
   startDateTime,
   endDateTime,
-  timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM'],
+  maxVolunteers,
+  registeredCount = 0,
   imageS3Key,
 }: Props) {
   const start = startDateTime ? new Date(startDateTime) : null;
   const end = endDateTime ? new Date(endDateTime) : null;
+  const startDate = start
+    ? start.toLocaleString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : '';
+  const startTime = start
+    ? start.toLocaleString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '';
+  const endDate = end
+    ? end.toLocaleString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : '';
+  const endTime = end
+    ? end.toLocaleString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '';
+
+  const spotsRemaining = maxVolunteers - registeredCount;
+
   const [imagePreSignedUrl, setImagePreSignedUrl] = React.useState<
     string | null
   >(null);
@@ -68,31 +99,6 @@ export default function EventInfoTable({
     }
     loadOrganizer();
   }, [organization, organizationId]);
-
-  const dateFormatted = start
-    ? start.toLocaleString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-      })
-    : '';
-
-  const formatDuration = (s: Date, e: Date) => {
-    const diffMs = Math.max(0, e.getTime() - s.getTime());
-    const totalMinutes = Math.round(diffMs / 60000);
-    if (totalMinutes < 60) {
-      return `${totalMinutes} min${totalMinutes !== 1 ? 's' : ''}`;
-    }
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return minutes === 0
-      ? `${hours} hr${hours !== 1 ? 's' : ''}`
-      : `${hours} hr ${minutes} min`;
-  };
-
-  const duration = start && end ? formatDuration(start, end) : '';
 
   return (
     <SafeAreaView
@@ -137,21 +143,15 @@ export default function EventInfoTable({
               <Text style={[styles.organizationText, styles.spacing]}>
                 {orgName}
               </Text>
-              <Text style={styles.dateText}>Date: {dateFormatted}</Text>
-              <Text style={[styles.organizationText, styles.spacing]}>
-                Duration: {duration}
+              <Text style={styles.spotsText}>
+                Spots Remaining: {spotsRemaining} / {maxVolunteers}
               </Text>
-              <Text style={styles.detailText}>Available Times: </Text>
-              <View style={styles.timesTable}>
-                {timeSlots.map((slot, idx) => {
-                  // const isSelected = selectedTime === slot;
-                  return (
-                    <Pressable key={`${slot}-${idx}`} style={styles.timeItem}>
-                      <ThemedText style={styles.timeText}>{slot}</ThemedText>
-                    </Pressable>
-                  );
-                })}
-              </View>
+              <Text style={styles.dateText}>
+                Start: {startDate} at {startTime}{' '}
+              </Text>
+              <Text style={styles.dateText}>
+                End: {endDate} at {endTime}{' '}
+              </Text>
             </View>
           </View>
         </ThemedView>
@@ -240,33 +240,11 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: 8,
   },
-  timesTable: {
-    width: '100%',
-    marginTop: 8,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-  },
-  timeItem: {
-    minWidth: 75,
-    paddingHorizontal: 20,
-    paddingVertical: 1.25,
-    backgroundColor: Colors.light.background,
-    borderRadius: 13,
-    borderWidth: 0.7,
-    borderColor: Colors.light.text,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginRight: 8,
-    marginBottom: 12,
-  },
-  timeText: {
+  spotsText: {
     color: Colors.light.text,
-    fontSize: 15.16,
-    fontFamily: 'JosefinSans_300Light',
-    fontWeight: '300',
-    flexWrap: 'wrap',
-    textAlign: 'center',
+    fontFamily: Fonts.regular_400,
+    fontSize: 16,
+    lineHeight: 22,
+    marginBottom: 8,
   },
 });

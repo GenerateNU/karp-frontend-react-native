@@ -19,9 +19,13 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { BackHeader } from '@/components/common/BackHeader';
 import { LoadingScreen } from '@/components/LoadingScreen';
+import { EventAttendeesCarousel } from '@/components/events/EventAttendeesCarousel';
 
 export default function EventSignUpPage() {
-  const { eventId } = useLocalSearchParams();
+  const { eventId, source } = useLocalSearchParams<{
+    eventId: string;
+    source?: 'feed' | 'profile';
+  }>();
   const router = useRouter();
   const { isAuthenticated, isGuest, clearGuestMode, volunteer } = useAuth();
   const queryClient = useQueryClient();
@@ -30,6 +34,8 @@ export default function EventSignUpPage() {
   const [message, setMessage] = useState<string>('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [unregistering, setUnregistering] = useState(false);
+  const [registeredCount, setRegisteredCount] = useState(0);
+  const isProfileView = source === 'profile';
 
   useEffect(() => {
     if (!isAuthenticated && !isGuest) {
@@ -41,6 +47,8 @@ export default function EventSignUpPage() {
       try {
         const eventData = await eventService.getEventById(eventId as string);
         setEvent(eventData);
+        const registrations = await getEventRegistrations(eventId as string);
+        setRegisteredCount(registrations.length);
       } catch (error) {
         console.log('Error fetching event details:', error);
         setEvent(null);
@@ -71,10 +79,6 @@ export default function EventSignUpPage() {
   const handleSignUp = async () => {
     if (isGuest) {
       setMessage('You need an account to sign up for events!');
-      return;
-    }
-    if (false) {
-      setMessage('Sorry, this event has no spots left.');
       return;
     }
     if (event?.id) {
@@ -124,38 +128,57 @@ export default function EventSignUpPage() {
         <ScrollView>
           <BackHeader />
           <ThemedView style={styles.content}>
-            <EventInfoTable {...event!} />
+            <EventInfoTable {...event!} registeredCount={registeredCount} />
 
-            <View style={styles.signUpSection}>
-              {!isRegistered ? (
-                <Button
-                  text="SIGN UP"
-                  onPress={handleSignUp}
-                  loading={false}
-                  disabled={false}
-                />
-              ) : (
-                <Button
-                  text="UNREGISTER"
-                  onPress={handleUnregister}
-                  loading={unregistering}
-                  disabled={unregistering}
-                />
-              )}
+            {isProfileView ? (
+              <View style={styles.profileViewSection}>
+                <EventAttendeesCarousel eventId={eventId as string} />
 
-              {message ? (
-                <View style={styles.messageBox}>
-                  <ThemedText style={styles.errorText}>{message}</ThemedText>
-                  {isGuest ? (
-                    <Pressable onPress={handleSignIn}>
-                      <ThemedText style={styles.signUpLink}>
-                        Sign In Now
-                      </ThemedText>
-                    </Pressable>
-                  ) : null}
+                <View style={styles.checkInOutButtons}>
+                  <Button
+                    text="CHECK IN"
+                    onPress={() => router.push('/scan?type=check-in')}
+                    buttonsStyle={styles.checkInButton}
+                  />
+                  <Button
+                    text="CHECK OUT"
+                    onPress={() => router.push('/scan?type=checkout')}
+                    buttonsStyle={styles.checkOutButton}
+                  />
                 </View>
-              ) : null}
-            </View>
+              </View>
+            ) : (
+              <View style={styles.signUpSection}>
+                {!isRegistered ? (
+                  <Button
+                    text="SIGN UP"
+                    onPress={handleSignUp}
+                    loading={false}
+                    disabled={false}
+                  />
+                ) : (
+                  <Button
+                    text="UNREGISTER"
+                    onPress={handleUnregister}
+                    loading={unregistering}
+                    disabled={unregistering}
+                  />
+                )}
+
+                {message ? (
+                  <View style={styles.messageBox}>
+                    <ThemedText style={styles.errorText}>{message}</ThemedText>
+                    {isGuest ? (
+                      <Pressable onPress={handleSignIn}>
+                        <ThemedText style={styles.signUpLink}>
+                          Sign In Now
+                        </ThemedText>
+                      </Pressable>
+                    ) : null}
+                  </View>
+                ) : null}
+              </View>
+            )}
           </ThemedView>
         </ScrollView>
       </SafeAreaView>
@@ -178,6 +201,23 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     alignItems: 'center',
     gap: 12,
+  },
+  profileViewSection: {
+    marginBottom: 24,
+  },
+  checkInOutButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginTop: 16,
+  },
+  checkInButton: {
+    flex: 1,
+    backgroundColor: Colors.light.primary,
+  },
+  checkOutButton: {
+    flex: 1,
+    backgroundColor: '#ff0000aa',
   },
   messageBox: {
     width: '100%',
