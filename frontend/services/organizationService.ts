@@ -6,11 +6,24 @@ async function getAllOrganizations(
   filters?: OrgFilters,
   locationFilter?: LocationFilter
 ): Promise<Organization[]> {
-  const params: Record<string, unknown> = {
-    lat: locationFilter?.latitude,
-    lng: locationFilter?.longitude,
-    distance_km: locationFilter?.radiusKm,
-  };
+  const params: Record<string, unknown> = {};
+
+  if (
+    locationFilter &&
+    locationFilter.latitude &&
+    locationFilter.longitude &&
+    locationFilter.radiusKm
+  ) {
+    params.lat = locationFilter.latitude;
+    params.lng = locationFilter.longitude;
+    params.distance_km = locationFilter.radiusKm;
+    console.log('Filtering organizations by location:', {
+      lat: params.lat,
+      lng: params.lng,
+      distance_km: params.distance_km,
+    });
+  }
+
   if (filters) {
     Object.assign(params, filters);
   }
@@ -18,6 +31,11 @@ async function getAllOrganizations(
   const { data: organizations } = await api.get('organization/all', {
     params,
   });
+  console.log(
+    'Fetched organizations:',
+    organizations?.length || 0,
+    'organizations'
+  );
   return organizations;
 }
 

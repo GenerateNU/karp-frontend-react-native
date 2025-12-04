@@ -15,8 +15,12 @@ export interface Item {
   timePosted: string;
   expiration: string;
   price: number;
-  description: string;
-  imageS3Key: string;
+  description: string | null;
+  location: string | null;
+  tags: string[];
+  imageS3Key?: string | null;
+  vendor_name?: string; // For backward compatibility
+  vendor_id?: string; // For backward compatibility
 }
 
 export interface ItemResponse {

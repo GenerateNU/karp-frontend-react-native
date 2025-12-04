@@ -16,6 +16,7 @@ import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
+import { useLocation } from '@/context/LocationContext';
 import { itemService } from '@/services/itemService';
 import { volunteerService } from '@/services/volunteerService';
 import { LoadingScreen } from '@/components/LoadingScreen';
@@ -45,12 +46,23 @@ export default function StoreScreen() {
   );
 
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user } = useAuth();
+  const { locationFilter, clearLocationFilter } = useLocation();
 
   const loadItems = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await itemService.getAllItems();
+      const filters = searchText ? { search_text: searchText } : undefined;
+
+      // Debug logging
+      console.log('Loading items with filters:', {
+        searchText,
+        locationFilter,
+        filters,
+      });
+
+      const response = await itemService.getAllItems(filters, locationFilter);
+      console.log('Items response:', response);
 
       const mapped: ShopItem[] = (Array.isArray(response) ? response : []).map(
         (raw: {
@@ -70,12 +82,18 @@ export default function StoreScreen() {
         })
       );
       setItems(mapped);
+      console.log('Mapped items:', mapped.length, 'items loaded');
     } catch (e) {
-      Alert.alert('Error', `Failed to load items. Please try again ${e}.`);
+      console.error('Error loading items:', e);
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      Alert.alert(
+        'Error',
+        `Failed to load items. Please try again.\n\n${errorMessage}`
+      );
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [locationFilter, searchText]);
 
   useEffect(() => {
     // Fetch current volunteer if user is available (same approach as profile page)
@@ -234,6 +252,38 @@ export default function StoreScreen() {
             onFilterPress={() => setDrawerOpen(true)}
           />
 
+          {locationFilter && (
+            <ThemedView
+              className="mb-2 flex-row items-center justify-between rounded-lg bg-blue-100 p-2"
+              style={{ marginTop: 8 }}
+            >
+              <ThemedText
+                style={{
+                  color: 'black',
+                  fontSize: 12,
+                  fontFamily: Fonts.regular_400,
+                }}
+              >
+                📍 Filtering within {locationFilter.radiusKm}km
+              </ThemedText>
+              <TouchableOpacity
+                onPress={() => {
+                  clearLocationFilter();
+                }}
+              >
+                <ThemedText
+                  style={{
+                    color: '#3B82F6',
+                    fontSize: 12,
+                    fontFamily: Fonts.medium_500,
+                  }}
+                >
+                  Clear
+                </ThemedText>
+              </TouchableOpacity>
+            </ThemedView>
+          )}
+
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
@@ -244,7 +294,7 @@ export default function StoreScreen() {
               fontSize: 20,
             }}
           >
-            Popular in Boston
+            {locationFilter ? `Items near you` : 'Popular in Boston'}
           </ThemedText>
           {(() => {
             const popularItems = filteredItems;
