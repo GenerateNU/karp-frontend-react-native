@@ -191,7 +191,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   signInButtonText: {
-    fontFamily: Fonts.bold_700,
+    fontFamily: Fonts.bold_700_inter,
+    color: Colors.light.text,
   },
   forgotPasswordContainer: {
     alignSelf: 'flex-end',

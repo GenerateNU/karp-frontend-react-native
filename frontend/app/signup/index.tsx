@@ -168,10 +168,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
+    marginTop: 20,
     fontSize: 28,
-    color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
-    alignSelf: 'flex-start',
+    color: Colors.light.primaryText,
+    fontFamily: 'Ubuntu',
+    textAlign: 'center',
   },
   form: {
     gap: 20,
