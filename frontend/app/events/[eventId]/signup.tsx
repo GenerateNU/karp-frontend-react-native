@@ -173,11 +173,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#1D0F48',
     paddingHorizontal: 39,
-    marginBottom: 24,
+    marginBottom: 59,
+    marginTop: 36.5
   },
   dateSection: {
     paddingHorizontal: 39,
-    marginBottom: 24,
+    marginBottom: 400,
   },
   sectionLabel: {
     fontFamily: 'Inter',
@@ -191,10 +192,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: '#1D0F48',
+    marginTop: 16
   },
   confirmButton: {
     backgroundColor: '#74C0EB',
-    borderRadius: 16,
+    borderRadius: 16.333,
     paddingVertical: 12,
     alignItems: 'center',
     alignSelf: 'center',
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     fontFamily: 'Inter',
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '700',
     color: '#1D0F48',
   },
   errorText: {
