@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, Pressable, ScrollView } from 'react-native';
 import { EventFilters } from '@/types/api/event';
+import LocationMapFilter from './LocationMapFilter';
 
 interface FilterModalProps {
   visible: boolean;
@@ -98,6 +99,7 @@ export function FilterModal({
   const [selectedCauseAreas, setSelectedCauseAreas] = useState<string[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedGoodFor, setSelectedGoodFor] = useState<string[]>([]);
+  const [showLocationMap, setShowLocationMap] = useState(false);
 
   const handleApply = () => {
     const mergedFilters: EventFilters = {
@@ -184,9 +186,15 @@ export function FilterModal({
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 bg-gray-100'
                   }`}
-                  onPress={() =>
-                    setSelectedSort(selectedSort === option ? '' : option)
-                  }
+                  onPress={() => {
+                    if (option === 'Location') {
+                      setShowLocationMap(!showLocationMap);
+                      setSelectedSort(selectedSort === option ? '' : option);
+                    } else {
+                      setSelectedSort(selectedSort === option ? '' : option);
+                      setShowLocationMap(false);
+                    }
+                  }}
                 >
                   <Text
                     className={`text-sm ${
@@ -200,6 +208,13 @@ export function FilterModal({
                 </Pressable>
               ))}
             </View>
+
+            {/* Location Map Filter */}
+            {showLocationMap && (
+              <View className="mt-4">
+                <LocationMapFilter />
+              </View>
+            )}
           </View>
 
           {/* Filters Section */}

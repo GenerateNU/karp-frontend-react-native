@@ -32,16 +32,32 @@ async function searchEvents(
   const params: Record<string, unknown> = {
     q: query,
     statuses: EventStatus.APPROVED,
-    lat: locationFilter?.latitude,
-    lng: locationFilter?.longitude,
-    distance_km: locationFilter?.radiusKm,
   };
+
+  if (
+    locationFilter &&
+    locationFilter.latitude &&
+    locationFilter.longitude &&
+    locationFilter.radiusKm
+  ) {
+    params.lat = locationFilter.latitude;
+    params.lng = locationFilter.longitude;
+    params.distance_km = locationFilter.radiusKm;
+    params.sort_by = 'distance';
+    console.log('Filtering events by location:', {
+      lat: params.lat,
+      lng: params.lng,
+      distance_km: params.distance_km,
+      sort_by: params.sort_by,
+    });
+  }
+
   if (filters) {
     Object.assign(params, filters);
   }
 
   const { data: events } = await api.get('event/search', { params });
-  console.log('Actual Events:', events);
+  console.log('Fetched events:', events?.length || 0, 'events');
   return events;
 }
 
