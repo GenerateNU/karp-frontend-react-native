@@ -130,13 +130,15 @@ export default function EventSuccessPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          {/* Share Event Link - Top Right */}
+          <Pressable onPress={() => router.replace('/')} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1D0F48" />
+            <Text style={styles.backText}>Back to Home</Text>
+          </Pressable>
           <Pressable onPress={handleShare} style={styles.shareButton}>
             <Text style={styles.shareText}>Share Event:</Text>
             <Ionicons name="share-outline" size={20} color="#1D0F48" />
           </Pressable>
 
-          {/* Anchor Icon */}
           <View style={styles.iconContainer}>
             <Image
               source={require('@/assets/images/anchor-icon.svg')}
@@ -145,10 +147,8 @@ export default function EventSuccessPage() {
             />
           </View>
 
-          {/* Title */}
           <Text style={styles.title}>You&apos;re all set!</Text>
 
-          {/* Date and Time */}
           <View style={styles.infoSection}>
             <View style={styles.infoRow}>
               <Ionicons name="calendar-outline" size={18} color="#1D0F48" />
@@ -162,18 +162,15 @@ export default function EventSuccessPage() {
             </View>
           </View>
 
-          {/* Add to Calendar Button */}
           <Pressable onPress={addToCalendar}>
             <Text style={styles.calendarLink}>Add to Calendar</Text>
           </Pressable>
 
-          {/* Reward Message */}
           <Text style={styles.rewardMessage}>
             That&apos;s {event.coins} more Koins waiting for you!{'\n'}
             Just attend your event to claim your reward.
           </Text>
 
-          {/* Treasure Chest Icon */}
           <View style={styles.treasureContainer}>
             <Image
               source={require('@/assets/images/treasure-chest.svg')}
@@ -181,8 +178,6 @@ export default function EventSuccessPage() {
               contentFit="contain"
             />
           </View>
-
-          {/* See This Event Button */}
           <Pressable
             style={styles.seeEventButton}
             onPress={() => router.push(`/events/${eventId}/info?source=profile`)}
@@ -205,6 +200,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 33,
     paddingTop: 20,
     alignItems: 'center',
+  },
+    backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    zIndex: 10,
+  },
+  backText: {
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#1D0F48',
   },
   shareButton: {
     position: 'absolute',
