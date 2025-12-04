@@ -247,9 +247,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signUpButton: {
-    width: '100%',
-    backgroundColor: '#90D0CD',
-    borderRadius: 8,
+    width: 195,
+    backgroundColor: '#74C0EB',
+    borderRadius: 16.333,
     paddingVertical: 16,
     alignItems: 'center',
   },
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   signUpButtonText: {
     fontFamily: 'Inter',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#1D0F48',
   },
   messageBox: {
