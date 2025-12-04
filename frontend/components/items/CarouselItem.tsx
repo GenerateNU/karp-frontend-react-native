@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { Fonts } from '@/constants/Fonts';
 import { Image } from 'expo-image';
 import { imageService } from '@/services/imageService';
@@ -184,22 +182,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.bold_700,
     fontSize: 12,
     color: '#2D2D2D',
-  },
-  navButton: {
-    position: 'absolute',
-    right: 12,
-    top: 70, // Positioned in the middle of the image section
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#FFB74D', // Light orange/yellow
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
   },
   infoSection: {
     flex: 1,

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSignUp } from '@/context/SignUpContext';
 import { Colors } from '@/constants/Colors';
-import { RelativePathString, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 export function SignUpProgress() {

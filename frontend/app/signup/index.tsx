@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSignUp } from '@/context/SignUpContext';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
-import { Fonts } from '@/constants/Fonts';
 import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
 import { SignUpFlowInput } from '@/components/signup/SignUpFlowInput';
 

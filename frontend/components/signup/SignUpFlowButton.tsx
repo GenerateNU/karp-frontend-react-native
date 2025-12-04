@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   primaryText: {
     fontFamily: Fonts.bold_700_inter,
     color: Colors.light.text,
+    fontSize: 18,
   },
   secondaryButton: {
     backgroundColor: Colors.light.transparent,
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
   fixedText: {
     fontFamily: Fonts.bold_700_inter,
     color: Colors.light.text,
+    fontSize: 18,
   },
   disabledButton: {
     backgroundColor: Colors.light.disabledButton,
