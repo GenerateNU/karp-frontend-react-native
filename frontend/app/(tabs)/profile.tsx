@@ -105,7 +105,7 @@ export default function ProfileScreen() {
         <View style={styles.statsContainer}>
           <StatCard
             title="Total Hours Spent Volunteering"
-            value={`${Math.round(stats.totalHours) == 1 ? '1 Hour' : `${Math.round(stats.totalHours)} Hours`}`}
+            value={`${Math.round(stats.totalHours) === 1 ? '1 Hour' : `${Math.round(stats.totalHours)} Hours`}`}
             fullWidth
           />
         </View>
