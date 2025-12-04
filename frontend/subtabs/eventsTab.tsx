@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import { Event, EventFilters } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
-// import { EventCard } from '@/components/EventCard';
-import { FeedCard } from '@/components/FeedCard';
+import { EventCard } from '@/components/EventCard';
+// import { FeedCard } from '@/components/FeedCard';
 import { FilterModal } from '@/components/FilterModal';
 import { useRouter } from 'expo-router';
 import { LoadingScreen } from '@/components/LoadingScreen';
@@ -103,7 +103,7 @@ export default function EventsScreen() {
 
   const renderEvent = ({ item }: { item: Event }) => (
     console.log('Rendering event:', item),
-    (<FeedCard event={item} onPress={handleEventPress} />)
+    (<EventCard event={item} onPress={handleEventPress} />)
   );
 
   const renderEmptyState = () => (
