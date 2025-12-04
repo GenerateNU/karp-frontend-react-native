@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { EventSignUpForm } from '@/components/events/EventSignUpForm';
 import { useAuth } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
-import { BackHeader } from '@/components/common/BackHeader';
 import { eventService } from '@/services/eventService';
 import { LoadingScreen } from '@/components/LoadingScreen';
+import { Ionicons } from '@expo/vector-icons';
+import { EventSignUpForm } from '@/components/events/EventSignUpForm';
 
 export default function EventSignUpPage() {
   const { eventId } = useLocalSearchParams();
@@ -43,21 +41,70 @@ export default function EventSignUpPage() {
     return <LoadingScreen text="Loading event sign-up details..." />;
   }
 
+  const start = event?.startDateTime ? new Date(event.startDateTime) : null;
+  const end = event?.endDateTime ? new Date(event.endDateTime) : null;
+
+  const startDate = start
+    ? start.toLocaleDateString(undefined, {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : '';
+
+    const endDate = end
+      ? end.toLocaleDateString(undefined, {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+      })
+    : '';
+
+    const startTime = start
+      ? start.toLocaleTimeString(undefined, {
+          hour: 'numeric',
+          minute: '2-digit',
+      })
+    : '';
+
+    const endTime = end
+      ? end.toLocaleTimeString(undefined, {
+          hour: 'numeric',
+          minute: '2-digit'
+      })
+    : '';
+
+  const dateFormatted = start
+    ? start.toLocaleDateString(undefined, {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      })
+    : 'DD/MM/YYYY';
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <BackHeader />
-          <ThemedView style={styles.content}>
-            <ThemedText type="title" style={styles.title}>
-              Sign Up
-            </ThemedText>
-            <ThemedText type="title" style={styles.infoConfirmationTitle}>
-              Info Confirmation:
-            </ThemedText>
-            <EventSignUpForm event={event!} />
-          </ThemedView>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Back Button */}
+          <Pressable onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1D0F48" />
+            <Text style={styles.backText}>Back</Text>
+          </Pressable>
+
+          {/* Title */}
+          <Text style={styles.title}>Sign Up</Text>
+
+          {/* Date Section */}
+          <View style={styles.dateSection}>
+            <Text style={styles.sectionLabel}>Date:</Text>
+            <Text style={styles.dateValue}>Start: {startDate} at {startTime}</Text>
+            <Text style={styles.dateValue}>End: {endDate} at {endTime}</Text>
+          </View>
+
+          {/* Sign Up Form */}
+          <EventSignUpForm event={event!} />
         </ScrollView>
       </SafeAreaView>
     </>
@@ -67,26 +114,47 @@ export default function EventSignUpPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#FFFDFA',
   },
-  content: {
-    paddingLeft: 34,
-    paddingRight: 46,
+  scrollContent: {
+    paddingBottom: 100,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 39,
+    paddingVertical: 15,
+    gap: 8,
+  },
+  backText: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#1D0F48',
   },
   title: {
-    fontFamily: 'JosefinSans_400Regular',
+    fontFamily: 'Ubuntu',
     fontSize: 44,
-    fontStyle: 'normal',
-    fontWeight: 400,
-    lineHeight: 44,
-    paddingBottom: 21,
+    fontWeight: '700',
+    color: '#1D0F48',
+    paddingHorizontal: 39,
+    marginBottom: 24,
   },
-  infoConfirmationTitle: {
-    color: Colors.light.text,
-    fontFamily: 'JosefinSans_300Light',
-    fontSize: 20,
-    fontStyle: 'normal',
-    fontWeight: 300,
-    paddingBottom: 5,
+  dateSection: {
+    paddingHorizontal: 39,
+    marginBottom: 24,
+  },
+  sectionLabel: {
+    fontFamily: 'Inter',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#1D0F48',
+    marginBottom: 8,
+  },
+  dateValue: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#1D0F48',
   },
 });
