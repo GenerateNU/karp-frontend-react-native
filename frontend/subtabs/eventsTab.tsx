@@ -17,6 +17,7 @@ import { useRouter } from 'expo-router';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocation } from '@/context/LocationContext';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 export default function EventsScreen() {
   const { locationFilter } = useLocation();
@@ -28,6 +29,7 @@ export default function EventsScreen() {
   const [filters, setFilters] = useState<EventFilters>({});
   const router = useRouter();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tabBarHeight = useBottomTabBarHeight();
 
   const loadEvents = useCallback(
     async (searchQuery?: string, filters?: EventFilters) => {
@@ -197,7 +199,7 @@ export default function EventsScreen() {
                 />
               }
               ListEmptyComponent={renderEmptyState}
-              contentContainerStyle={{ paddingBottom: 16 }}
+              contentContainerStyle={{ paddingBottom: tabBarHeight + 24 }}
             />
           )}
         </>

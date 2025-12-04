@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
-import { debounce, trim, toLower } from 'lodash';
+import { debounce } from 'lodash';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import CarouselItem from '@/components/items/CarouselItem';
