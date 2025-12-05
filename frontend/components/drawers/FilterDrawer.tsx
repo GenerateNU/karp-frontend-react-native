@@ -41,7 +41,7 @@ export default function FilterDrawer({
   const [activeSide, setActiveSide] = useState<'one' | 'two'>('one');
 
   const sheetRef = useRef<React.ComponentRef<typeof BottomSheet>>(null);
-  const snapPoints = useMemo(() => ['85%'], []);
+  const snapPoints = useMemo(() => ['90%'], []);
 
   const handleSheetChange = useCallback(
     (index: number) => {
