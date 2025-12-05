@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   headerTitle: {
-    fontFamily: Fonts.regular_400,
+    fontFamily: Fonts.bold_700,
     fontSize: 24,
     fontWeight: 'bold',
     color: Colors.light.text,
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerSubtitle: {
-    fontFamily: Fonts.regular_400,
-    fontSize: 16,
+    fontFamily: Fonts.bold_700,
+    fontSize: 18,
     paddingTop: 10,
     color: Colors.light.text,
     textAlign: 'center',

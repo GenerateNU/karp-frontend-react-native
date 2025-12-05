@@ -106,11 +106,6 @@ export default function EventsScreen() {
     [router]
   );
 
-  const handleEventPress = useCallback((event: Event) => {
-    console.log('Event pressed:', event);
-    console.log('Navigating to event details for ID:', event.id);
-    router.push(`/events/${event.id}/info`);
-  }, []);
   const handleSortPress = useCallback(
     (sortOption: EventSortOption) => {
       const newFilters: EventFilters = {

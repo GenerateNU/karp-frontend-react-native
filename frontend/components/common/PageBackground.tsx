@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
-import { ImageBackground , ImageContentPosition } from 'expo-image';
+import { ImageBackground, ImageContentPosition } from 'expo-image';
 import { Colors } from '@/constants/Colors';
 
 type BackgroundType = 'fishes' | 'waves' | 'bubbles' | 'default' | string;

@@ -30,6 +30,9 @@ export default function EventSignUpPage() {
   const [message, setMessage] = useState<string>('');
   const [isRegistered, setIsRegistered] = useState(false);
   const [unregistering, setUnregistering] = useState(false);
+  const isEventPast = event?.endDateTime
+    ? new Date(event.endDateTime) < new Date()
+    : false;
 
   useEffect(() => {
     if (!isAuthenticated && !isGuest) {
@@ -127,21 +130,21 @@ export default function EventSignUpPage() {
             <EventInfoTable {...event!} />
 
             <View style={styles.signUpSection}>
-              {!isRegistered ? (
-                <Button
-                  text="SIGN UP"
-                  onPress={handleSignUp}
-                  loading={false}
-                  disabled={false}
-                />
-              ) : (
+              {isRegistered ? (
                 <Button
                   text="UNREGISTER"
                   onPress={handleUnregister}
                   loading={unregistering}
                   disabled={unregistering}
                 />
-              )}
+              ) : !isEventPast ? (
+                <Button
+                  text="SIGN UP"
+                  onPress={handleSignUp}
+                  loading={false}
+                  disabled={false}
+                />
+              ) : null}
 
               {message ? (
                 <View style={styles.messageBox}>
