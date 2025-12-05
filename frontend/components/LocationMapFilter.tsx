@@ -209,7 +209,6 @@ export default function LocationMapFilter({
       longitude: location.longitude,
       radiusKm: location.radiusKm,
     };
-    console.log('Applying location filter:', locationFilterValue);
     setLocationFilter(locationFilterValue);
 
     // Notify parent component if callback is provided
