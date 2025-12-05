@@ -12,6 +12,8 @@ import {
   Alert,
   TouchableOpacity,
   RefreshControl,
+  View,
+  Dimensions,
 } from 'react-native';
 import { debounce } from 'lodash';
 import { ThemedText } from '@/components/ThemedText';
@@ -307,7 +309,7 @@ export default function StoreScreen() {
             <ThemedText
               type="title"
               className="text-center text-3xl font-extrabold text-white"
-              style={{ fontFamily: Fonts.regular_400 }}
+              style={{ fontFamily: Fonts.bold_700 }}
             >
               Gift Shop
             </ThemedText>
@@ -382,17 +384,18 @@ export default function StoreScreen() {
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
-              color: 'black',
+              color: Colors.light.primaryText,
               textAlign: 'left',
               marginTop: 4,
-              fontFamily: Fonts.regular_400,
+              fontFamily: Fonts.bold_700,
               fontSize: 20,
             }}
           >
-            {locationFilter ? `Items near you` : 'Popular in Boston'}
+            {locationFilter ? `Items near you` : 'Popular near you'}
           </ThemedText>
           {(() => {
             const popularItems = filteredItems;
+            const screenWidth = Dimensions.get('window').width;
             return (
               <FlatList
                 horizontal
@@ -415,7 +418,45 @@ export default function StoreScreen() {
                   paddingLeft: 0,
                   paddingRight: 0,
                   marginBottom: 20,
+                  flexGrow: popularItems.length === 0 ? 1 : 0,
+                  justifyContent:
+                    popularItems.length === 0 ? 'center' : 'flex-start',
                 }}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      width: screenWidth - 32,
+                      height: 173,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.bold_700,
+                        fontSize: 24,
+                        color: '#878787',
+                        textAlign: 'center',
+                        marginBottom: 5,
+                      }}
+                    >
+                      Oops—no gifts here yet!
+                    </ThemedText>
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.light_300,
+                        fontSize: 16,
+                        color: '#878787',
+                        textAlign: 'center',
+                        lineHeight: 17,
+                        width: 220,
+                      }}
+                    >
+                      Go volunteer and come back to see what pops up.
+                    </ThemedText>
+                  </View>
+                }
               />
             );
           })()}
@@ -423,10 +464,10 @@ export default function StoreScreen() {
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
-              color: 'black',
+              color: Colors.light.primaryText,
               textAlign: 'left',
               marginTop: 4,
-              fontFamily: Fonts.regular_400,
+              fontFamily: Fonts.bold_700,
               fontSize: 20,
             }}
           >
@@ -434,6 +475,7 @@ export default function StoreScreen() {
           </ThemedText>
           {(() => {
             const sweetItems = filteredItems;
+            const screenWidth = Dimensions.get('window').width;
             return (
               <FlatList
                 horizontal
@@ -456,7 +498,45 @@ export default function StoreScreen() {
                   paddingLeft: 0,
                   paddingRight: 0,
                   marginBottom: 20,
+                  flexGrow: sweetItems.length === 0 ? 1 : 0,
+                  justifyContent:
+                    sweetItems.length === 0 ? 'center' : 'flex-start',
                 }}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      width: screenWidth - 32,
+                      height: 173,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.bold_700,
+                        fontSize: 24,
+                        color: '#878787',
+                        textAlign: 'center',
+                        marginBottom: 5,
+                      }}
+                    >
+                      Oops—no gifts here yet!
+                    </ThemedText>
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.light_300,
+                        fontSize: 16,
+                        color: '#878787',
+                        textAlign: 'center',
+                        lineHeight: 17,
+                        width: 220,
+                      }}
+                    >
+                      Go volunteer and come back to see what pops up.
+                    </ThemedText>
+                  </View>
+                }
               />
             );
           })()}
@@ -464,17 +544,18 @@ export default function StoreScreen() {
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
-              color: 'black',
+              color: Colors.light.primaryText,
               textAlign: 'left',
               marginTop: 4,
-              fontFamily: Fonts.regular_400,
+              fontFamily: Fonts.bold_700,
               fontSize: 20,
             }}
           >
-            Shopping Spree
+            Gift Cards
           </ThemedText>
           {(() => {
             const spreeItems = filteredItems;
+            const screenWidth = Dimensions.get('window').width;
             return (
               <FlatList
                 horizontal
@@ -497,7 +578,45 @@ export default function StoreScreen() {
                   paddingLeft: 0,
                   paddingRight: 0,
                   marginBottom: 20,
+                  flexGrow: spreeItems.length === 0 ? 1 : 0,
+                  justifyContent:
+                    spreeItems.length === 0 ? 'center' : 'flex-start',
                 }}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      width: screenWidth - 32,
+                      height: 173,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.bold_700,
+                        fontSize: 24,
+                        color: '#878787',
+                        textAlign: 'center',
+                        marginBottom: 5,
+                      }}
+                    >
+                      Oops—no gifts here yet!
+                    </ThemedText>
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.light_300,
+                        fontSize: 16,
+                        color: '#878787',
+                        textAlign: 'center',
+                        lineHeight: 17,
+                        width: 220,
+                      }}
+                    >
+                      Go volunteer and come back to see what pops up.
+                    </ThemedText>
+                  </View>
+                }
               />
             );
           })()}
