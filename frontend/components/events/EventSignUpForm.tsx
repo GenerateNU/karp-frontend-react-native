@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { FormSection } from '@/components/forms/FormSection';
 import { FormField } from '@/components/forms/FormField';
-import { EventSlotSelection } from '@/components/events/EventSlotSelection';
 import { Button } from '@/components/common/Button';
 import { useAuth } from '@/context/AuthContext';
 import { ThemedView } from '@/components/ThemedView';
@@ -18,30 +17,14 @@ export function EventSignUpForm({ event }: { event: Event }) {
     phone: '',
     email: user?.email || '',
     address: '',
-    selectedDate: '',
-    selectedTime: '',
   });
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSlotSelection = (type: 'date' | 'time', value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [type === 'date' ? 'selectedDate' : 'selectedTime']: value,
-    }));
-  };
-
   const validateForm = () => {
-    const required = [
-      'firstName',
-      'lastName',
-      'email',
-      'address',
-      'selectedDate',
-      'selectedTime',
-    ];
+    const required = ['firstName', 'lastName', 'email', 'address'];
     const missing = required.filter(
       field => !formData[field as keyof typeof formData]
     );
@@ -63,9 +46,6 @@ export function EventSignUpForm({ event }: { event: Event }) {
         pathname: '/events/[eventId]/success',
         params: {
           eventId: event.id,
-          selectedDate: formData.selectedDate,
-          selectedTime: formData.selectedTime,
-          duration: 2, // change to event.duration when api is ready
         },
       });
     } catch (error) {
@@ -120,14 +100,6 @@ export function EventSignUpForm({ event }: { event: Event }) {
         </FormSection>
       </ThemedView>
 
-      <EventSlotSelection
-        event={event}
-        selectedDate={formData.selectedDate}
-        selectedTime={formData.selectedTime}
-        onDateSelect={date => handleSlotSelection('date', date)}
-        onTimeSelect={time => handleSlotSelection('time', time)}
-      />
-
       <Button
         text="CONFIRM"
         onPress={handleSubmit}
@@ -136,9 +108,7 @@ export function EventSignUpForm({ event }: { event: Event }) {
           !formData.firstName ||
           !formData.lastName ||
           !formData.email ||
-          !formData.address ||
-          !formData.selectedDate ||
-          !formData.selectedTime
+          !formData.address
         }
         buttonsStyle={styles.submitButton}
       />

@@ -106,6 +106,16 @@ export default function EventsScreen() {
     [router]
   );
 
+  const handleEventPress = useCallback((event: Event) => {
+    console.log('Event pressed:', event);
+    console.log('Navigating to event details for ID:', event.id);
+    router.push(`/events/${event.id}/info?=source=feed`);
+    // Alert.alert(
+    //   event.name,
+    //   `Status: ${event.status}\n\nStart: ${new Date(event.start_date_time).toLocaleString()}\nEnd: ${new Date(event.end_date_time).toLocaleString()}\nLocation: ${event.location || event.address}\nMax Volunteers: ${event.max_volunteers}\nCoins: ${event.coins}`,
+    //   [{ text: 'OK' }]
+    // );
+  }, []);
   const handleSortPress = useCallback(
     (sortOption: EventSortOption) => {
       const newFilters: EventFilters = {
