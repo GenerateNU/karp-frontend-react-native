@@ -7,7 +7,17 @@ async function getUpcomingEvents(volunteerId: string): Promise<Event[]> {
   const response = await api.get(`/registration/events/${volunteerId}`, {
     params: { registration_status: RegistrationStatus.UPCOMING },
   });
-  return response.data;
+
+  const events: Event[] = response.data;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return events.filter(ev => {
+    const eventDate = new Date(ev.startDateTime);
+    eventDate.setHours(0, 0, 0, 0);
+    return eventDate >= today;
+  });
 }
 
 async function getPastEvents(volunteerId: string): Promise<Event[]> {
