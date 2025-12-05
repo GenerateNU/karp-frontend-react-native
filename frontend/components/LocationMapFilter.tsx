@@ -364,43 +364,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.light.eggshellWhite,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: Colors.light.primaryText,
-    fontFamily: Fonts.bold_700,
-  },
-  segmentedControl: {
-    flexDirection: 'row',
-    backgroundColor: Colors.light.eggshellWhite,
-    borderRadius: 10,
-    borderWidth: 0.2,
-    borderColor: Colors.light.text,
-    padding: 2,
-    marginBottom: 16,
-    width: '100%',
-  },
-  segmentOption: {
-    flex: 1,
-    paddingVertical: 7,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: Colors.light.eggshellWhite,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  segmentOptionActive: {
-    backgroundColor: Colors.light.fishBlue,
-  },
-  segmentText: {
-    fontSize: 16,
-    color: Colors.light.primaryText,
-    fontFamily: Fonts.medium_500,
-  },
-  segmentTextActive: {
-    color: Colors.light.white,
-  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',

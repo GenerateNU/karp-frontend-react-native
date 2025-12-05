@@ -97,7 +97,7 @@ export default function FilterDrawer({
         <BottomSheet
           ref={sheetRef}
           snapPoints={snapPoints}
-          index={initialIndex >= 0 ? initialIndex : 0}
+          index={0}
           backgroundStyle={styles.bottomSheetBackground}
           handleIndicatorStyle={styles.handleIndicator}
           enableDynamicSizing={false}
