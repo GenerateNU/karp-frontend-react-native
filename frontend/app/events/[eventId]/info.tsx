@@ -95,6 +95,8 @@ export default function EventInfoPage() {
     });
   };
 
+  const spotsRemaining = (event?.maxVolunteers ?? 0) - registeredCount;
+
   if (loading) {
     return <LoadingScreen text="Loading event info details..." />;
   }
@@ -119,7 +121,7 @@ export default function EventInfoPage() {
 
           <EventInfoTable
             {...event}
-            registeredCount={registeredCount}
+            spotsRemaining={spotsRemaining}
             showCancelButton={showRegisteredView}
             onCancelSignUp={handleUnregister}
           />
@@ -145,17 +147,19 @@ export default function EventInfoPage() {
             </View>
           ) : (
             <View style={styles.signUpSection}>
-              <Pressable
-                style={[
-                  styles.signUpButton,
-                  isRegistered && styles.unregisterButton,
-                ]}
-                onPress={isRegistered ? handleUnregister : handleSignUp}
-              >
-                <Text style={styles.signUpButtonText}>
-                  {isRegistered ? 'UNREGISTER' : 'SIGN UP'}
-                </Text>
-              </Pressable>
+              {spotsRemaining > 0 && (
+                <Pressable
+                  style={[
+                    styles.signUpButton,
+                    isRegistered && styles.unregisterButton,
+                  ]}
+                  onPress={isRegistered ? handleUnregister : handleSignUp}
+                >
+                  <Text style={styles.signUpButtonText}>
+                    {isRegistered ? 'UNREGISTER' : 'SIGN UP'}
+                  </Text>
+                </Pressable>
+              )}
 
               {message ? (
                 <View style={styles.messageBox}>

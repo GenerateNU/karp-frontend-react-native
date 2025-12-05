@@ -6,7 +6,7 @@ import { imageService } from '@/services/imageService';
 import { orgService } from '@/services/organizationService';
 
 interface Props extends Event {
-  registeredCount?: number;
+  spotsRemaining?: number;
   showCancelButton?: boolean;
   onCancelSignUp?: () => void;
   cancelLoading?: boolean;
@@ -22,7 +22,7 @@ export default function EventInfoTable({
   startDateTime,
   endDateTime,
   maxVolunteers,
-  registeredCount = 0,
+  spotsRemaining = 0,
   imageS3Key,
   coins,
   showCancelButton = false,
@@ -58,8 +58,6 @@ export default function EventInfoTable({
         minute: '2-digit',
       })
     : '';
-
-  const spotsRemaining = maxVolunteers - registeredCount;
 
   useEffect(() => {
     async function fetchImageUrl() {
