@@ -148,7 +148,7 @@ export default function EventInfoPage() {
           ) : (
             <View style={styles.signUpSection}>
               {spotsRemaining > 0 &&
-                Date.now() < new Date(event.endDateTime).getTime() && (
+                Date.now() < new Date(event.startDateTime).getTime() && (
                   <Pressable
                     style={[
                       styles.signUpButton,
