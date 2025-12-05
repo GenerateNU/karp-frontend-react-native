@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
-import Slider from '@react-native-community/slider';
 import FilterDrawer from './FilterDrawer';
 import { ItemFilters } from '@/app/(tabs)/shop';
 import LocationMapFilter from '../LocationMapFilter';
+import RangeSlider from '../RangeSlider';
 import { Colors } from '@/constants/Colors';
 import { ITEM_FILTER_OPTIONS } from '@/constants/FilterOptions';
 import { Fonts } from '@/constants/Fonts';
@@ -40,7 +40,11 @@ export default function ItemFilterDrawer({
   const [selectedFilter, setSelectedFilter] = useState<string>(
     currentFilters.category
   );
-  const [priceRange, setPriceRange] = useState(currentFilters.priceRange);
+  // Initialize with full range to encompass entire bar
+  const [priceRange, setPriceRange] = useState({
+    min: 0,
+    max: 10000,
+  });
   const { clearLocationFilter } = useLocation();
 
   const handleClear = () => {
@@ -61,12 +65,9 @@ export default function ItemFilterDrawer({
     onApplyFilters(newFilters);
   };
 
-  const handlePriceRangeChange = (value: number) => {
-    const maxPrice = value * 100;
-    setPriceRange({ min: priceRange.min, max: maxPrice });
+  const handlePriceRangeChange = (min: number, max: number) => {
+    setPriceRange({ min, max });
   };
-
-  const sliderValue = Math.min(priceRange.max / 100, 100);
 
   const CategoryContent = (
     <View style={styles.categoryContent}>
@@ -107,15 +108,14 @@ export default function ItemFilterDrawer({
         </View>
 
         <View style={styles.sliderContainer}>
-          <Slider
-            style={styles.slider}
+          <RangeSlider
+            minValue={priceRange.min / 100}
+            maxValue={priceRange.max / 100}
             minimumValue={0}
             maximumValue={100}
-            value={sliderValue}
-            onValueChange={handlePriceRangeChange}
-            minimumTrackTintColor={Colors.light.fishBlue}
-            maximumTrackTintColor={Colors.light.sliderGray}
-            thumbTintColor={Colors.light.white}
+            onValueChange={(min, max) => {
+              handlePriceRangeChange(min * 100, max * 100);
+            }}
             step={1}
           />
           <View style={styles.sliderLabels}>
@@ -231,10 +231,6 @@ const styles = StyleSheet.create({
   sliderContainer: {
     width: '100%',
     marginTop: 15,
-  },
-  slider: {
-    width: '100%',
-    height: 40,
   },
   sliderLabels: {
     flexDirection: 'row',
