@@ -339,7 +339,6 @@ export default function StoreScreen() {
           lightColor={Colors.light.transparent}
           darkColor={Colors.light.transparent}
           className="flex-1 px-4"
-          style={{ paddingBottom: 110 }}
         >
           <SearchInputWithFilter
             value={searchText}

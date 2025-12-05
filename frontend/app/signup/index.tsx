@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSignUp } from '@/context/SignUpContext';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
 import { SignUpFlowInput } from '@/components/signup/SignUpFlowInput';
 
-function SignUpCredentials() {
+export default function SignUpScreen() {
   const { data, setData, errors, setError, clearErrors } = useSignUp();
   const router = useRouter();
 
@@ -68,77 +67,77 @@ function SignUpCredentials() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
+    <View style={styles.safeAreaView}>
+      <View style={styles.container}>
         <Image
-          source={require('@/assets/images/logo.svg')}
-          contentFit="contain"
-          style={styles.logo}
+          source={require('@/assets/images/sign-up-background.png')}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          pointerEvents="none"
         />
-      </View>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('@/assets/images/logo.svg')}
+            contentFit="contain"
+            style={styles.logo}
+          />
+        </View>
 
-      <View style={styles.header}>
-        <Text style={styles.title}>Sign Up</Text>
-      </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>Sign Up</Text>
+        </View>
 
-      <View style={styles.form}>
-        <SignUpFlowInput
-          value={username}
-          onChangeText={setUsername}
-          placeholder="Username"
-          autoCapitalize="none"
-          autoCorrect={false}
-          error={errors.username}
-        />
+        <View style={styles.form}>
+          <SignUpFlowInput
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Username"
+            autoCapitalize="none"
+            autoCorrect={false}
+            error={errors.username}
+          />
 
-        <SignUpFlowInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email"
-          autoCapitalize="none"
-          autoCorrect={false}
-          error={errors.email}
-        />
+          <SignUpFlowInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Email"
+            autoCapitalize="none"
+            autoCorrect={false}
+            error={errors.email}
+          />
 
-        <SignUpFlowInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          secureTextEntry
-          error={errors.password}
-        />
+          <SignUpFlowInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry
+            error={errors.password}
+          />
 
-        <SignUpFlowInput
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          placeholder="Confirm Password"
-          secureTextEntry
-          error={errors.confirmPassword}
-        />
+          <SignUpFlowInput
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Confirm Password"
+            secureTextEntry
+            error={errors.confirmPassword}
+          />
 
-        <SignUpFlowButton
-          onPress={handleNext}
-          text="Create Account"
-          variant="primary"
-          style={styles.createAccountButton}
-        />
+          <SignUpFlowButton
+            onPress={handleNext}
+            text="Create Account"
+            variant="primary"
+            style={styles.createAccountButton}
+          />
 
-        <View style={styles.signInContainer}>
-          <Text style={styles.signInText}>Already have an account? </Text>
-          <TouchableOpacity onPress={handleSignIn}>
-            <Text style={styles.signInLink}>Sign In</Text>
-          </TouchableOpacity>
+          <View style={styles.signInContainer}>
+            <Text style={styles.signInText}>Already have an account? </Text>
+            <TouchableOpacity onPress={handleSignIn}>
+              <Text style={styles.signInLink}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
-  );
-}
-
-export default function SignUpScreen() {
-  return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <SignUpCredentials />
-    </SafeAreaView>
   );
 }
 
@@ -151,8 +150,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.transparent,
     paddingHorizontal: 50,
-    paddingVertical: 25,
-    justifyContent: 'center',
+    paddingTop: '15%',
+    paddingBottom: 25,
+    justifyContent: 'flex-start',
   },
   logoContainer: {
     alignItems: 'center',
