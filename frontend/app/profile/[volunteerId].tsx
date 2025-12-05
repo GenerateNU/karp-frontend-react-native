@@ -15,58 +15,6 @@ import { profileService } from '@/services/profileService';
 import { Volunteer } from '@/types/api/volunteer';
 import { Event } from '@/types/api/event';
 
-// Calculate level from experience (same logic as useProfile)
-function calculateLevel(experience: number): number {
-  if (experience < 100) return 1;
-
-  let level = 1;
-  let totalXPNeeded = 0;
-
-  while (totalXPNeeded <= experience) {
-    const xpForNextLevel = level * 100 + (level - 1) * 50;
-    totalXPNeeded += xpForNextLevel;
-    if (totalXPNeeded <= experience) {
-      level++;
-    } else {
-      break;
-    }
-  }
-
-  return level;
-}
-
-function getXPForLevel(level: number): number {
-  let totalXP = 0;
-  for (let i = 1; i < level; i++) {
-    totalXP += i * 100 + (i - 1) * 50;
-  }
-  return totalXP;
-}
-
-function getXPForNextLevel(currentLevel: number): number {
-  return currentLevel * 100 + (currentLevel - 1) * 50;
-}
-
-function calculateLevelProgress(experience: number): {
-  level: number;
-  progress: number;
-  currentLevelXP: number;
-  nextLevelXP: number;
-} {
-  const level = calculateLevel(experience);
-  const xpForCurrentLevel = getXPForLevel(level);
-  const xpForNextLevel = getXPForNextLevel(level);
-  const currentLevelXP = experience - xpForCurrentLevel;
-  const progress = (currentLevelXP / xpForNextLevel) * 100;
-
-  return {
-    level,
-    progress: Math.min(Math.max(progress, 0), 100),
-    currentLevelXP,
-    nextLevelXP: xpForNextLevel,
-  };
-}
-
 function calculateTotalHours(completedEvents: Event[]): number {
   return completedEvents.reduce((sum, event) => {
     const start = new Date(event.startDateTime);
@@ -84,7 +32,6 @@ export default function UserProfileScreen() {
   const [stats, setStats] = useState<{
     totalHours: number;
     level: number;
-    levelProgress: number;
   } | null>(null);
 
   useEffect(() => {
@@ -110,13 +57,11 @@ export default function UserProfileScreen() {
         const pastEventsData = await profileService.getPastEvents(volunteerId);
 
         // Calculate stats
-        const levelData = calculateLevelProgress(volunteerData.experience);
         const totalHours = calculateTotalHours(pastEventsData);
 
         setStats({
           totalHours,
-          level: levelData.level,
-          levelProgress: levelData.progress,
+          level: volunteerData.currentLevel,
         });
       } catch (error) {
         console.error('Error loading profile data:', error);
@@ -164,15 +109,9 @@ export default function UserProfileScreen() {
 
         <FishTank volunteerId={volunteer.id} />
 
-        <LevelProgress
-          level={stats.level}
-          progress={stats.levelProgress}
-          motivationalText="Keep volunteering to level up!"
-        />
-
         <View style={styles.statsContainer}>
           <StatCard
-            title="Total Volunteering Hours"
+            title="Total Hours"
             value={`${Math.round(stats.totalHours)} hours`}
           />
           <StatCard title="Level" value={`${stats.level}`} />

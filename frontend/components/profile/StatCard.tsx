@@ -22,8 +22,8 @@ export function StatCard({ title, value, onPress, fullWidth }: StatCardProps) {
         onPress && styles.pressable,
       ]}
     >
-      <Text style={styles.value}>{value}</Text>
       <Text style={styles.title}>{title}</Text>
+      <Text style={styles.value}>{value}</Text>
     </Component>
   );
 }
