@@ -56,7 +56,10 @@ export default function EventsScreen() {
           locationFilter,
           volunteerId
         );
-        setEvents(fetchedEvents);
+        const futureEvents = fetchedEvents.filter(
+          event => new Date(event.startDateTime).getTime() > Date.now()
+        );
+        setEvents(futureEvents);
         console.log('Loaded events:', fetchedEvents);
       } catch (error) {
         console.error('Error loading events:', error);
