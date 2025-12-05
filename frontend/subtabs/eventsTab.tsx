@@ -28,6 +28,7 @@ import { useEventFilters } from '@/context/EventFiltersContext';
 import { Colors } from '@/constants/Colors';
 
 const SORT_LABELS: Record<EventSortOption, string> = {
+  recommendations: 'Recommendations',
   been_before: 'Been Before',
   new_additions: 'New Additions',
   coins_low_to_high: 'Koins: Lowest to Highest',
@@ -46,30 +47,36 @@ export default function EventsScreen() {
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadEvents = useCallback(
-    async (searchQuery?: string, filters?: EventFilters) => {
-      try {
-        setLoading(true);
-        const volunteerId = volunteer?.id;
-        const fetchedEvents = await eventService.getAllEvents(
-          searchQuery,
-          filters,
-          locationFilter,
-          volunteerId
-        );
-        const futureEvents = fetchedEvents.filter(
-          event => new Date(event.startDateTime).getTime() > Date.now()
-        );
-        setEvents(futureEvents);
-        console.log('Loaded events:', fetchedEvents);
-      } catch (error) {
-        console.error('Error loading events:', error);
-        Alert.alert('Error', 'Failed to load events. Please try again.');
-      } finally {
-        setLoading(false);
+  async (searchQuery?: string, filters?: EventFilters) => {
+    try {
+      setLoading(true);
+      const volunteerId = volunteer?.id;
+
+      let adjustedFilters = filters;
+      if ((filters?.sort_by === 'recommendations' && !volunteerId)) {
+        adjustedFilters = { ...filters, sort_by: undefined };
+        setFilters(adjustedFilters);
       }
-    },
-    [locationFilter, volunteer]
-  );
+      
+      const fetchedEvents = await eventService.getAllEvents(
+        searchQuery,
+        adjustedFilters,
+        locationFilter,
+        volunteerId
+      );
+      const futureEvents = fetchedEvents.filter(
+        event => new Date(event.startDateTime).getTime() > Date.now()
+      );
+      setEvents(futureEvents);
+    } catch (error) {
+      console.error('Error loading events:', error);
+      Alert.alert('Error', 'Failed to load events. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  },
+  [locationFilter, volunteer]
+);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -216,32 +223,38 @@ export default function EventsScreen() {
           contentContainerStyle={styles.sortPillsContainer}
           className="mb-2"
         >
-          {EVENT_SORT_OPTIONS.map(sortOption => {
+          {EVENT_SORT_OPTIONS.filter(sortOption => {
+            // Hide recommendations if user not logged in
+            if (sortOption === 'recommendations' && !volunteer?.id) {
+              return false;
+            }
+            return true;
+          }).map(sortOption => {
             const isSelected = filters.sort_by === sortOption;
-            return (
-              <Pressable
-                key={sortOption}
-                onPress={() => handleSortPress(sortOption)}
-                style={[styles.sortPill, isSelected && styles.sortPillSelected]}
+             return (
+            <Pressable
+              key={sortOption}
+              onPress={() => handleSortPress(sortOption)}
+              style={[styles.sortPill, isSelected && styles.sortPillSelected]}
+            >
+              <Text
+                style={[
+                  styles.sortPillText,
+                  isSelected && styles.sortPillTextSelected,
+                ]}
               >
-                <Text
-                  style={[
-                    styles.sortPillText,
-                    isSelected && styles.sortPillTextSelected,
-                  ]}
-                >
-                  {SORT_LABELS[sortOption]}
-                </Text>
-              </Pressable>
-            );
-          })}
+                {SORT_LABELS[sortOption]}
+            </Text>
+        </Pressable>
+      );
+    })}
         </ScrollView>
       </View>
 
       <View className="flex-1">
         <>
           <Text className="mx-4 mb-2 text-lg font-semibold text-gray-900">
-            Recommended Events:
+            Upcoming Events:
           </Text>
           {loading ? (
             <LoadingScreen text="Loading events..." />
