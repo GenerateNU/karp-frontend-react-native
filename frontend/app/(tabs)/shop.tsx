@@ -182,16 +182,26 @@ export default function StoreScreen() {
     };
   }, [searchText, debouncedSetSearch]);
 
-  // Load items from API when debounced search text changes (background, no reload)
-  useEffect(() => {
+  // Shared function to load items based on search state
+  const loadItemsBasedOnSearch = useCallback(() => {
     if (debouncedSearchText.trim()) {
       loadItemsWithSearch(debouncedSearchText, selectedCategory);
     } else {
       loadAllItems();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchText]);
+  }, [
+    debouncedSearchText,
+    selectedCategory,
+    loadItemsWithSearch,
+    loadAllItems,
+  ]);
 
+  // Load items from API when debounced search text changes (background, no reload)
+  useEffect(() => {
+    loadItemsBasedOnSearch();
+  }, [debouncedSearchText, loadItemsBasedOnSearch]);
+
+  // Reload items when category changes (only if there's a search query)
   useEffect(() => {
     if (debouncedSearchText.trim()) {
       loadItemsWithSearch(debouncedSearchText, selectedCategory);
@@ -201,13 +211,8 @@ export default function StoreScreen() {
 
   // Handle location filter changes with background load (no loading screen)
   useEffect(() => {
-    if (debouncedSearchText.trim()) {
-      loadItemsWithSearch(debouncedSearchText, selectedCategory);
-    } else {
-      loadAllItems();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locationFilter]);
+    loadItemsBasedOnSearch();
+  }, [locationFilter, loadItemsBasedOnSearch]);
 
   // Initial load - only run on mount and when volunteer experience changes
   const hasInitialized = useRef(false);
