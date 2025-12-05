@@ -289,6 +289,7 @@ export default function EventFiltersPage() {
             {EVENT_SORT_OPTIONS.map(sortOption => {
               const isSelected = selectedSort === sortOption;
               const labels: Record<EventSortOption, string> = {
+                recommendations: 'Recommendations',
                 been_before: 'Been Before',
                 new_additions: 'New Additions',
                 coins_low_to_high: 'Koins (Lowest to Highest)',
