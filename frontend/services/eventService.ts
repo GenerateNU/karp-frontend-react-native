@@ -29,11 +29,19 @@ async function getAllEvents(
     Object.assign(params, filters);
   }
 
-  if ((filters?.sort_by === 'been_before' || filters?.sort_by === 'recommendations') && volunteerId) {
+  if (
+    (filters?.sort_by === 'been_before' ||
+      filters?.sort_by === 'recommendations') &&
+    volunteerId
+  ) {
     params.volunteer_id = volunteerId;
   }
 
-  if ((params?.sort_by === 'been_before' || params?.sort_by === 'recommendations') && volunteerId) {
+  if (
+    (params?.sort_by === 'been_before' ||
+      params?.sort_by === 'recommendations') &&
+    volunteerId
+  ) {
     params.volunteer_id = volunteerId;
   }
 

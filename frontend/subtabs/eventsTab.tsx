@@ -47,36 +47,36 @@ export default function EventsScreen() {
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadEvents = useCallback(
-  async (searchQuery?: string, filters?: EventFilters) => {
-    try {
-      setLoading(true);
-      const volunteerId = volunteer?.id;
+    async (searchQuery?: string, filters?: EventFilters) => {
+      try {
+        setLoading(true);
+        const volunteerId = volunteer?.id;
 
-      let adjustedFilters = filters;
-      if ((filters?.sort_by === 'recommendations' && !volunteerId)) {
-        adjustedFilters = { ...filters, sort_by: undefined };
-        setFilters(adjustedFilters);
+        let adjustedFilters = filters;
+        if (filters?.sort_by === 'recommendations' && !volunteerId) {
+          adjustedFilters = { ...filters, sort_by: undefined };
+          setFilters(adjustedFilters);
+        }
+
+        const fetchedEvents = await eventService.getAllEvents(
+          searchQuery,
+          adjustedFilters,
+          locationFilter,
+          volunteerId
+        );
+        const futureEvents = fetchedEvents.filter(
+          event => new Date(event.startDateTime).getTime() > Date.now()
+        );
+        setEvents(futureEvents);
+      } catch (error) {
+        console.error('Error loading events:', error);
+        Alert.alert('Error', 'Failed to load events. Please try again.');
+      } finally {
+        setLoading(false);
       }
-      
-      const fetchedEvents = await eventService.getAllEvents(
-        searchQuery,
-        adjustedFilters,
-        locationFilter,
-        volunteerId
-      );
-      const futureEvents = fetchedEvents.filter(
-        event => new Date(event.startDateTime).getTime() > Date.now()
-      );
-      setEvents(futureEvents);
-    } catch (error) {
-      console.error('Error loading events:', error);
-      Alert.alert('Error', 'Failed to load events. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  },
-  [locationFilter, volunteer]
-);
+    },
+    [locationFilter, volunteer]
+  );
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -231,23 +231,23 @@ export default function EventsScreen() {
             return true;
           }).map(sortOption => {
             const isSelected = filters.sort_by === sortOption;
-             return (
-            <Pressable
-              key={sortOption}
-              onPress={() => handleSortPress(sortOption)}
-              style={[styles.sortPill, isSelected && styles.sortPillSelected]}
-            >
-              <Text
-                style={[
-                  styles.sortPillText,
-                  isSelected && styles.sortPillTextSelected,
-                ]}
+            return (
+              <Pressable
+                key={sortOption}
+                onPress={() => handleSortPress(sortOption)}
+                style={[styles.sortPill, isSelected && styles.sortPillSelected]}
               >
-                {SORT_LABELS[sortOption]}
-            </Text>
-        </Pressable>
-      );
-    })}
+                <Text
+                  style={[
+                    styles.sortPillText,
+                    isSelected && styles.sortPillTextSelected,
+                  ]}
+                >
+                  {SORT_LABELS[sortOption]}
+                </Text>
+              </Pressable>
+            );
+          })}
         </ScrollView>
       </View>
 

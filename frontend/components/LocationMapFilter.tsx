@@ -351,14 +351,14 @@ export default function LocationMapFilter({
       </View>
 
       {/* Action Buttons */}
-      <View style={styles.actionButtonsContainer}>
+      {/* <View style={styles.actionButtonsContainer}>
         <Pressable style={styles.clearButton} onPress={handleClear}>
           <Text style={styles.buttonText}>Clear</Text>
         </Pressable>
         <Pressable style={styles.applyButton} onPress={handleApply}>
           <Text style={styles.buttonText}>Apply</Text>
         </Pressable>
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   customRadiusContainer: {
-    marginBottom: 24,
+    marginBottom: 10,
   },
   customRadiusContent: {
     flexDirection: 'row',
