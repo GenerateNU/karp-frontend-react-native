@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, View, Text, Pressable, ActivityIndicator, Alert
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { eventService } from '@/services/eventService';
 import { LoadingScreen } from '@/components/LoadingScreen';
@@ -114,16 +113,11 @@ export default function EventSignUpPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Back Button */}
           <Pressable onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#1D0F48" />
             <Text style={styles.backText}>Back</Text>
           </Pressable>
-
-          {/* Title */}
           <Text style={styles.title}>Sign Up</Text>
-
-          {/* Date Section */}
           <View style={styles.dateSection}>
             <Text style={styles.sectionLabel}>Date:</Text>
             <Text style={styles.dateValue}>Start: {startDate} at {startTime}</Text>

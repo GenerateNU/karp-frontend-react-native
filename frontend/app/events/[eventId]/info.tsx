@@ -3,16 +3,13 @@ import { View, StyleSheet, Pressable, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { RegistrationStatus } from '@/types/api/registration';
 import { eventService } from '@/services/eventService';
 import {
   getEventsByVolunteer,
   getEventRegistrations,
-  unregister as unregisterRegistration,
 } from '@/services/registrationService';
-import { useQueryClient } from '@tanstack/react-query';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { EventAttendeesCarousel } from '@/components/events/EventAttendeesCarousel';
 import EventInfoTable from '@/components/ui/EventInfoFull';
@@ -24,13 +21,11 @@ export default function EventInfoPage() {
   }>();
   const router = useRouter();
   const { isAuthenticated, isGuest, clearGuestMode, volunteer } = useAuth();
-  const queryClient = useQueryClient();
 
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
   const [isRegistered, setIsRegistered] = useState(false);
-  const [unregistering, setUnregistering] = useState(false);
   const [registeredCount, setRegisteredCount] = useState(0);
 
   const showRegisteredView = isRegistered;
@@ -117,22 +112,18 @@ export default function EventInfoPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Back Button */}
           <Pressable onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#1D0F48" />
             <Text style={styles.backText}>Back</Text>
           </Pressable>
 
-          {/* EventInfoTable Component */}
           <EventInfoTable 
             {...event} 
             registeredCount={registeredCount}
             showCancelButton={showRegisteredView}
             onCancelSignUp={handleUnregister}
-            cancelLoading={unregistering}
           />
 
-          {/* Conditional rendering based on source */}
           {showRegisteredView ? (
             <View style={styles.profileViewSection}>
               <EventAttendeesCarousel eventId={eventId as string} />
@@ -157,10 +148,9 @@ export default function EventInfoPage() {
               <Pressable
                 style={[styles.signUpButton, isRegistered && styles.unregisterButton]}
                 onPress={isRegistered ? handleUnregister : handleSignUp}
-                disabled={unregistering}
               >
                 <Text style={styles.signUpButtonText}>
-                  {unregistering ? 'PROCESSING...' : isRegistered ? 'UNREGISTER' : 'SIGN UP'}
+                  {isRegistered ? 'UNREGISTER' : 'SIGN UP'}
                 </Text>
               </Pressable>
 

@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { useEventVolunteers } from '@/hooks/useEventVolunteers';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
-import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 
 interface EventAttendeesCarouselProps {

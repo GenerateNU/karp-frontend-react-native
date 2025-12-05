@@ -180,7 +180,7 @@ export default function EventSuccessPage() {
           </View>
           <Pressable
             style={styles.seeEventButton}
-            onPress={() => router.push(`/events/${eventId}/info?source=profile`)}
+            onPress={() => router.push(`/events/${eventId}/info`)}
           >
             <Text style={styles.seeEventButtonText}>See This Event</Text>
           </Pressable>

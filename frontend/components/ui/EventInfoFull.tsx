@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 12,
-    marginBottom: 30
+    marginBottom: 25
   },
   coinsBadge: {
     flexDirection: 'row',
