@@ -132,7 +132,7 @@ export default function EventSignUpPage() {
                   name="calendar-outline"
                   size={24}
                   color="#1D0F48"
-                  style={{ marginRight: 8 }}
+                  style={{ marginRight: 8, marginBottom: 8 }}
                 />
                 <Text style={styles.sectionLabel}>Date:</Text>
                 <Text style={[styles.dateValue, { marginLeft: 8 }]}>
@@ -144,7 +144,7 @@ export default function EventSignUpPage() {
                   name="time-outline"
                   size={24}
                   color="#1D0F48"
-                  style={{ marginRight: 8 }}
+                  style={{ marginRight: 8, marginBottom: 8 }}
                 />
                 <Text style={[styles.sectionLabel]}>Time:</Text>
                 <Text style={[styles.dateValue, { marginLeft: 8 }]}>
