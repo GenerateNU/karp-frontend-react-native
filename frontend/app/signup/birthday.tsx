@@ -4,10 +4,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSignUp } from '@/context/SignUpContext';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
-import { router } from 'expo-router';
+import { Image } from 'expo-image';
+import { router, usePathname } from 'expo-router';
 import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
+import { SignUpProgress } from '@/components/signup/SignUpProgress';
 
 function SignUpBirthday() {
+  const pathname = usePathname();
+  const isIndexPage = pathname === '/signup';
   const { data, setData, setCurrentStep, errors, setError, clearErrors } =
     useSignUp();
 
@@ -62,6 +66,13 @@ function SignUpBirthday() {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('@/assets/images/birthday.png')}
+        style={StyleSheet.absoluteFill}
+        contentFit="cover"
+        pointerEvents="none"
+      />
+      {!isIndexPage && <SignUpProgress />}
       <View style={styles.header}>
         <Text style={styles.title}>When is your birthday?</Text>
       </View>
@@ -98,19 +109,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.white,
-    paddingHorizontal: 50,
-    paddingTop: 25,
+    paddingTop: 75,
     paddingBottom: 100,
-    justifyContent: 'center',
   },
   header: {
+    marginTop: 50,
     marginBottom: 32,
-    alignItems: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
+    fontFamily: Fonts.bold_700,
     textAlign: 'center',
   },
   dateContainer: {
@@ -126,10 +135,9 @@ const styles = StyleSheet.create({
   },
   fixedButtonContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     left: 0,
     right: 0,
     padding: 20,
-    backgroundColor: Colors.light.white,
   },
 });

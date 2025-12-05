@@ -1,19 +1,13 @@
 import React from 'react';
-import { Stack, usePathname } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Stack } from 'expo-router';
 import { SignUpProvider } from '@/context/SignUpContext';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { SignUpProgress } from '@/components/signup/SignUpProgress';
 
 export default function SignUpLayout() {
-  const pathname = usePathname();
-  const isIndexPage = pathname === '/signup';
-
   return (
     <SignUpProvider>
-      <SafeAreaView style={styles.safeAreaView}>
-        {!isIndexPage && <SignUpProgress />}
+      <View style={styles.safeAreaView}>
         <Stack
           screenOptions={{
             headerShown: false,
@@ -26,7 +20,7 @@ export default function SignUpLayout() {
           <Stack.Screen name="qualifications" />
           <Stack.Screen name="volunteer-days" />
         </Stack>
-      </SafeAreaView>
+      </View>
     </SignUpProvider>
   );
 }

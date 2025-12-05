@@ -137,7 +137,7 @@ export default function OrgsScreen() {
               />
             }
             ListEmptyComponent={renderEmptyState}
-            contentContainerStyle={{ paddingBottom: 16 }}
+            contentContainerStyle={{ paddingBottom: 80 }}
           />
         )}
       </View>

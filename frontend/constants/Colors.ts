@@ -63,6 +63,11 @@ export const Colors = {
     orderStatusClaimed: '#2B5213',
     orderStatusAll: '#34A5E4',
     moreInfoButton: '#FEB83C',
+    locationContainerBackground: 'rgba(254, 184, 60, 0.27)', // #FEB83C45
+    radiusDisplayBackground: '#FFEED0',
+    sliderContainerBackground: '#FFDB9B',
+    filterButtonBackground: '#74C0EB',
+    searchBarBorder: '#1F2937',
   },
   dark: {
     text: '#ECEDEE',

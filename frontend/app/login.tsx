@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Alert, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { Image } from 'expo-image';
@@ -51,11 +50,18 @@ export default function LoginScreen() {
   }, [isAuthenticated, isGuest]);
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
+    <View style={styles.safeAreaView}>
       <View style={styles.container}>
+        <Image
+          source={require('@/assets/images/sign-in-background.png')}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+          pointerEvents="none"
+        />
         <View style={styles.logoContainer}>
           <Image
             source={require('@/assets/images/logo.svg')}
+            contentFit="contain"
             style={styles.logo}
           />
         </View>
@@ -70,6 +76,7 @@ export default function LoginScreen() {
             placeholder="Username"
             autoCapitalize="none"
             autoCorrect={false}
+            style={styles.inputOverride}
           />
 
           <SignUpFlowInput
@@ -77,6 +84,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             placeholder="Password"
             secureTextEntry
+            style={styles.inputOverride}
           />
 
           <TouchableOpacity
@@ -108,7 +116,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -121,30 +129,36 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.transparent,
     paddingHorizontal: 50,
-    paddingTop: 50,
+    paddingTop: '35%',
     paddingBottom: 25,
     justifyContent: 'flex-start',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: -20,
+    marginBottom: 0,
   },
   logo: {
-    width: 225,
-    height: 225,
+    width: 260,
+    height: 160,
   },
   header: {
+    marginTop: 20,
     marginBottom: 24,
     alignItems: 'center',
   },
   title: {
     fontSize: 28,
-    color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
-    alignSelf: 'flex-start',
+    color: Colors.light.primaryText,
+    fontFamily: 'Ubuntu',
+    textAlign: 'center',
   },
   form: {
     gap: 20,
+  },
+  inputOverride: {
+    height: 44,
+    borderRadius: 10,
+    borderColor: Colors.light.primaryText,
   },
   signUpContainer: {
     flexDirection: 'row',

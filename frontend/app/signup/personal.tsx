@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import { useSignUp } from '@/context/SignUpContext';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
 import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
 import { SignUpFlowInput } from '@/components/signup/SignUpFlowInput';
+import { SignUpProgress } from '@/components/signup/SignUpProgress';
 
 function SignUpPersonal() {
+  const pathname = usePathname();
+  const isIndexPage = pathname === '/signup';
   const { data, setData, setCurrentStep, errors, setError, clearErrors } =
     useSignUp();
   const router = useRouter();
@@ -46,6 +50,13 @@ function SignUpPersonal() {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('@/assets/images/personal.png')}
+        style={StyleSheet.absoluteFill}
+        contentFit="cover"
+        pointerEvents="none"
+      />
+      {!isIndexPage && <SignUpProgress />}
       <View style={styles.header}>
         <Text style={styles.title}>What is your name?</Text>
       </View>
@@ -107,22 +118,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.white,
-    paddingHorizontal: 50,
     paddingTop: 75,
     paddingBottom: 100,
   },
   header: {
+    marginTop: 50,
     marginBottom: 32,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
+    fontFamily: Fonts.bold_700,
     marginBottom: 8,
     textAlign: 'center',
   },
   form: {
     gap: 20,
+    paddingHorizontal: 50,
   },
   inputGroup: {
     gap: 8,
@@ -134,11 +146,10 @@ const styles = StyleSheet.create({
   },
   fixedButtonContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     left: 0,
     right: 0,
     padding: 20,
-    backgroundColor: Colors.light.white,
   },
   continueButton: {
     width: '85%',

@@ -3,12 +3,13 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import {
-  useFonts,
-  JosefinSans_400Regular,
-  JosefinSans_300Light,
-  JosefinSans_500Medium,
-} from '@expo-google-fonts/josefin-sans';
+  Inter_400Regular,
+  Inter_300Light,
+  Inter_500Medium,
+} from '@expo-google-fonts/inter';
+import { Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -20,8 +21,10 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider } from '@/context/AuthContext';
 import { LocationProvider } from '@/context/LocationContext';
 import { NotificationProvider } from '@/context/NotificationContext';
+import { EventFiltersProvider } from '@/context/EventFiltersContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Keep the splash screen visible while we load resources
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
@@ -36,6 +39,8 @@ function AppContent() {
       <Stack.Screen name="login" />
       <Stack.Screen name="forgot-password" />
       <Stack.Screen name="signup" />
+      <Stack.Screen name="events/filters" />
+      <Stack.Screen name="events/filters/location" />
       <Stack.Screen name="events/[eventId]/info" />
       <Stack.Screen name="events/[eventId]/signup" />
       <Stack.Screen name="events/[eventId]/success" />
@@ -58,15 +63,24 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    JosefinSans_400Regular,
-    JosefinSans_300Light,
-    JosefinSans_500Medium,
+    Inter_400Regular,
+    Inter_300Light,
+    Inter_500Medium,
+    Ubuntu_700Bold,
   });
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    async function hideSplash() {
+      if (loaded) {
+        try {
+          await SplashScreen.hideAsync();
+        } catch (error) {
+          // Ignore splash screen errors - they're non-critical
+          console.warn('Splash screen error (non-critical):', error);
+        }
+      }
     }
+    hideSplash();
   }, [loaded]);
 
   if (!loaded) {
@@ -78,10 +92,12 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <LocationProvider>
-            <NotificationProvider>
-              <AppContent />
-              <StatusBar style="auto" />
-            </NotificationProvider>
+            <EventFiltersProvider>
+              <NotificationProvider>
+                <AppContent />
+                <StatusBar style="auto" />
+              </NotificationProvider>
+            </EventFiltersProvider>
           </LocationProvider>
         </AuthProvider>
       </QueryClientProvider>

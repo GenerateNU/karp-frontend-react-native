@@ -9,10 +9,15 @@ import {
 import { useSignUp } from '@/context/SignUpContext';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
+import { Image } from 'expo-image';
 import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
 import { DayOfWeek } from '@/types/api/volunteer';
+import { usePathname } from 'expo-router';
+import { SignUpProgress } from '@/components/signup/SignUpProgress';
 
 function SignUpVolunteerDays() {
+  const pathname = usePathname();
+  const isIndexPage = pathname === '/signup';
   const { data, setData, setCurrentStep, submitSignUp } = useSignUp();
 
   const [selectedDays, setSelectedDays] = useState<DayOfWeek[]>(
@@ -58,6 +63,13 @@ function SignUpVolunteerDays() {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('@/assets/images/volunteer-days.png')}
+        style={StyleSheet.absoluteFill}
+        contentFit="cover"
+        pointerEvents="none"
+      />
+      {!isIndexPage && <SignUpProgress />}
       <View style={styles.header}>
         <Text style={styles.title}>
           What day(s) do you prefer to volunteer?
@@ -108,18 +120,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.white,
-    paddingHorizontal: 20,
     paddingTop: 75,
     paddingBottom: 100,
   },
   header: {
+    marginTop: 50,
     marginBottom: 32,
     alignItems: 'center',
+    marginHorizontal: 40,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     color: Colors.light.text,
-    fontFamily: Fonts.medium_500,
+    fontFamily: Fonts.bold_700,
     textAlign: 'center',
     marginBottom: 32,
   },
@@ -159,10 +172,9 @@ const styles = StyleSheet.create({
   },
   fixedButtonContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     left: 0,
     right: 0,
     padding: 20,
-    backgroundColor: Colors.light.white,
   },
 });

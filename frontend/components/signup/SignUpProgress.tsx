@@ -2,27 +2,19 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSignUp } from '@/context/SignUpContext';
 import { Colors } from '@/constants/Colors';
-import { RelativePathString, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 export function SignUpProgress() {
-  const { currentStep } = useSignUp();
+  const { currentStep, setCurrentStep } = useSignUp();
   const router = useRouter();
 
   const handleBack = () => {
-    const routeMap: Record<number, string> = {
-      1: '/signup',
-      2: '/signup',
-      3: '/signup/personal',
-      4: '/signup/birthday',
-      5: '/signup/preferences',
-      6: '/signup/qualifications',
-    };
-
-    const previousRoute = routeMap[currentStep];
-    if (previousRoute) {
-      router.push(previousRoute as RelativePathString);
-    }
+    // Pop the current screen to ensure native "back" animation (slide from left)
+    // Also update the step immediately so the progress bar reflects the change
+    const nextStep = Math.max(1, currentStep - 1);
+    setCurrentStep(nextStep);
+    router.back();
   };
 
   return (
@@ -67,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.transparent,
   },
   progressLine: {
-    width: 275,
+    width: 250,
     height: 4,
     backgroundColor: Colors.light.inputBorder,
     borderRadius: 2,

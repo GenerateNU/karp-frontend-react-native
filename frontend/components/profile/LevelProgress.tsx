@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#9D9D9D',
+    backgroundColor: Colors.light.fishBlue,
     borderRadius: 100,
   },
   percentageText: {
