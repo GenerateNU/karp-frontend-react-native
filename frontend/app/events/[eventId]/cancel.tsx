@@ -26,7 +26,6 @@ export default function EventCancelPage() {
         const eventData = await eventService.getEventById(eventId as string);
         setEvent(eventData);
 
-        // Perform the actual cancellation
         if (volunteer?.id && eventData?.id) {
           const registrations = await getEventRegistrations(eventData.id);
           const myRegistration = registrations.find(
@@ -89,7 +88,6 @@ export default function EventCancelPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          {/* Ship Wheel Icon */}
           <View style={styles.iconContainer}>
             <Image
               source={require('@/assets/images/ship-wheel.svg')}
@@ -98,10 +96,8 @@ export default function EventCancelPage() {
             />
           </View>
 
-          {/* Title */}
           <Text style={styles.title}>Course Changed...</Text>
 
-          {/* Date and Time */}
           <View style={styles.infoSection}>
             <View style={styles.infoRow}>
               <Ionicons name="calendar-outline" size={18} color="#1D0F48" />
@@ -115,18 +111,15 @@ export default function EventCancelPage() {
             </View>
           </View>
 
-          {/* Cancellation Message */}
           <Text style={styles.cancelMessage}>
             Your sign-up is successfully cancelled.
           </Text>
 
-          {/* Apology Message */}
           <Text style={styles.apologyMessage}>
             We&apos;re sorry to see you go.{'\n'}
             Hopefully we&apos;ll see you next time!
           </Text>
 
-          {/* Go To My Events Button */}
           <Pressable
             style={styles.myEventsButton}
             onPress={() => router.replace('/')}
@@ -166,6 +159,7 @@ const styles = StyleSheet.create({
     color: '#1D0F48',
     textAlign: 'center',
     marginBottom: 40,
+    lineHeight: 60
   },
   infoSection: {
     width: '100%',
@@ -218,7 +212,7 @@ const styles = StyleSheet.create({
   myEventsButtonText: {
     fontFamily: 'Inter',
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '700',
     color: '#1D0F48',
   },
   errorText: {
