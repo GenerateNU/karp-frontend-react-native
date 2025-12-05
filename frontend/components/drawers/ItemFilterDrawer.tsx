@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Pressable } from 'react-native';
 import FilterDrawer from './FilterDrawer';
 import { ItemFilters } from '@/app/(tabs)/shop';
@@ -40,19 +40,24 @@ export default function ItemFilterDrawer({
   const [selectedFilter, setSelectedFilter] = useState<string>(
     currentFilters.category
   );
-  // Initialize with full range to encompass entire bar
-  const [priceRange, setPriceRange] = useState({
-    min: 0,
-    max: 10000,
-  });
+  // Initialize with current filter values to show applied filter state
+  const [priceRange, setPriceRange] = useState(
+    currentFilters.priceRange || { min: 0, max: 2000 }
+  );
   const { clearLocationFilter } = useLocation();
+
+  // Sync state when currentFilters changes (e.g., when drawer reopens)
+  useEffect(() => {
+    setSelectedFilter(currentFilters.category);
+    setPriceRange(currentFilters.priceRange || { min: 0, max: 2000 });
+  }, [currentFilters]);
 
   const handleClear = () => {
     setSelectedFilter('');
-    setPriceRange({ min: 0, max: 10000 });
+    setPriceRange({ min: 0, max: 2000 });
     clearLocationFilter();
     onApplyFilters({
-      priceRange: { min: 0, max: 10000 },
+      priceRange: { min: 0, max: 2000 },
       category: '',
     });
   };
@@ -109,19 +114,16 @@ export default function ItemFilterDrawer({
 
         <View style={styles.sliderContainer}>
           <RangeSlider
-            minValue={priceRange.min / 100}
-            maxValue={priceRange.max / 100}
+            minValue={priceRange.min}
+            maxValue={priceRange.max}
             minimumValue={0}
-            maximumValue={100}
+            maximumValue={2000}
             onValueChange={(min, max) => {
-              handlePriceRangeChange(min * 100, max * 100);
+              handlePriceRangeChange(min, max);
             }}
             step={1}
           />
-          <View style={styles.sliderLabels}>
-            <Text style={styles.sliderLabel}>0</Text>
-            <Text style={styles.sliderLabel}>100+</Text>
-          </View>
+          <View style={styles.sliderLabels}></View>
         </View>
       </View>
     </View>

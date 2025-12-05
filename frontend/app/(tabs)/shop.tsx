@@ -53,7 +53,7 @@ export default function StoreScreen() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const profile = useProfile();
   const [filters, setFilters] = useState<ItemFilters>({
-    priceRange: { min: 0, max: 10000 },
+    priceRange: { min: 0, max: 2000 },
     category: '',
   });
   const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(

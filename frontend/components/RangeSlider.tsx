@@ -1,13 +1,16 @@
-import React, { useCallback } from 'react';
-import { View, StyleSheet, LayoutChangeEvent } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, StyleSheet, LayoutChangeEvent, Text } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  useDerivedValue,
+  useAnimatedReaction,
   runOnJS,
   withSpring,
 } from 'react-native-reanimated';
 import { Colors } from '@/constants/Colors';
+import { Fonts } from '@/constants/Fonts';
 
 interface RangeSliderProps {
   minValue: number;
@@ -38,7 +41,7 @@ export default function RangeSlider({
 
   // Track starting positions for gestures
   const minStartX = useSharedValue(0);
-  const maxStartX = useSharedValue(100);
+  const maxStartX = useSharedValue(0);
 
   const updatePositions = useCallback(() => {
     if (sliderWidth.value > 0) {
@@ -56,8 +59,16 @@ export default function RangeSlider({
 
   const handleLayout = (event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
-    sliderWidth.value = width;
-    updatePositions();
+    if (width > 0 && sliderWidth.value === 0) {
+      // First layout measurement - set positions directly without animation
+      sliderWidth.value = width;
+      minPosition.value = ((minValue - minimumValue) / range) * width;
+      maxPosition.value = ((maxValue - minimumValue) / range) * width;
+    } else if (width > 0) {
+      // Subsequent layout changes - update width and recalculate
+      sliderWidth.value = width;
+      updatePositions();
+    }
   };
 
   const updateValues = useCallback(
@@ -143,11 +154,64 @@ export default function RangeSlider({
     };
   });
 
+  // Calculate current values from positions
+  const currentMinValue = useDerivedValue(() => {
+    if (sliderWidth.value === 0) return minimumValue;
+    const value = Math.round(
+      (minPosition.value / sliderWidth.value) * range + minimumValue
+    );
+    return Math.max(minimumValue, Math.min(value, maximumValue));
+  });
+
+  const currentMaxValue = useDerivedValue(() => {
+    if (sliderWidth.value === 0) return maximumValue;
+    const value = Math.round(
+      (maxPosition.value / sliderWidth.value) * range + minimumValue
+    );
+    return Math.max(minimumValue, Math.min(value, maximumValue));
+  });
+
+  // State for displaying values - initialize with prop values
+  const [displayMinValue, setDisplayMinValue] = useState(minValue);
+  const [displayMaxValue, setDisplayMaxValue] = useState(maxValue);
+
+  // Update displayed values when animated values change
+  useAnimatedReaction(
+    () => currentMinValue.value,
+    value => {
+      runOnJS(setDisplayMinValue)(value);
+    }
+  );
+
+  useAnimatedReaction(
+    () => currentMaxValue.value,
+    value => {
+      runOnJS(setDisplayMaxValue)(value);
+    }
+  );
+
+  // Animated styles for value labels
+  const minLabelStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: minPosition.value - 15 }],
+  }));
+
+  const maxLabelStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: maxPosition.value - 15 }],
+  }));
+
   return (
     <View style={styles.container} onLayout={handleLayout}>
       <View style={styles.track}>
         <Animated.View style={[styles.activeTrack, activeTrackStyle]} />
       </View>
+      {/* Min value label */}
+      <Animated.View style={[styles.valueLabel, minLabelStyle]}>
+        <Text style={styles.valueText}>{displayMinValue}</Text>
+      </Animated.View>
+      {/* Max value label */}
+      <Animated.View style={[styles.valueLabel, maxLabelStyle]}>
+        <Text style={styles.valueText}>{displayMaxValue}</Text>
+      </Animated.View>
       <GestureDetector gesture={minGesture}>
         <Animated.View style={[styles.thumb, minThumbStyle]}>
           <View style={styles.thumbInner} />
@@ -165,9 +229,10 @@ export default function RangeSlider({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 40,
+    height: 60,
     justifyContent: 'center',
     position: 'relative',
+    paddingTop: 20,
   },
   track: {
     width: '100%',
@@ -207,5 +272,18 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: Colors.light.sliderGray,
+  },
+  valueLabel: {
+    position: 'absolute',
+    top: 0,
+    width: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  valueText: {
+    fontSize: 12,
+    color: Colors.light.primaryText,
+    fontFamily: Fonts.regular_400,
+    textAlign: 'center',
   },
 });
