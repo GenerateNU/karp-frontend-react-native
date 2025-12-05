@@ -224,7 +224,8 @@ const styles = StyleSheet.create({
     width: 195,
     backgroundColor: '#74C0EB',
     borderRadius: 16.333,
-    paddingVertical: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 35,
     alignItems: 'center',
   },
   unregisterButton: {

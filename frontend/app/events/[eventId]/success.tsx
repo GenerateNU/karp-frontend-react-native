@@ -173,7 +173,7 @@ export default function EventSuccessPage() {
 
           <View style={styles.treasureContainer}>
             <Image
-              source={require('@/assets/images/treasure-chest.svg')}
+              source={require('@/assets/images/treasure-chest.png')}
               style={styles.treasureIcon}
               contentFit="contain"
             />
@@ -298,8 +298,8 @@ const styles = StyleSheet.create({
     marginBottom: 82.24,
   },
   treasureIcon: {
-    width: 98,
-    height: 79,
+    width: 148,
+    height: 129,
   },
   seeEventButton: {
     backgroundColor: '#74C0EB',

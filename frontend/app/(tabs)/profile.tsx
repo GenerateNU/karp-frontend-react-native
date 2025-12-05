@@ -125,7 +125,7 @@ export default function ProfileScreen() {
                   key={event.id}
                   event={event}
                   onPress={event =>
-                    router.push(`/events/${event.id}/info?source=profile`)
+                    router.push(`/events/${event.id}/info`)
                   }
                   onCheckIn={() => router.push('/scan?type=check-in')}
                   onCheckOut={() => router.push('/scan?type=checkout')}

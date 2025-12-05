@@ -78,35 +78,23 @@ export default function EventSignUpPage() {
   const start = event?.startDateTime ? new Date(event.startDateTime) : null;
   const end = event?.endDateTime ? new Date(event.endDateTime) : null;
 
-  const startDate = start
+ const dateFormatted = start
     ? start.toLocaleDateString(undefined, {
         month: 'long',
         day: 'numeric',
-        year: 'numeric',
       })
     : '';
 
-    const endDate = end
-      ? end.toLocaleDateString(undefined, {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
-      })
-    : '';
-
-    const startTime = start
-      ? start.toLocaleTimeString(undefined, {
+  const timeFormatted =
+    start && end
+      ? `${start.toLocaleTimeString(undefined, {
           hour: 'numeric',
           minute: '2-digit',
-      })
-    : '';
-
-    const endTime = end
-      ? end.toLocaleTimeString(undefined, {
+        })} - ${end.toLocaleTimeString(undefined, {
           hour: 'numeric',
-          minute: '2-digit'
-      })
-    : '';
+          minute: '2-digit',
+        })}`
+      : '';
 
   return (
     <>
@@ -119,9 +107,16 @@ export default function EventSignUpPage() {
           </Pressable>
           <Text style={styles.title}>Sign Up</Text>
           <View style={styles.dateSection}>
-            <Text style={styles.sectionLabel}>Date:</Text>
-            <Text style={styles.dateValue}>Start: {startDate} at {startTime}</Text>
-            <Text style={styles.dateValue}>End: {endDate} at {endTime}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+              <Ionicons name="calendar-outline" size={24} color="#1D0F48" style={{ marginRight: 8 }} />
+              <Text style={styles.sectionLabel}>Date:</Text>
+              <Text style={[styles.dateValue, { marginLeft: 8 }]}>{dateFormatted}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons name="time-outline" size={24} color="#1D0F48" style={{ marginRight: 8 }} />
+              <Text style={[styles.sectionLabel, ]}>Time:</Text>
+              <Text style={[styles.dateValue, { marginLeft: 8 }]}>{timeFormatted}</Text>
+            </View>
           </View>
           <Pressable
             style={[styles.confirmButton, submitting && styles.confirmButtonDisabled]}
@@ -183,10 +178,10 @@ const styles = StyleSheet.create({
   },
   dateValue: {
     fontFamily: 'Inter',
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: '400',
     color: '#1D0F48',
-    marginTop: 16
+    marginBottom: 8
   },
   confirmButton: {
     backgroundColor: '#74C0EB',
