@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.transparent,
   },
   progressLine: {
-    width: 275,
+    width: 250,
     height: 4,
     backgroundColor: Colors.light.inputBorder,
     borderRadius: 2,

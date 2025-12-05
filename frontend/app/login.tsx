@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Alert, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { Image } from 'expo-image';
@@ -133,14 +132,6 @@ const styles = StyleSheet.create({
     paddingTop: '35%',
     paddingBottom: 25,
     justifyContent: 'flex-start',
-  },
-  headerWaves: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 150,
-    opacity: 0.95,
   },
   logoContainer: {
     alignItems: 'center',

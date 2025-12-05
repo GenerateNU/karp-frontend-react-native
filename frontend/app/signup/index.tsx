@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.transparent,
     paddingHorizontal: 50,
-    paddingTop: '15%',
+    paddingTop: '20%',
     paddingBottom: 25,
     justifyContent: 'flex-start',
   },
