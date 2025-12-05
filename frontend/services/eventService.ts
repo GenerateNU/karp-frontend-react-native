@@ -33,6 +33,10 @@ async function getAllEvents(
     params.volunteer_id = volunteerId;
   }
 
+  if ((params?.sort_by === 'been_before' || params?.sort_by === 'recommendations') && volunteerId) {
+    params.volunteer_id = volunteerId;
+  }
+
   if (!params.sort_by) {
     params.sort_by = 'distance';
   }
@@ -40,6 +44,7 @@ async function getAllEvents(
   const { data: events } = await api
     .get('event/all', { params })
     .catch(error => {
+      console.error('Full error:', error.response?.data || error);
       throw error;
     });
   return events;
