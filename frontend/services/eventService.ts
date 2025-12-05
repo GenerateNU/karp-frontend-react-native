@@ -29,7 +29,7 @@ async function getAllEvents(
     Object.assign(params, filters);
   }
 
-  if (filters?.sort_by === 'been_before' && volunteerId) {
+  if ((filters?.sort_by === 'been_before' || filters?.sort_by === 'recommendations') && volunteerId) {
     params.volunteer_id = volunteerId;
   }
 
