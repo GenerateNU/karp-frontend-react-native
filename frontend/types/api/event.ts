@@ -31,7 +31,8 @@ export type EventSortOption =
   | 'been_before'
   | 'new_additions'
   | 'coins_low_to_high'
-  | 'coins_high_to_low';
+  | 'coins_high_to_low'
+  | 'recommendations';
 
 export type EventCause =
   | 'Animals'
@@ -82,6 +83,7 @@ export const EVENT_AVAILABILITY_DAYS: EventAvailabilityDay[] = [
 ];
 
 export const EVENT_SORT_OPTIONS: EventSortOption[] = [
+  'recommendations',
   'been_before',
   'new_additions',
   'coins_low_to_high',

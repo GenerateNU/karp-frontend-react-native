@@ -28,6 +28,7 @@ import { useEventFilters } from '@/context/EventFiltersContext';
 import { Colors } from '@/constants/Colors';
 
 const SORT_LABELS: Record<EventSortOption, string> = {
+  recommendations: 'Recommendations',
   been_before: 'Been Before',
   new_additions: 'New Additions',
   coins_low_to_high: 'Koins: Lowest to Highest',
