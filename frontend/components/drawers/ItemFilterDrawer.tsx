@@ -120,7 +120,6 @@ export default function ItemFilterDrawer({
             }}
             step={1}
           />
-          <View style={styles.sliderLabels}></View>
         </View>
       </View>
     </View>
