@@ -62,7 +62,7 @@ export default function StoreScreen() {
 
   const router = useRouter();
   const { user } = useAuth();
-  const { locationFilter, clearLocationFilter } = useLocation();
+  const { locationFilter } = useLocation();
 
   const mapItemsWithVendors = useCallback(
     (itemsResponse: any[], vendorsResponse: Vendor[]): ShopItem[] => {

@@ -45,9 +45,13 @@ export default function LocationMapFilter({
   onApply,
   onClear,
   style,
+  // eslint-disable-next-line
   showTitle = true,
+  // eslint-disable-next-line
   showSegmentedControl = true,
+  // eslint-disable-next-line
   activeTab = 'Location',
+  // eslint-disable-next-line
   onTabChange,
 }: LocationMapFilterProps) {
   const { locationFilter, userLocation, setLocationFilter } = useLocation();

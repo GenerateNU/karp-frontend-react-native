@@ -42,7 +42,6 @@ export default function FilterDrawer({
 
   const sheetRef = useRef<React.ComponentRef<typeof BottomSheet>>(null);
   const snapPoints = useMemo(() => ['85%'], []);
-  const initialIndex = 0;
 
   const handleSheetChange = useCallback(
     (index: number) => {

@@ -230,18 +230,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 15,
   },
-  sliderLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 8,
-    paddingHorizontal: 2,
-  },
-  sliderLabel: {
-    fontSize: 12,
-    color: Colors.light.primaryText,
-    fontFamily: Fonts.regular_400,
-  },
   buttonContainer: {
     flexDirection: 'row',
     gap: 22,
