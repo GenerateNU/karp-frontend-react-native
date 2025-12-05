@@ -37,17 +37,9 @@ export default function EventInfoTable({
 
   const startDate = start
     ? start.toLocaleDateString(undefined, {
-        month: 'long',
+        month: 'numeric',
         day: 'numeric',
         year: 'numeric',
-      })
-    : '';
-
-    const endDate = end
-      ? end.toLocaleDateString(undefined, {
-          month: 'long',
-          day: 'numeric',
-          year: 'numeric',
       })
     : '';
 
@@ -165,9 +157,10 @@ export default function EventInfoTable({
       </View>
 
       <View style={styles.infoRow}>
+        <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
         <Text style={styles.label}>Date:</Text>
-        <Text style={styles.value}>Start: {startDate} at {startTime}</Text>
-        <Text style={styles.value}>End: {endDate} at {endTime}</Text>
+        <Text style={[styles.value, { marginLeft: 8 }]}>{startDate} at {startTime} - {endTime}</Text>
+        </View>
       </View>
     </View>
   );

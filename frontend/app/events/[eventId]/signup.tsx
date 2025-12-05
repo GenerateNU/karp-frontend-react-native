@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, Pressable, ActivityIndicator, Alert } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, View, Text, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
@@ -16,6 +16,7 @@ export default function EventSignUpPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const backgroundImage = require('@/assets/images/event-signup.png');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -99,6 +100,7 @@ export default function EventSignUpPage() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
+      <ImageBackground source={backgroundImage} style={StyleSheet.absoluteFillObject}>
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <Pressable onPress={() => router.back()} style={styles.backButton}>
@@ -131,6 +133,7 @@ export default function EventSignUpPage() {
           </Pressable>
         </ScrollView>
       </SafeAreaView>
+      </ImageBackground>
     </>
   );
 }
@@ -138,7 +141,6 @@ export default function EventSignUpPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFDFA',
   },
   scrollContent: {
     paddingBottom: 100,
