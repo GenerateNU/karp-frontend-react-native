@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    backgroundColor: Colors.light.transparent,
+    backgroundColor: Colors.light.white,
     color: Colors.light.text,
   },
   inputError: {

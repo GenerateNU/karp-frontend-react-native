@@ -93,7 +93,7 @@ export function SignUpFlowButton({
 const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
-    padding: 10,
+    padding: 8,
     width: '80%',
     height: 40,
     alignSelf: 'center',

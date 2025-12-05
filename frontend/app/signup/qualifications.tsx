@@ -7,14 +7,18 @@ import {
   ScrollView,
 } from 'react-native';
 import { useSignUp } from '@/context/SignUpContext';
-import { useRouter } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Fonts';
+import { Image } from 'expo-image';
 import { SignUpFlowButton } from '@/components/signup/SignUpFlowButton';
 import { Qualification } from '@/types/api/volunteer';
 import { Ionicons } from '@expo/vector-icons';
+import { SignUpProgress } from '@/components/signup/SignUpProgress';
 
 function SignUpQualifications() {
+  const pathname = usePathname();
+  const isIndexPage = pathname === '/signup';
   const { data, setData, setCurrentStep } = useSignUp();
   const router = useRouter();
 
@@ -56,6 +60,13 @@ function SignUpQualifications() {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('@/assets/images/qualifications.png')}
+        style={StyleSheet.absoluteFill}
+        contentFit="cover"
+        pointerEvents="none"
+      />
+      {!isIndexPage && <SignUpProgress />}
       <View style={styles.header}>
         <Text style={styles.title}>What qualifications do you have?</Text>
       </View>
@@ -119,13 +130,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.white,
-    paddingHorizontal: 20,
     paddingTop: 75,
     paddingBottom: 100,
   },
   header: {
+    marginTop: 50,
     marginBottom: 32,
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
@@ -145,6 +157,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 8,
+    paddingHorizontal: 20,
   },
   qualificationButton: {
     backgroundColor: Colors.light.white,
@@ -176,10 +189,9 @@ const styles = StyleSheet.create({
   },
   fixedButtonContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     left: 0,
     right: 0,
     padding: 20,
-    backgroundColor: Colors.light.white,
   },
 });

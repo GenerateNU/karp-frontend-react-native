@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Alert, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { Image } from 'expo-image';
@@ -51,11 +50,11 @@ export default function LoginScreen() {
   }, [isAuthenticated, isGuest]);
 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
+    <View style={styles.safeAreaView}>
       <View style={styles.container}>
         <Image
-          source={require('@/assets/images/waves-bg.png')}
-          style={styles.headerWaves}
+          source={require('@/assets/images/sign-in-background.png')}
+          style={StyleSheet.absoluteFill}
           contentFit="cover"
           pointerEvents="none"
         />
@@ -74,8 +73,7 @@ export default function LoginScreen() {
           <SignUpFlowInput
             value={username}
             onChangeText={setUsername}
-            placeholder="Email"
-            keyboardType="email-address"
+            placeholder="Username"
             autoCapitalize="none"
             autoCorrect={false}
             style={styles.inputOverride}
@@ -118,7 +116,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -131,17 +129,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.transparent,
     paddingHorizontal: 50,
-    paddingTop: '25%',
+    paddingTop: '35%',
     paddingBottom: 25,
     justifyContent: 'flex-start',
-  },
-  headerWaves: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 150,
-    opacity: 0.95,
   },
   logoContainer: {
     alignItems: 'center',

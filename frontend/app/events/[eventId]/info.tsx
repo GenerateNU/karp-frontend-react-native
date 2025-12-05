@@ -1,38 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Pressable } from 'react-native';
-import { Button } from '@/components/common/Button';
+import { View, StyleSheet, Pressable, ScrollView, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import EventInfoTable from '@/components/ui/EventInfoFull';
 import { useAuth } from '@/context/AuthContext';
-import { Colors } from '@/constants/Colors';
 import { Event } from '@/types/api/event';
 import { RegistrationStatus } from '@/types/api/registration';
 import { eventService } from '@/services/eventService';
 import {
   getEventsByVolunteer,
   getEventRegistrations,
-  unregister as unregisterRegistration,
 } from '@/services/registrationService';
-import { useQueryClient } from '@tanstack/react-query';
-import { BackHeader } from '@/components/common/BackHeader';
 import { LoadingScreen } from '@/components/LoadingScreen';
+import { EventAttendeesCarousel } from '@/components/events/EventAttendeesCarousel';
+import EventInfoTable from '@/components/ui/EventInfoFull';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function EventSignUpPage() {
-  const { eventId } = useLocalSearchParams();
+export default function EventInfoPage() {
+  const { eventId } = useLocalSearchParams<{
+    eventId: string;
+  }>();
   const router = useRouter();
   const { isAuthenticated, isGuest, clearGuestMode, volunteer } = useAuth();
-  const queryClient = useQueryClient();
+
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string>('');
   const [isRegistered, setIsRegistered] = useState(false);
-  const [unregistering, setUnregistering] = useState(false);
-  const isEventPast = event?.endDateTime
-    ? new Date(event.endDateTime) < new Date()
-    : false;
+  const [registeredCount, setRegisteredCount] = useState(0);
+
+  const showRegisteredView = isRegistered;
 
   useEffect(() => {
     if (!isAuthenticated && !isGuest) {
@@ -44,6 +40,9 @@ export default function EventSignUpPage() {
       try {
         const eventData = await eventService.getEventById(eventId as string);
         setEvent(eventData);
+
+        const registrations = await getEventRegistrations(eventId as string);
+        setRegisteredCount(registrations.length);
       } catch (error) {
         console.log('Error fetching event details:', error);
         setEvent(null);
@@ -76,10 +75,6 @@ export default function EventSignUpPage() {
       setMessage('You need an account to sign up for events!');
       return;
     }
-    if (false) {
-      setMessage('Sorry, this event has no spots left.');
-      return;
-    }
     if (event?.id) {
       router.push(`/events/${event.id}/signup`);
     }
@@ -91,75 +86,89 @@ export default function EventSignUpPage() {
   };
 
   const handleUnregister = async () => {
-    if (!event?.id || !volunteer?.id) return;
-    try {
-      setUnregistering(true);
-      const registrations = await getEventRegistrations(event.id);
-      const myRegistration = registrations.find(
-        r => r.volunteerId === volunteer.id
-      );
-      if (!myRegistration) {
-        setMessage("We couldn't find your registration for this event.");
-        return;
-      }
-      await unregisterRegistration(myRegistration.id);
-      setIsRegistered(false);
-      setMessage('You have been unregistered from this event.');
-      // Invalidate upcoming events for this volunteer, so profile refreshes
-      await queryClient.invalidateQueries({
-        queryKey: ['registration', 'events', volunteer.id, 'upcoming'],
-      });
-    } catch (err) {
-      console.log(err);
-      setMessage('Failed to unregister. Please try again.');
-    } finally {
-      setUnregistering(false);
-    }
+    if (!event?.id) return;
+    router.push({
+      pathname: '/events/[eventId]/cancel',
+      params: {
+        eventId: event.id,
+      },
+    });
   };
 
   if (loading) {
     return <LoadingScreen text="Loading event info details..." />;
   }
+
+  if (!event) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorText}>Event not found</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
-        <ScrollView>
-          <BackHeader />
-          <ThemedView style={styles.content}>
-            <EventInfoTable {...event!} />
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Pressable onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1D0F48" />
+            <Text style={styles.backText}>Back</Text>
+          </Pressable>
 
+          <EventInfoTable
+            {...event}
+            registeredCount={registeredCount}
+            showCancelButton={showRegisteredView}
+            onCancelSignUp={handleUnregister}
+          />
+
+          {showRegisteredView ? (
+            <View style={styles.profileViewSection}>
+              <EventAttendeesCarousel eventId={eventId as string} />
+
+              <View style={styles.checkInOutButtons}>
+                <Pressable
+                  style={styles.checkInOutButton}
+                  onPress={() => router.push('/scan?type=check-in')}
+                >
+                  <Text style={styles.checkInOutButtonText}>Check In</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.checkInOutButton}
+                  onPress={() => router.push('/scan?type=checkout')}
+                >
+                  <Text style={styles.checkInOutButtonText}>Check Out</Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : (
             <View style={styles.signUpSection}>
-              {isRegistered ? (
-                <Button
-                  text="UNREGISTER"
-                  onPress={handleUnregister}
-                  loading={unregistering}
-                  disabled={unregistering}
-                />
-              ) : !isEventPast ? (
-                <Button
-                  text="SIGN UP"
-                  onPress={handleSignUp}
-                  loading={false}
-                  disabled={false}
-                />
-              ) : null}
+              <Pressable
+                style={[
+                  styles.signUpButton,
+                  isRegistered && styles.unregisterButton,
+                ]}
+                onPress={isRegistered ? handleUnregister : handleSignUp}
+              >
+                <Text style={styles.signUpButtonText}>
+                  {isRegistered ? 'UNREGISTER' : 'SIGN UP'}
+                </Text>
+              </Pressable>
 
               {message ? (
                 <View style={styles.messageBox}>
-                  <ThemedText style={styles.errorText}>{message}</ThemedText>
+                  <Text style={styles.errorText}>{message}</Text>
                   {isGuest ? (
                     <Pressable onPress={handleSignIn}>
-                      <ThemedText style={styles.signUpLink}>
-                        Sign In Now
-                      </ThemedText>
+                      <Text style={styles.signInLink}>Sign In Now</Text>
                     </Pressable>
                   ) : null}
                 </View>
               ) : null}
             </View>
-          </ThemedView>
+          )}
         </ScrollView>
       </SafeAreaView>
     </>
@@ -169,28 +178,83 @@ export default function EventSignUpPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#FFFDFA',
   },
-  content: {
-    paddingLeft: 34,
-    paddingRight: 46,
-    gap: 16,
-    backgroundColor: Colors.light.background,
+  scrollContent: {
+    paddingBottom: 100,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
+  },
+  backText: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#1D0F48',
+  },
+  profileViewSection: {
+    marginTop: 24,
+    paddingHorizontal: 24,
+  },
+  checkInOutButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 16,
+  },
+  checkInOutButton: {
+    flex: 1,
+    backgroundColor: '#74C0EB',
+    borderRadius: 16.333,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  checkInOutButtonText: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1D0F48',
   },
   signUpSection: {
-    marginBottom: 24,
+    marginTop: 32,
+    paddingHorizontal: 24,
     alignItems: 'center',
-    gap: 12,
+  },
+  signUpButton: {
+    width: 195,
+    backgroundColor: '#74C0EB',
+    borderRadius: 16.333,
+    paddingVertical: 12,
+    paddingHorizontal: 35,
+    alignItems: 'center',
+  },
+  unregisterButton: {
+    backgroundColor: '#FF6B6B',
+  },
+  signUpButtonText: {
+    fontFamily: 'Inter',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1D0F48',
   },
   messageBox: {
-    width: '100%',
-    paddingHorizontal: 8,
+    marginTop: 12,
+    alignItems: 'center',
   },
   errorText: {
-    color: Colors.light.errorText,
+    fontFamily: 'Inter',
+    fontSize: 14,
+    color: '#FF6B6B',
+    textAlign: 'center',
   },
-  signUpLink: {
-    color: Colors.light.text,
+  signInLink: {
+    fontFamily: 'Inter',
+    fontSize: 14,
+    color: '#1D0F48',
     textDecorationLine: 'underline',
+    marginTop: 8,
   },
 });

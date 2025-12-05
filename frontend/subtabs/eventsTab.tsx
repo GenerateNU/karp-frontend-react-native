@@ -105,7 +105,6 @@ export default function EventsScreen() {
     },
     [router]
   );
-
   const handleSortPress = useCallback(
     (sortOption: EventSortOption) => {
       const newFilters: EventFilters = {
