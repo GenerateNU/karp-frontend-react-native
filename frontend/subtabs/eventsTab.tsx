@@ -242,7 +242,7 @@ export default function EventsScreen() {
       <View className="flex-1">
         <>
           <Text className="mx-4 mb-2 text-lg font-semibold text-gray-900">
-            Recommended Events:
+            Upcoming Events:
           </Text>
           {loading ? (
             <LoadingScreen text="Loading events..." />
