@@ -117,8 +117,8 @@ export default function EventInfoPage() {
             <Text style={styles.backText}>Back</Text>
           </Pressable>
 
-          <EventInfoTable 
-            {...event} 
+          <EventInfoTable
+            {...event}
             registeredCount={registeredCount}
             showCancelButton={showRegisteredView}
             onCancelSignUp={handleUnregister}
@@ -146,7 +146,10 @@ export default function EventInfoPage() {
           ) : (
             <View style={styles.signUpSection}>
               <Pressable
-                style={[styles.signUpButton, isRegistered && styles.unregisterButton]}
+                style={[
+                  styles.signUpButton,
+                  isRegistered && styles.unregisterButton,
+                ]}
                 onPress={isRegistered ? handleUnregister : handleSignUp}
               >
                 <Text style={styles.signUpButtonText}>

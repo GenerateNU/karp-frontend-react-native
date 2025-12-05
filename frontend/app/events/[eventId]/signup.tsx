@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, ScrollView, StyleSheet, View, Text, Pressable, ActivityIndicator, Alert } from 'react-native';
+import {
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
@@ -79,7 +88,7 @@ export default function EventSignUpPage() {
   const start = event?.startDateTime ? new Date(event.startDateTime) : null;
   const end = event?.endDateTime ? new Date(event.endDateTime) : null;
 
- const dateFormatted = start
+  const dateFormatted = start
     ? start.toLocaleDateString(undefined, {
         month: 'long',
         day: 'numeric',
@@ -100,39 +109,65 @@ export default function EventSignUpPage() {
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
-      <ImageBackground source={backgroundImage} style={StyleSheet.absoluteFillObject}>
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#1D0F48" />
-            <Text style={styles.backText}>Back</Text>
-          </Pressable>
-          <Text style={styles.title}>Sign Up</Text>
-          <View style={styles.dateSection}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-              <Ionicons name="calendar-outline" size={24} color="#1D0F48" style={{ marginRight: 8 }} />
-              <Text style={styles.sectionLabel}>Date:</Text>
-              <Text style={[styles.dateValue, { marginLeft: 8 }]}>{dateFormatted}</Text>
+      <ImageBackground
+        source={backgroundImage}
+        style={StyleSheet.absoluteFillObject}
+      >
+        <SafeAreaView style={styles.container}>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Pressable onPress={() => router.back()} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="#1D0F48" />
+              <Text style={styles.backText}>Back</Text>
+            </Pressable>
+            <Text style={styles.title}>Sign Up</Text>
+            <View style={styles.dateSection}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+              >
+                <Ionicons
+                  name="calendar-outline"
+                  size={24}
+                  color="#1D0F48"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={styles.sectionLabel}>Date:</Text>
+                <Text style={[styles.dateValue, { marginLeft: 8 }]}>
+                  {dateFormatted}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Ionicons
+                  name="time-outline"
+                  size={24}
+                  color="#1D0F48"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={[styles.sectionLabel]}>Time:</Text>
+                <Text style={[styles.dateValue, { marginLeft: 8 }]}>
+                  {timeFormatted}
+                </Text>
+              </View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name="time-outline" size={24} color="#1D0F48" style={{ marginRight: 8 }} />
-              <Text style={[styles.sectionLabel, ]}>Time:</Text>
-              <Text style={[styles.dateValue, { marginLeft: 8 }]}>{timeFormatted}</Text>
-            </View>
-          </View>
-          <Pressable
-            style={[styles.confirmButton, submitting && styles.confirmButtonDisabled]}
-            onPress={handleConfirm}
-            disabled={submitting}
-          >
-            {submitting ? (
-              <ActivityIndicator color="#1D0F48" />
-            ) : (
-              <Text style={styles.confirmButtonText}>Confirm</Text>
-            )}
-          </Pressable>
-        </ScrollView>
-      </SafeAreaView>
+            <Pressable
+              style={[
+                styles.confirmButton,
+                submitting && styles.confirmButtonDisabled,
+              ]}
+              onPress={handleConfirm}
+              disabled={submitting}
+            >
+              {submitting ? (
+                <ActivityIndicator color="#1D0F48" />
+              ) : (
+                <Text style={styles.confirmButtonText}>Confirm</Text>
+              )}
+            </Pressable>
+          </ScrollView>
+        </SafeAreaView>
       </ImageBackground>
     </>
   );
@@ -165,7 +200,7 @@ const styles = StyleSheet.create({
     color: '#1D0F48',
     paddingHorizontal: 39,
     marginBottom: 59,
-    marginTop: 36.5
+    marginTop: 36.5,
   },
   dateSection: {
     paddingHorizontal: 39,
@@ -183,7 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '400',
     color: '#1D0F48',
-    marginBottom: 8
+    marginBottom: 8,
   },
   confirmButton: {
     backgroundColor: '#74C0EB',

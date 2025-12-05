@@ -33,7 +33,7 @@ export default function EventSuccessPage() {
 
   const handleShare = async () => {
     if (!event) return;
-    
+
     try {
       await Share.share({
         message: `Check out this event: ${event.name}`,
@@ -130,7 +130,10 @@ export default function EventSuccessPage() {
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          <Pressable onPress={() => router.replace('/')} style={styles.backButton}>
+          <Pressable
+            onPress={() => router.replace('/')}
+            style={styles.backButton}
+          >
             <Ionicons name="arrow-back" size={24} color="#1D0F48" />
             <Text style={styles.backText}>Back to Home</Text>
           </Pressable>
@@ -201,7 +204,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     alignItems: 'center',
   },
-    backButton: {
+  backButton: {
     position: 'absolute',
     top: 20,
     left: 16,
@@ -295,7 +298,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   treasureContainer: {
-    marginBottom: 82.24,
+    marginBottom: 40,
   },
   treasureIcon: {
     width: 148,

@@ -7,7 +7,10 @@ import { eventService } from '@/services/eventService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { getEventRegistrations, unregister as unregisterRegistration } from '@/services/registrationService';
+import {
+  getEventRegistrations,
+  unregister as unregisterRegistration,
+} from '@/services/registrationService';
 import { useAuth } from '@/context/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -41,7 +44,10 @@ export default function EventCancelPage() {
         }
       } catch (error) {
         console.log('Error cancelling event:', error);
-        Alert.alert('Error', 'Failed to cancel registration. Please try again.');
+        Alert.alert(
+          'Error',
+          'Failed to cancel registration. Please try again.'
+        );
       } finally {
         setLoading(false);
       }
@@ -159,7 +165,7 @@ const styles = StyleSheet.create({
     color: '#1D0F48',
     textAlign: 'center',
     marginBottom: 40,
-    lineHeight: 60
+    lineHeight: 60,
   },
   infoSection: {
     width: '100%',

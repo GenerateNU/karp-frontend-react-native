@@ -29,7 +29,9 @@ export default function EventInfoTable({
   onCancelSignUp,
   cancelLoading = false,
 }: Props) {
-  const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(null);
+  const [imagePreSignedUrl, setImagePreSignedUrl] = useState<string | null>(
+    null
+  );
   const [orgName, setOrgName] = useState<string>(organization ?? '');
 
   const start = startDateTime ? new Date(startDateTime) : null;
@@ -43,17 +45,17 @@ export default function EventInfoTable({
       })
     : '';
 
-    const startTime = start
-      ? start.toLocaleTimeString(undefined, {
-          hour: 'numeric',
-          minute: '2-digit',
+  const startTime = start
+    ? start.toLocaleTimeString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit',
       })
     : '';
 
-    const endTime = end
-      ? end.toLocaleTimeString(undefined, {
-          hour: 'numeric',
-          minute: '2-digit'
+  const endTime = end
+    ? end.toLocaleTimeString(undefined, {
+        hour: 'numeric',
+        minute: '2-digit',
       })
     : '';
 
@@ -135,17 +137,19 @@ export default function EventInfoTable({
       <View style={styles.infoRow}>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
-        <Text style={styles.label}>Organizer:</Text>
-        <Text style={[styles.value, {  marginLeft: 8 }]}>{orgName || '[name]'}</Text>
+            <Text style={styles.label}>Organizer:</Text>
+            <Text style={[styles.value, { marginLeft: 8 }]}>
+              {orgName || '[name]'}
+            </Text>
           </View>
-          {address ? (
-        <Text style={[styles.value]}>{address}</Text>
-          ) : null}
+          {address ? <Text style={[styles.value]}>{address}</Text> : null}
         </View>
       </View>
 
       <View style={styles.infoRow}>
-        <Text style={styles.slotsLabel}>Spots Remaining: {spotsRemaining}/{maxVolunteers}</Text>
+        <Text style={styles.slotsLabel}>
+          Spots Remaining: {spotsRemaining}/{maxVolunteers}
+        </Text>
       </View>
 
       <View style={styles.descriptionSection}>
@@ -158,8 +162,10 @@ export default function EventInfoTable({
 
       <View style={styles.infoRow}>
         <View style={{ flexDirection: 'row', alignItems: 'baseline' }}>
-        <Text style={styles.label}>Date:</Text>
-        <Text style={[styles.value, { marginLeft: 8 }]}>{startDate} at {startTime} - {endTime}</Text>
+          <Text style={styles.label}>Date:</Text>
+          <Text style={[styles.value, { marginLeft: 8 }]}>
+            {startDate} at {startTime} - {endTime}
+          </Text>
         </View>
       </View>
     </View>
@@ -201,7 +207,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 12,
-    marginBottom: 25
+    marginBottom: 25,
   },
   coinsBadge: {
     flexDirection: 'row',
@@ -226,7 +232,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#1D0F48',
-    marginBottom: 4
+    marginBottom: 4,
   },
   value: {
     fontFamily: 'Inter',
@@ -240,7 +246,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: '#1D0F48',
-    marginBottom: 25
+    marginBottom: 25,
   },
   descriptionSection: {
     marginBottom: 25,
