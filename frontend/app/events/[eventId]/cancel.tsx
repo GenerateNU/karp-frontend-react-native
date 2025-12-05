@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     color: '#1D0F48',
     textAlign: 'center',
     lineHeight: 24,
-    marginBottom: 48,
+    marginBottom: 138,
   },
   myEventsButton: {
     backgroundColor: '#74C0EB',
