@@ -84,16 +84,13 @@ export default function ItemFilterDrawer({
       <View style={styles.filterList}>
         {ITEM_FILTER_OPTIONS.map(option => {
           const isSelected = selectedFilter === option;
-          const displayText =
-            option === 'GIFT CARDS'
-              ? 'Gift Cards'
-              : option === 'OFFERS'
-                ? 'Offers'
-                : option === 'LOCAL'
-                  ? 'Local'
-                  : option === 'FOOD'
-                    ? 'Food'
-                    : option;
+          const DISPLAY_TEXT_MAP: Record<string, string> = {
+            'GIFT CARDS': 'Gift Cards',
+            'OFFERS': 'Offers',
+            'LOCAL': 'Local',
+            'FOOD': 'Food',
+          };
+          const displayText = DISPLAY_TEXT_MAP[option] || option;
           return (
             <View key={option} style={styles.filterRow}>
               <Text style={styles.filterText}>{displayText}</Text>
