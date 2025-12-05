@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.transparent,
     paddingHorizontal: 50,
-    paddingTop: '20%',
+    paddingTop: '35%',
     paddingBottom: 25,
     justifyContent: 'flex-start',
   },
@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
     marginBottom: -20,
   },
   logo: {
-    width: 225,
-    height: 225,
+    width: 260,
+    height: 160,
   },
   header: {
     marginBottom: 24,

@@ -93,12 +93,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const fetchUserEntity = useCallback(async () => {
-    if (!user?.entityId) return;
-
-    // only fetch volunteer for now
+    // Fetch the current user's volunteer entity if it exists
     const volunteerResponse = await volunteerService.getSelf();
     setVolunteer(volunteerResponse);
-  }, [user?.entityId]); // Keep this dependency
+  }, []); // No need to depend on user.entityId
 
   const signOut = useCallback(async () => {
     await userService.logout();
@@ -159,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (user?.entityId && !volunteer && token) {
       fetchUserEntity();
     }
-  }, [user?.entityId, volunteer, token]);
+  }, [user?.entityId, volunteer, token, fetchUserEntity]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
