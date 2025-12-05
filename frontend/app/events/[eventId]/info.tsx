@@ -147,19 +147,20 @@ export default function EventInfoPage() {
             </View>
           ) : (
             <View style={styles.signUpSection}>
-              {spotsRemaining > 0 && (
-                <Pressable
-                  style={[
-                    styles.signUpButton,
-                    isRegistered && styles.unregisterButton,
-                  ]}
-                  onPress={isRegistered ? handleUnregister : handleSignUp}
-                >
-                  <Text style={styles.signUpButtonText}>
-                    {isRegistered ? 'UNREGISTER' : 'SIGN UP'}
-                  </Text>
-                </Pressable>
-              )}
+              {spotsRemaining > 0 &&
+                Date.now() < new Date(event.endDateTime).getTime() && (
+                  <Pressable
+                    style={[
+                      styles.signUpButton,
+                      isRegistered && styles.unregisterButton,
+                    ]}
+                    onPress={isRegistered ? handleUnregister : handleSignUp}
+                  >
+                    <Text style={styles.signUpButtonText}>
+                      {isRegistered ? 'UNREGISTER' : 'SIGN UP'}
+                    </Text>
+                  </Pressable>
+                )}
 
               {message ? (
                 <View style={styles.messageBox}>

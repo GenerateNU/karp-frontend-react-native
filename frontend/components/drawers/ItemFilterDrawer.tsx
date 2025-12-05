@@ -86,9 +86,9 @@ export default function ItemFilterDrawer({
           const isSelected = selectedFilter === option;
           const DISPLAY_TEXT_MAP: Record<string, string> = {
             'GIFT CARDS': 'Gift Cards',
-            'OFFERS': 'Offers',
-            'LOCAL': 'Local',
-            'FOOD': 'Food',
+            OFFERS: 'Offers',
+            LOCAL: 'Local',
+            FOOD: 'Food',
           };
           const displayText = DISPLAY_TEXT_MAP[option] || option;
           return (
