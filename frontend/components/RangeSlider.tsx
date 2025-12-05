@@ -100,11 +100,14 @@ export default function RangeSlider({
       'worklet';
       const width = sliderWidth.value;
       if (width === 0) return;
+      // Calculate minimum pixel distance based on step value
+      // Ensure at least THUMB_SIZE to prevent visual overlap
+      const minPixelDistance = Math.max(THUMB_SIZE, (step / range) * width);
       const newPosition = Math.max(
         0,
         Math.min(
           minStartX.value + e.translationX,
-          maxPosition.value - THUMB_SIZE
+          maxPosition.value - minPixelDistance
         )
       );
       minPosition.value = newPosition;
@@ -123,11 +126,14 @@ export default function RangeSlider({
       'worklet';
       const width = sliderWidth.value;
       if (width === 0) return;
+      // Calculate minimum pixel distance based on step value
+      // Ensure at least THUMB_SIZE to prevent visual overlap
+      const minPixelDistance = Math.max(THUMB_SIZE, (step / range) * width);
       const newPosition = Math.min(
         width,
         Math.max(
           maxStartX.value + e.translationX,
-          minPosition.value + THUMB_SIZE
+          minPosition.value + minPixelDistance
         )
       );
       maxPosition.value = newPosition;
