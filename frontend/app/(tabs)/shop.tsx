@@ -23,17 +23,15 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Fonts } from '@/constants/Fonts';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { useLocation } from '@/context/LocationContext';
 import { itemService } from '@/services/itemService';
-import { volunteerService } from '@/services/volunteerService';
 import { vendorService, Vendor } from '@/services/vendorService';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
-import { Volunteer } from '@/types/api/volunteer';
+import { useCurrentVolunteer } from '@/hooks/useCurrentVolunteer';
 
 type SearchCategory = 'items' | 'vendors';
 
@@ -56,12 +54,9 @@ export default function StoreScreen() {
     priceRange: { min: 0, max: 2000 },
     category: '',
   });
-  const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(
-    null
-  );
+  const { data: currentVolunteer } = useCurrentVolunteer();
 
   const router = useRouter();
-  const { user } = useAuth();
   const { locationFilter } = useLocation();
 
   const mapItemsWithVendors = useCallback(
@@ -219,20 +214,10 @@ export default function StoreScreen() {
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true;
-      const fetchVolunteer = async () => {
-        let volunteerData: Volunteer | null = null;
-        if (user?.entityId) {
-          try {
-            volunteerData = await volunteerService.getSelf();
-            setCurrentVolunteer(volunteerData);
-          } catch (err) {
-            console.error('Error fetching current volunteer:', err);
-          }
-        }
-
+      const init = async () => {
         await loadItems();
       };
-      fetchVolunteer();
+      init();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

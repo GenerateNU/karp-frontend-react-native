@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { BackHeader } from '@/components/common/BackHeader';
 import { ProfileAvatar } from '@/components/profile/ProfileAvatar';
-import { LevelProgress } from '@/components/profile/LevelProgress';
 import { FishTank } from '@/components/profile/FishTank';
 import { StatCard } from '@/components/profile/StatCard';
 import { LoadingScreen } from '@/components/LoadingScreen';

@@ -6,9 +6,11 @@ import { orderService } from '@/services/orderService';
 import { volunteerService } from '@/services/volunteerService';
 import { Item } from '@/types/api/item';
 import { Order } from '@/types/api/order';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function useItemDetail(itemId: string) {
   const { user, token, fetchUserEntity } = useAuth();
+  const queryClient = useQueryClient();
 
   const [item, setItem] = useState<Item | null>(null);
   const [userCoins, setUserCoins] = useState(0);
@@ -28,7 +30,7 @@ export function useItemDetail(itemId: string) {
 
       try {
         const [itemData, volunteerData, orders] = await Promise.all([
-          itemService.getItem(itemId, token),
+          itemService.getItem(itemId),
           volunteerService.getVolunteer(user.entityId),
           orderService.getVolunteerOrders(user.entityId),
         ]);
@@ -73,6 +75,8 @@ export function useItemDetail(itemId: string) {
     try {
       await orderService.createOrder(itemId);
       await fetchUserEntity();
+      // Ensure any component displaying current coins updates immediately
+      await queryClient.invalidateQueries({ queryKey: ['volunteer', 'me'] });
       setHasOrdered(true);
       setUserCoins(userCoins - item.price);
       Alert.alert('Success!', 'Your order has been placed');
