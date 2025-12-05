@@ -299,6 +299,7 @@ const styles = StyleSheet.create({
   },
   treasureContainer: {
     marginBottom: 40,
+    marginLeft: -15,
   },
   treasureIcon: {
     width: 148,
