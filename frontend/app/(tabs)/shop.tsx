@@ -292,12 +292,15 @@ export default function StoreScreen() {
     <>
       <ParallaxScrollView
         backgroundType="bubbles"
-        headerBackgroundColor={{ light: '#8ecde8', dark: '#8ecde8' }}
+        headerBackgroundColor={{
+          light: Colors.light.fishBlue,
+          dark: Colors.light.fishBlue,
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#3B82F6"
+            tintColor={Colors.light.filterBlue}
           />
         }
         headerImage={
@@ -344,7 +347,7 @@ export default function StoreScreen() {
               <TouchableOpacity
                 onPress={() => router.push('/shop/history')}
                 style={{
-                  backgroundColor: 'rgba(12, 120, 128, 0.5)',
+                  backgroundColor: Colors.light.semiTransparentTeal,
                   paddingHorizontal: 10,
                   paddingVertical: 10,
                   borderRadius: 20,
@@ -436,7 +439,7 @@ export default function StoreScreen() {
                       style={{
                         fontFamily: Fonts.bold_700,
                         fontSize: 24,
-                        color: '#878787',
+                        color: Colors.light.textSecondary,
                         textAlign: 'center',
                         marginBottom: 5,
                       }}
@@ -447,7 +450,7 @@ export default function StoreScreen() {
                       style={{
                         fontFamily: Fonts.light_300,
                         fontSize: 16,
-                        color: '#878787',
+                        color: Colors.light.textSecondary,
                         textAlign: 'center',
                         lineHeight: 17,
                         width: 220,
@@ -516,7 +519,7 @@ export default function StoreScreen() {
                       style={{
                         fontFamily: Fonts.bold_700,
                         fontSize: 24,
-                        color: '#878787',
+                        color: Colors.light.textSecondary,
                         textAlign: 'center',
                         marginBottom: 5,
                       }}
@@ -527,7 +530,7 @@ export default function StoreScreen() {
                       style={{
                         fontFamily: Fonts.light_300,
                         fontSize: 16,
-                        color: '#878787',
+                        color: Colors.light.textSecondary,
                         textAlign: 'center',
                         lineHeight: 17,
                         width: 220,
@@ -596,7 +599,7 @@ export default function StoreScreen() {
                       style={{
                         fontFamily: Fonts.bold_700,
                         fontSize: 24,
-                        color: '#878787',
+                        color: Colors.light.textSecondary,
                         textAlign: 'center',
                         marginBottom: 5,
                       }}
@@ -607,7 +610,7 @@ export default function StoreScreen() {
                       style={{
                         fontFamily: Fonts.light_300,
                         fontSize: 16,
-                        color: '#878787',
+                        color: Colors.light.textSecondary,
                         textAlign: 'center',
                         lineHeight: 17,
                         width: 220,
