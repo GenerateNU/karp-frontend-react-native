@@ -180,6 +180,7 @@ export function QRScanner({
         },
       ]);
     } catch (error) {
+      console.log(error);
       const message =
         error instanceof Error ? error.message : `${actionLabel} failed`;
       Alert.alert(`${actionLabel} Failed`, message, [
