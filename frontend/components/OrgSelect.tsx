@@ -5,9 +5,10 @@ import {
   Pressable,
   Modal,
   ScrollView,
-  Image,
   Share,
   FlatList,
+  StyleSheet,
+  Linking,
 } from 'react-native';
 import { PageBackground } from './common/PageBackground';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,6 +19,7 @@ import { Event } from '@/types/api/event';
 import { imageService } from '@/services/imageService';
 import { useRouter } from 'expo-router';
 import { EventCard } from './EventCard';
+import { Image } from 'expo-image';
 
 interface OrgSelectProps {
   visible: boolean;
@@ -79,10 +81,13 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
           organization.id
         );
         setImagePreSignedUrl(url);
-      } catch {}
+      } catch (err) {
+        console.error('Failed to fetch image:', err);
+      }
     }
-    if (visible) fetchImage();
-  }, [visible, organization?.id]);
+    console.log(organization);
+    if (organization?.imageS3Key) fetchImage();
+  }, [organization?.imageS3Key, organization?.id]);
 
   const markedDates = useMemo(() => {
     const marks = orgEvents.reduce<Record<string, any>>((acc, ev) => {
@@ -194,17 +199,17 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
           <>
             <ScrollView className="flex-1">
               <View className="border-b border-gray-200 px-5 pb-3 pt-4">
-                <View className="mb-3 h-80 overflow-hidden rounded-xl bg-gray-100">
-                  {imagePreSignedUrl ? (
-                    <Image
-                      source={{ uri: imagePreSignedUrl }}
-                      className="h-full w-full"
-                      resizeMode="cover"
-                    />
-                  ) : null}
-                </View>
+                {imagePreSignedUrl ? (
+                  <Image
+                    source={{ uri: imagePreSignedUrl }}
+                    style={styles.eventImage}
+                    contentFit="cover"
+                  />
+                ) : (
+                  <View style={[styles.eventImage, styles.imagePlaceholder]} />
+                )}
 
-                <View className="flex-row items-center justify-between">
+                <View className="mt-[27px] flex-row items-center justify-between">
                   <Text
                     numberOfLines={2}
                     style={{
@@ -256,19 +261,35 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
 
                 {(organization as any).website ? (
                   <View className="mt-4">
-                    <Text className="text-base font-medium text-gray-900">
-                      Website: {(organization as any).website}
+                    <Text
+                      style={{
+                        marginBottom: 8,
+                        fontSize: 18,
+                        lineHeight: 19,
+                        fontWeight: '700',
+                        color: '#1D0F48',
+                        fontFamily: 'Inter',
+                      }}
+                    >
+                      Website:
+                    </Text>
+                    <Text
+                      style={styles.website}
+                      onPress={() => {
+                        if (organization.website) {
+                          const url = organization.website.startsWith('http')
+                            ? organization.website
+                            : `https://${organization.website}`;
+                          Linking.openURL(url);
+                        }
+                      }}
+                    >
+                      {organization.website}
                     </Text>
                   </View>
                 ) : null}
 
                 <View className="mt-4">
-                  {(organization as any).pointOfContact ? (
-                    <Text className="mb-1 text-base font-medium text-gray-900">
-                      Point of Contact: {(organization as any).pointOfContact}
-                    </Text>
-                  ) : null}
-
                   <Text
                     style={{
                       marginBottom: 8,
@@ -294,12 +315,12 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
                   </Text>
                 </View>
 
-                <View className="mt-8">
+                <View className="mt-8 items-center px-6">
                   <Pressable
-                    className="rounded-lg bg-blue-600 px-4 py-3"
+                    className="w-[195px] items-center rounded-[16.333px] bg-[#74C0EB] px-[35px] py-3"
                     onPress={() => setShowFullCalendar(true)}
                   >
-                    <Text className="text-center font-semibold text-white">
+                    <Text className="text-center font-[Inter] text-[18px] font-bold text-[#1D0F48]">
                       Events Calendar
                     </Text>
                   </Pressable>
@@ -325,3 +346,29 @@ function OrgSelect({ visible, organization, onClose }: OrgSelectProps) {
 }
 
 export { OrgSelect };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    paddingHorizontal: 24,
+  },
+  eventImage: {
+    width: '100%',
+    height: 168,
+    backgroundColor: '#D9D9D9',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  imagePlaceholder: {
+    backgroundColor: '#E5E5E5',
+  },
+  website: {
+    marginBottom: 8,
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#1D0F48',
+    fontFamily: 'Inter',
+    textDecorationLine: 'underline', // makes it visually clear it’s clickable
+    color: '#1D4ED8', // optional: make it look like a link
+  },
+});

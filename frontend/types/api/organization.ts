@@ -13,6 +13,7 @@ export interface Organization {
   description?: string;
   status: OrgStatus;
   imageS3Key: string;
+  website?: string;
 }
 
 export interface OrgFilters {
@@ -26,4 +27,5 @@ export interface OrgResponse {
   name: string;
   description: string;
   status: OrgStatus;
+  website?: string;
 }
