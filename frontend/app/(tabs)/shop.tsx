@@ -12,6 +12,8 @@ import {
   Alert,
   TouchableOpacity,
   RefreshControl,
+  View,
+  Dimensions,
 } from 'react-native';
 import { debounce } from 'lodash';
 import { ThemedText } from '@/components/ThemedText';
@@ -51,7 +53,7 @@ export default function StoreScreen() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const profile = useProfile();
   const [filters, setFilters] = useState<ItemFilters>({
-    priceRange: { min: 0, max: 10000 },
+    priceRange: { min: 0, max: 2000 },
     category: '',
   });
   const [currentVolunteer, setCurrentVolunteer] = useState<Volunteer | null>(
@@ -180,16 +182,26 @@ export default function StoreScreen() {
     };
   }, [searchText, debouncedSetSearch]);
 
-  // Load items from API when debounced search text changes (background, no reload)
-  useEffect(() => {
+  // Shared function to load items based on search state
+  const loadItemsBasedOnSearch = useCallback(() => {
     if (debouncedSearchText.trim()) {
       loadItemsWithSearch(debouncedSearchText, selectedCategory);
     } else {
       loadAllItems();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchText]);
+  }, [
+    debouncedSearchText,
+    selectedCategory,
+    loadItemsWithSearch,
+    loadAllItems,
+  ]);
 
+  // Load items from API when debounced search text changes (background, no reload)
+  useEffect(() => {
+    loadItemsBasedOnSearch();
+  }, [debouncedSearchText, loadItemsBasedOnSearch]);
+
+  // Reload items when category changes (only if there's a search query)
   useEffect(() => {
     if (debouncedSearchText.trim()) {
       loadItemsWithSearch(debouncedSearchText, selectedCategory);
@@ -197,22 +209,41 @@ export default function StoreScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 
+  // Handle location filter changes with background load (no loading screen)
   useEffect(() => {
-    const fetchVolunteer = async () => {
-      let volunteerData: Volunteer | null = null;
-      if (user?.entityId) {
-        try {
-          volunteerData = await volunteerService.getSelf();
-          setCurrentVolunteer(volunteerData);
-        } catch (err) {
-          console.error('Error fetching current volunteer:', err);
-        }
-      }
+    loadItemsBasedOnSearch();
+  }, [locationFilter, loadItemsBasedOnSearch]);
 
-      await loadItems();
-    };
-    fetchVolunteer();
-  }, [loadItems, profile.volunteer?.experience]);
+  // Initial load - only run on mount and when volunteer experience changes
+  const hasInitialized = useRef(false);
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      const fetchVolunteer = async () => {
+        let volunteerData: Volunteer | null = null;
+        if (user?.entityId) {
+          try {
+            volunteerData = await volunteerService.getSelf();
+            setCurrentVolunteer(volunteerData);
+          } catch (err) {
+            console.error('Error fetching current volunteer:', err);
+          }
+        }
+
+        await loadItems();
+      };
+      fetchVolunteer();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Reload when volunteer experience changes
+  useEffect(() => {
+    if (hasInitialized.current && profile.volunteer?.experience !== undefined) {
+      loadItems();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile.volunteer?.experience]);
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
@@ -260,12 +291,15 @@ export default function StoreScreen() {
     <>
       <ParallaxScrollView
         backgroundType="bubbles"
-        headerBackgroundColor={{ light: '#8ecde8', dark: '#8ecde8' }}
+        headerBackgroundColor={{
+          light: Colors.light.fishBlue,
+          dark: Colors.light.fishBlue,
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#3B82F6"
+            tintColor={Colors.light.filterBlue}
           />
         }
         headerImage={
@@ -277,7 +311,7 @@ export default function StoreScreen() {
             <ThemedText
               type="title"
               className="text-center text-3xl font-extrabold text-white"
-              style={{ fontFamily: Fonts.regular_400 }}
+              style={{ fontFamily: Fonts.bold_700 }}
             >
               Gift Shop
             </ThemedText>
@@ -312,7 +346,7 @@ export default function StoreScreen() {
               <TouchableOpacity
                 onPress={() => router.push('/shop/history')}
                 style={{
-                  backgroundColor: 'rgba(12, 120, 128, 0.5)',
+                  backgroundColor: Colors.light.semiTransparentTeal,
                   paddingHorizontal: 10,
                   paddingVertical: 10,
                   borderRadius: 20,
@@ -349,52 +383,21 @@ export default function StoreScreen() {
             onCategoryChange={handleCategoryChange}
           />
 
-          {locationFilter && (
-            <ThemedView
-              className="mb-2 flex-row items-center justify-between rounded-lg bg-blue-100 p-2"
-              style={{ marginTop: 8 }}
-            >
-              <ThemedText
-                style={{
-                  color: 'black',
-                  fontSize: 12,
-                  fontFamily: Fonts.regular_400,
-                }}
-              >
-                📍 Filtering within {locationFilter.radiusKm}km
-              </ThemedText>
-              <TouchableOpacity
-                onPress={() => {
-                  clearLocationFilter();
-                }}
-              >
-                <ThemedText
-                  style={{
-                    color: '#3B82F6',
-                    fontSize: 12,
-                    fontFamily: Fonts.medium_500,
-                  }}
-                >
-                  Clear
-                </ThemedText>
-              </TouchableOpacity>
-            </ThemedView>
-          )}
-
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
-              color: 'black',
+              color: Colors.light.primaryText,
               textAlign: 'left',
               marginTop: 4,
-              fontFamily: Fonts.regular_400,
+              fontFamily: Fonts.bold_700,
               fontSize: 20,
             }}
           >
-            {locationFilter ? `Items near you` : 'Popular in Boston'}
+            {locationFilter ? `Items near you` : 'Popular near you'}
           </ThemedText>
           {(() => {
             const popularItems = filteredItems;
+            const screenWidth = Dimensions.get('window').width;
             return (
               <FlatList
                 horizontal
@@ -417,7 +420,45 @@ export default function StoreScreen() {
                   paddingLeft: 0,
                   paddingRight: 0,
                   marginBottom: 20,
+                  flexGrow: popularItems.length === 0 ? 1 : 0,
+                  justifyContent:
+                    popularItems.length === 0 ? 'center' : 'flex-start',
                 }}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      width: screenWidth - 32,
+                      height: 173,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.bold_700,
+                        fontSize: 24,
+                        color: Colors.light.textSecondary,
+                        textAlign: 'center',
+                        marginBottom: 5,
+                      }}
+                    >
+                      Oops—no gifts here yet!
+                    </ThemedText>
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.light_300,
+                        fontSize: 16,
+                        color: Colors.light.textSecondary,
+                        textAlign: 'center',
+                        lineHeight: 17,
+                        width: 220,
+                      }}
+                    >
+                      Go volunteer and come back to see what pops up.
+                    </ThemedText>
+                  </View>
+                }
               />
             );
           })()}
@@ -425,10 +466,10 @@ export default function StoreScreen() {
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
-              color: 'black',
+              color: Colors.light.primaryText,
               textAlign: 'left',
               marginTop: 4,
-              fontFamily: Fonts.regular_400,
+              fontFamily: Fonts.bold_700,
               fontSize: 20,
             }}
           >
@@ -436,6 +477,7 @@ export default function StoreScreen() {
           </ThemedText>
           {(() => {
             const sweetItems = filteredItems;
+            const screenWidth = Dimensions.get('window').width;
             return (
               <FlatList
                 horizontal
@@ -458,7 +500,45 @@ export default function StoreScreen() {
                   paddingLeft: 0,
                   paddingRight: 0,
                   marginBottom: 20,
+                  flexGrow: sweetItems.length === 0 ? 1 : 0,
+                  justifyContent:
+                    sweetItems.length === 0 ? 'center' : 'flex-start',
                 }}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      width: screenWidth - 32,
+                      height: 173,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.bold_700,
+                        fontSize: 24,
+                        color: Colors.light.textSecondary,
+                        textAlign: 'center',
+                        marginBottom: 5,
+                      }}
+                    >
+                      Oops—no gifts here yet!
+                    </ThemedText>
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.light_300,
+                        fontSize: 16,
+                        color: Colors.light.textSecondary,
+                        textAlign: 'center',
+                        lineHeight: 17,
+                        width: 220,
+                      }}
+                    >
+                      Go volunteer and come back to see what pops up.
+                    </ThemedText>
+                  </View>
+                }
               />
             );
           })()}
@@ -466,17 +546,18 @@ export default function StoreScreen() {
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
             style={{
-              color: 'black',
+              color: Colors.light.primaryText,
               textAlign: 'left',
               marginTop: 4,
-              fontFamily: Fonts.regular_400,
+              fontFamily: Fonts.bold_700,
               fontSize: 20,
             }}
           >
-            Shopping Spree
+            Gift Cards
           </ThemedText>
           {(() => {
             const spreeItems = filteredItems;
+            const screenWidth = Dimensions.get('window').width;
             return (
               <FlatList
                 horizontal
@@ -499,7 +580,45 @@ export default function StoreScreen() {
                   paddingLeft: 0,
                   paddingRight: 0,
                   marginBottom: 20,
+                  flexGrow: spreeItems.length === 0 ? 1 : 0,
+                  justifyContent:
+                    spreeItems.length === 0 ? 'center' : 'flex-start',
                 }}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      width: screenWidth - 32,
+                      height: 173,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingHorizontal: 20,
+                    }}
+                  >
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.bold_700,
+                        fontSize: 24,
+                        color: Colors.light.textSecondary,
+                        textAlign: 'center',
+                        marginBottom: 5,
+                      }}
+                    >
+                      Oops—no gifts here yet!
+                    </ThemedText>
+                    <ThemedText
+                      style={{
+                        fontFamily: Fonts.light_300,
+                        fontSize: 16,
+                        color: Colors.light.textSecondary,
+                        textAlign: 'center',
+                        lineHeight: 17,
+                        width: 220,
+                      }}
+                    >
+                      Go volunteer and come back to see what pops up.
+                    </ThemedText>
+                  </View>
+                }
               />
             );
           })()}

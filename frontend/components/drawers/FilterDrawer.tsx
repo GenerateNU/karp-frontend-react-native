@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { Colors } from '@/constants/Colors';
 
 interface FilterDrawerProps {
@@ -22,6 +22,7 @@ interface FilterDrawerProps {
   sideOneContent?: React.ReactNode;
   sideTwoContent?: React.ReactNode;
   contentStyle?: ViewStyle;
+  customButtons?: React.ReactNode;
 }
 
 export default function FilterDrawer({
@@ -34,12 +35,14 @@ export default function FilterDrawer({
   sideOneContent,
   sideTwoContent,
   contentStyle,
+  customButtons,
 }: FilterDrawerProps) {
   const isWeb = Platform.OS === 'web';
   const [activeSide, setActiveSide] = useState<'one' | 'two'>('one');
 
   const sheetRef = useRef<React.ComponentRef<typeof BottomSheet>>(null);
-  const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
+  const snapPoints = useMemo(() => ['85%'], []);
+  const initialIndex = 0;
 
   const handleSheetChange = useCallback(
     (index: number) => {
@@ -102,10 +105,9 @@ export default function FilterDrawer({
           enablePanDownToClose={true}
           onChange={handleSheetChange}
           style={styles.bottomSheet}
+          topInset={0}
         >
-          <BottomSheetScrollView
-            contentContainerStyle={styles.contentContainer}
-          >
+          <View style={styles.contentContainer}>
             <Text style={styles.title}>{title}</Text>
 
             {isTwoSided && <FilterToggle />}
@@ -118,11 +120,15 @@ export default function FilterDrawer({
                 : sideOneContent}
             </View>
 
-            <View style={styles.buttonContainer}>
-              <Button text="Close" onPress={handleClosePress} />
-              <Button text="Apply" onPress={handleApplyPress} />
-            </View>
-          </BottomSheetScrollView>
+            {customButtons ? (
+              customButtons
+            ) : (
+              <View style={styles.buttonContainer}>
+                <Button text="Close" onPress={handleClosePress} />
+                <Button text="Apply" onPress={handleApplyPress} />
+              </View>
+            )}
+          </View>
         </BottomSheet>
       )}
     </GestureHandlerRootView>
@@ -146,25 +152,30 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   bottomSheetBackground: {
-    backgroundColor: Colors.light.background,
+    backgroundColor: Colors.light.eggshellWhite,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
   },
   handleIndicator: {
     backgroundColor: Colors.light.handleIndicatorGray,
-    paddingTop: 8,
+    height: 4,
+    width: 65.3,
   },
   contentContainer: {
     flexDirection: 'column',
     gap: 11,
-    padding: 36,
+    paddingTop: 0,
+    paddingHorizontal: 22,
     paddingBottom: 50,
     alignItems: 'flex-start',
-    backgroundColor: Colors.light.background,
+    backgroundColor: Colors.light.eggshellWhite,
   },
   title: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
     marginBottom: 12,
     alignSelf: 'flex-start',
+    color: Colors.light.primaryText,
   },
   content: {
     width: '100%',
@@ -176,7 +187,7 @@ const styles = StyleSheet.create({
   },
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: Colors.light.white,
+    backgroundColor: Colors.light.eggshellWhite,
     borderRadius: 10,
     borderWidth: 0.2,
     borderColor: Colors.light.text,
@@ -186,24 +197,19 @@ const styles = StyleSheet.create({
   },
   toggleOption: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 7,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: Colors.light.white,
-    alignItems: 'flex-start',
+    backgroundColor: Colors.light.eggshellWhite,
+    alignItems: 'center',
     justifyContent: 'center',
   },
   toggleOptionActive: {
-    backgroundColor: Colors.light.toggleActiveBackground,
-    elevation: 2,
-    shadowColor: Colors.light.text,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    backgroundColor: Colors.light.fishBlue,
   },
   toggleText: {
-    fontSize: 14,
-    color: Colors.light.text,
+    fontSize: 16,
+    color: Colors.light.primaryText,
   },
   buttonContainer: {
     flexDirection: 'row',
