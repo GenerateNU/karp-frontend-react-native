@@ -1,1 +1,1 @@
-export const ITEM_FILTER_OPTIONS = ['LOCAL', 'FOOD', 'GIFT CARDS'];
+export const ITEM_FILTER_OPTIONS = ['LOCAL', 'OFFERS', 'FOOD', 'GIFT CARDS'];

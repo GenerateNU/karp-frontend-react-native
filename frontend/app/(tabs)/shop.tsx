@@ -197,22 +197,46 @@ export default function StoreScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 
+  // Handle location filter changes with background load (no loading screen)
   useEffect(() => {
-    const fetchVolunteer = async () => {
-      let volunteerData: Volunteer | null = null;
-      if (user?.entityId) {
-        try {
-          volunteerData = await volunteerService.getSelf();
-          setCurrentVolunteer(volunteerData);
-        } catch (err) {
-          console.error('Error fetching current volunteer:', err);
-        }
-      }
+    if (debouncedSearchText.trim()) {
+      loadItemsWithSearch(debouncedSearchText, selectedCategory);
+    } else {
+      loadAllItems();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locationFilter]);
 
-      await loadItems();
-    };
-    fetchVolunteer();
-  }, [loadItems, profile.volunteer?.experience]);
+  // Initial load - only run on mount and when volunteer experience changes
+  const hasInitialized = useRef(false);
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      const fetchVolunteer = async () => {
+        let volunteerData: Volunteer | null = null;
+        if (user?.entityId) {
+          try {
+            volunteerData = await volunteerService.getSelf();
+            setCurrentVolunteer(volunteerData);
+          } catch (err) {
+            console.error('Error fetching current volunteer:', err);
+          }
+        }
+
+        await loadItems();
+      };
+      fetchVolunteer();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Reload when volunteer experience changes
+  useEffect(() => {
+    if (hasInitialized.current && profile.volunteer?.experience !== undefined) {
+      loadItems();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile.volunteer?.experience]);
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
@@ -354,38 +378,6 @@ export default function StoreScreen() {
             setSelectedCategory={setSelectedCategory}
             onCategoryChange={handleCategoryChange}
           />
-
-          {locationFilter && (
-            <ThemedView
-              className="mb-2 flex-row items-center justify-between rounded-lg bg-blue-100 p-2"
-              style={{ marginTop: 8 }}
-            >
-              <ThemedText
-                style={{
-                  color: 'black',
-                  fontSize: 12,
-                  fontFamily: Fonts.regular_400,
-                }}
-              >
-                📍 Filtering within {locationFilter.radiusKm}km
-              </ThemedText>
-              <TouchableOpacity
-                onPress={() => {
-                  clearLocationFilter();
-                }}
-              >
-                <ThemedText
-                  style={{
-                    color: '#3B82F6',
-                    fontSize: 12,
-                    fontFamily: Fonts.medium_500,
-                  }}
-                >
-                  Clear
-                </ThemedText>
-              </TouchableOpacity>
-            </ThemedView>
-          )}
 
           <ThemedText
             className="mb-2 text-lg font-bold text-black"
