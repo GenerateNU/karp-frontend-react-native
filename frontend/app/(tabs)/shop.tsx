@@ -610,6 +610,9 @@ export default function StoreScreen() {
         </ThemedView>
       </ParallaxScrollView>
 
+      {/* Extra bottom space so last carousel isn't clipped behind tab bar */}
+      <View style={{ height: 100 }} />
+
       {drawerOpen && (
         <ItemFilterDrawer
           currentFilters={filters}
