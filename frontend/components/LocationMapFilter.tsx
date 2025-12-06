@@ -351,14 +351,22 @@ export default function LocationMapFilter({
       </View>
 
       {/* Action Buttons */}
-      {/* <View style={styles.actionButtonsContainer}>
-        <Pressable style={styles.clearButton} onPress={handleClear}>
-          <Text style={styles.buttonText}>Clear</Text>
-        </Pressable>
-        <Pressable style={styles.applyButton} onPress={handleApply}>
-          <Text style={styles.buttonText}>Apply</Text>
-        </Pressable>
-      </View> */}
+      <View className="border-t border-gray-200 p-4">
+        <View className="flex-row gap-3">
+          <Pressable
+            className="flex-1 items-center rounded-lg border border-gray-300 py-3"
+            onPress={handleClear}
+          >
+            <Text className="text-base font-medium text-gray-700">Clear</Text>
+          </Pressable>
+          <Pressable
+            className="flex-1 items-center rounded-lg bg-blue-500 py-3"
+            onPress={handleApply}
+          >
+            <Text className="text-base font-semibold text-white">Apply</Text>
+          </Pressable>
+        </View>
+      </View>
     </View>
   );
 }
