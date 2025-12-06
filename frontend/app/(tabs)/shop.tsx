@@ -32,6 +32,7 @@ import SearchInputWithFilter from '@/components/SearchInputWithFilter';
 import ItemFilterDrawer from '@/components/drawers/ItemFilterDrawer';
 import { ShopItem } from '@/types/api/item';
 import { useCurrentVolunteer } from '@/hooks/useCurrentVolunteer';
+import { useAuth } from '@/context/AuthContext';
 
 type SearchCategory = 'items' | 'vendors';
 
@@ -245,8 +246,17 @@ export default function StoreScreen() {
       return matchesPrice && matchesCategory;
     });
   }, [items, filters]);
+  
+  const { isGuest } = useAuth();
 
   const handlePress = (itemId: string) => {
+    if (isGuest) {
+      Alert.alert(
+        'Guest Mode',
+        'Please sign in or create an account to view item details and make purchases.'
+      );
+      return;
+    }
     router.push(`/shop/${itemId}`);
   };
 

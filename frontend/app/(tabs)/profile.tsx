@@ -23,18 +23,12 @@ import { BoatFooter } from '@/components/profile/BoatFooter';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { profileData, upcomingEvents, loading, refreshing, handleRefresh } =
-    useProfile();
-  const { isGuest, clearGuestMode, user } = useAuth();
+  const { isGuest, clearGuestMode } = useAuth();
 
   const handleSignIn = () => {
     clearGuestMode();
     router.push('/login');
   };
-
-  if (loading) {
-    return <LoadingScreen text="Loading profile..." />;
-  }
   if (isGuest) {
     return (
       <View style={styles.errorContainer}>
@@ -47,6 +41,17 @@ export default function ProfileScreen() {
       </View>
     );
   }
+  // eslint-disable-next-line
+  const { profileData, upcomingEvents, loading, refreshing, handleRefresh } =
+    useProfile();
+
+  if (loading) {
+    return <LoadingScreen text="Loading profile..." />;
+  }
+
+  // eslint-disable-next-line
+  const { user } = useAuth();
+
   if (!profileData) {
     return (
       <View style={styles.errorContainer}>
